@@ -1,0 +1,23 @@
+[build-system]
+requires = ["flit_core>=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "car_dreamer"
+authors = [
+    {name = "Dechen Gao", email = "dcgao@ucdavis.edu"},
+    {name = "Shuangyu Cai", email = "caisy21@mails.tsinghua.edu.cn"},
+    {name = "Hanchu Zhou", email = "hczhou@ucdavis.edu"}
+]
+dynamic = ["version", "description"]
+dependencies = [
+    "gym==0.12.5",
+    "flask==3.0.3",
+    "opencv-python>=4.9,<5.0",
+    "carla==0.9.15",
+    "numpy==1.24.3",
+    "ruamel.yaml==0.18.6",
+    "typing_extensions==4.5.0",
+    "networkx==3.1",
+    "Shapely==1.8.4",
+]

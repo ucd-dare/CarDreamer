@@ -1,0 +1,1 @@
+bash train_dm3.sh 1026 2 --task carla_message --dreamerv3.logdir ~/CarDreamer/logdir/test/
