@@ -26,7 +26,7 @@ def save_configs(config, logdir):
     config.save(str(config_path))
 
 import dreamerv2 as dm2
-from car_dreamer import load_task_name
+from car_dreamer import load_task_configs
 
 def main(argv=None):
   from dreamerv2.embodied import agent as agnt
@@ -42,7 +42,7 @@ def main(argv=None):
 
   for name in parsed.task:
       print("Using task: ", name)
-      env_config = load_task_name(name)
+      env_config = load_task_configs(name)
       config = config.update(env_config)
 
   config = dm2.Flags(config).parse(other)

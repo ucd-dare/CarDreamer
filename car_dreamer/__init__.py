@@ -28,7 +28,7 @@ __version__ = '0.1.0'
 from . import toolkit
 
 
-def load_task_name(task_name: str):
+def load_task_configs(task_name: str):
     """
     Load the task configs for the specified task name.
     The task name should be one of the keys in the ``tasks.yaml`` file.
@@ -60,7 +60,7 @@ def create_task(task_name: str, argv=None):
     :return: a tuple of the created environment and the configs
     """
     import gym
-    config = load_task_name(task_name)
+    config = load_task_configs(task_name)
     config, _ = toolkit.Flags(config).parse_known(argv)
     return gym.make(config.env.name, config=config.env), config
 
