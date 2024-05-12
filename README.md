@@ -1,25 +1,33 @@
-# CarDreamer
+# 🌍🚗 CarDreamer: Open-Source World Model-Based Autonomous Driving Platform 🚗🌍
+
+**Explore** world model based autonomous driving with CarDreamer, an open-source platform designed for the **development** and **evaluation** of **world model** based autonomous driving.
+
+* 🏙️ **Built-in Urban Driving Tasks**: flexible and customizable observation modality and observability; optimized rewards
+* 🔧 **Task Development Suite**: create your own urban driving tasks with ease
+* 🌍 **Model Backbones**: integrated state-of-the-art world models
+
+**Documentation:** [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
+
+**Technical Report** ArXiv Preprint (TODO)
 
 ![CarDreamer](.assets/banner.png)
 
-This repository is composed of two parts: a package ``car_dreamer`` and several backbone RL algorithms such as DreamerV2 and DreamerV3.
+## Overveiw
 
-Package ``car_dreamer`` is a collection of tasks aimed at facilitating RL algorithm designing, especially world model based ones. Each task is a certain driving environment in Carla simulator, varying from a single skill such as lane following or left turning, to random roaming in mixed road conditions which may encounter crossroads, roundabouts, and stop signs. They expose the same gym interface for backbone RL algorithm use.
+`CarDreamer` is a platform designed for world model based autonomous driving, featuring a set of urban driving tasks within the realistic CARLA simulator. Tasks range from basic maneuvers, such as lane following, to complex navigation in varied road conditions. All tasks are integrated with [OpenAI Gym](https://gymnasium.farama.org/) interfaces, enabling straightforward evaluation of algorithms.
 
-Furthermore, ``car_dreamer`` includes a task development suite for those who want to customize their own tasks. It provides a number of API calls to minimize users' efforts in spawning the vehicles and obtaining observation data as RL algorithm inputs. And an integrated traning visualization server automatically grasps the observation data, displaying the videos and plotting the statistics through an HTTP server. This eases reward engineering, algorithm designing and hyper-parameter tuning.
+The platform includes decoupled data handlers and an observer to manage multi-modal observations, allowing users to easily customize modality and observability. The development suite aims at facilitating creation of new urban driving tasks.
 
-Detailed guides on how to use this package can be found in this [document](https://car-dreamer.readthedocs.io/en/latest/).
-
-# Prerequisites
+## Prerequisites
 
 Clone the repository:
 
 ```bash
-git clone https://github.com/labdare/car-dreamer
-cd car-dreamer
+git clone https://github.com/labdare/CarDreamer
+cd CarDreamer
 ```
 
-Download [Carla release](https://github.com/carla-simulator/carla/releases) of version ``0.9.15`` as we experiemented with this version. Set the following environment variables:
+Download [CARLA release](https://github.com/carla-simulator/carla/releases) of version ``0.9.15`` as we experiemented with this version. Set the following environment variables:
 
 ```bash
 export CARLA_ROOT="</path/to/carla>"
@@ -33,15 +41,15 @@ pip install flit
 flit install --symlink
 ```
 
-# Training
+## Training
 
 Find ``README.md`` in the corresponding directory of the algorithm you want to use and follow the instructions.
 
-# Citation
-TODO
-If you find this repository useful, please cite this [paper](https://localhost):
+## Citation
+
+If you find this repository useful, please cite this paper (TODO)
 ```
-@article{CarDreamer2022,
+@article{CarDreamer2024,
   title={CarDreamer:},
   author={},
   journal={},
@@ -49,12 +57,16 @@ If you find this repository useful, please cite this [paper](https://localhost):
 }
 ```
 
-Credits:
+## 👥 Contributors
+
+### Credits
+
+`CarDreamer` builds on the several amazing projects within the autonomous driving and machine learning communities.
+
 - [gym-carla](https://github.com/cjy1992/gym-carla)
 - [DreamerV2](https://github.com/danijar/director)
 - [DreamerV3](https://github.com/danijar/dreamerv3)
-
-# 👥 Contributors
+- [CuriousReplay](https://github.com/AutonomousAgentsLab/curiousreplay)
 
 <!-- readme: contributors -start -->
 <table>
