@@ -56,7 +56,7 @@ If you find this repository useful, please cite this paper (TODO)
   year={}
 }
 ```
-LICENSE:This open source license allows CarDreamer to be used solely for non-commercial research purposes. Researchers are permitted to modify the source code, but only for their own research projects. Any contracted work intended to generate corporate revenue, as well as other general commercial applications, are prohibited under the terms of this license. Please refer to the LICENSE file for complete details and to explore potential opportunities for commercial use.
+LICENSE: This open source license allows CarDreamer to be used solely for non-commercial research purposes. Researchers are permitted to modify the source code, but only for their own research projects. Any contracted work intended to generate corporate revenue, as well as other general commercial applications, are prohibited under the terms of this license. Please refer to the LICENSE file for complete details and to explore potential opportunities for commercial use.
 
 ## 👥 Contributors
 
