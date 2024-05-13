@@ -1,4 +1,4 @@
-tasks and Configurations
+Tasks and Configurations
 =============================
 
 File Structure
