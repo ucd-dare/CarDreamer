@@ -1,4 +1,14 @@
-# 🌍🚗 CarDreamer: Open-Source World Model-Based Autonomous Driving Platform 🚗🌍
+# 🌍 Learn to Drive in "Dreams": CarDreamer 🚗
+
+## **Can a neural network become a simulator to imagine traffic dynamics for training autonomous agents? The answer is YES!**
+
+Using the high-fidelity CARLA simulator, we are able to train a world model that not only learns complex environment dynamics but also have an agent interact with the neural network "simulator" to learn to drive.
+
+This means the agent learns to drive in a "dream world" from scratch, mastering maneuvers like overtaking and right turns, and avoiding collisions in heavy traffic—all within an imagined world!
+
+Dive into our demos to see the agent skillfully navigating challenges and ensuring safe and efficient travel.
+
+## 📚 Open-Source World Model-Based Autonomous Driving Platform
 
 **Explore** world model based autonomous driving with CarDreamer, an open-source platform designed for the **development** and **evaluation** of **world model** based autonomous driving.
 
@@ -8,17 +18,50 @@
 
 **Documentation:** [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
-**Technical Report** ArXiv Preprint (TODO)
-
 ![CarDreamer](.assets/banner.png)
 
-## Overveiw
+<table style="margin-left: auto; margin-right: auto;">
+  <tr>
+    <td class="center-text">Right turn hard</td>
+    <td class="center-text">Roundabout</td>
+    <td class="center-text">Left turn hard</td>
+    <td class="center-text">Lane merge</td>
+    <td class="center-text">Overtake</td>
+    <td class="center-text">SFOV</td>
+  </tr>
+  <tr>
+    <td><img src="./.assets/right_turn_hard.gif" style="width: 100%"></td>
+    <td><img src="./.assets/roundabout.gif" style="width: 100%"></td>
+    <td><img src="./.assets/left_turn_hard.gif" style="width: 100%"></td>
+    <td><img src="./.assets/lane_merge.gif" style="width: 100%"></td>
+    <td><img src="./.assets/overtake.gif" style="width: 100%"></td>
+    <td><img src="./.assets/demo_recursive.gif" style="width: 100%"></td>
+  </tr>
+</table>
 
-`CarDreamer` is a platform designed for world model based autonomous driving, featuring a set of urban driving tasks within the realistic CARLA simulator. Tasks range from basic maneuvers, such as lane following, to complex navigation in varied road conditions. All tasks are integrated with [OpenAI Gym](https://gymnasium.farama.org/) interfaces, enabling straightforward evaluation of algorithms.
+<table style="margin-left: auto; margin-right: auto;">
+  <tr>
+    <td class="center-text">Right turn hard</td>
+    <td class="center-text">Roundabout</td>
+    <td class="center-text">Left turn hard</td>
+    <td class="center-text">Lane merge</td>
+    <td class="center-text">Right turn simple</td>
+    <td class="center-text">SFOV</td>
+  </tr>
+  <tr>
+    <td><img src="./.assets/Right turn hard.gif" style="width: 100%"></td>
+    <td><img src="./.assets/Roundabout.gif" style="width: 100%"></td>
+    <td><img src="./.assets/Left turn hard.gif" style="width: 100%"></td>
+    <td><img src="./.assets/Lane merge.gif" style="width: 100%"></td>
+    <td><img src="./.assets/Right turn simple.gif" style="width: 100%"></td>
+    <td><img src="./.assets/Recursive.gif" style="width: 100%"></td>
+  </tr>
+</table>
 
-The platform includes decoupled data handlers and an observer to manage multi-modal observations, allowing users to easily customize modality and observability. The development suite aims at facilitating creation of new urban driving tasks.
 
-## Prerequisites
+
+
+# 📋 Prerequisites
 
 Clone the repository:
 
@@ -56,9 +99,24 @@ If you find this repository useful, please cite this paper (TODO)
   year={}
 }
 ```
-LICENSE: This open source license allows CarDreamer to be used solely for non-commercial research purposes. Researchers are permitted to modify the source code, but only for their own research projects. Any contracted work intended to generate corporate revenue, as well as other general commercial applications, are prohibited under the terms of this license. Please refer to the LICENSE file for complete details and to explore potential opportunities for commercial use.
 
-## 👥 Contributors
+# Suppliment Material
+## World model imagination
+<p align="center">
+  Birdeye view training
+</p>
+<img src="./.assets/right turn hard im.gif">
+<p align="center">
+  Camera view training
+</p>
+<img src="./.assets/right turn hard only camera im.gif">
+<p align="center">
+  LiDAR view training
+</p>
+<img src="./.assets/right turn hard lidar im.gif">
+
+
+# 👥 Contributors
 
 ### Credits
 
@@ -84,7 +142,7 @@ LICENSE: This open source license allows CarDreamer to be used solely for non-co
                 <a href="https://github.com/tonycaisy">
                     <img src="https://avatars.githubusercontent.com/u/92793139?v=4" width="100;" alt="tonycaisy"/>
                     <br />
-                    <sub><b>tonycaisy</b></sub>
+                    <sub><b>Shuangyu Cai</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -92,6 +150,13 @@ LICENSE: This open source license allows CarDreamer to be used solely for non-co
                     <img src="https://avatars.githubusercontent.com/u/99316745?v=4" width="100;" alt="HanchuZhou"/>
                     <br />
                     <sub><b>Hanchu Zhou</b></sub>
+                </a>
+            </td>
+	    <td align="center">
+                <a href="https://github.com/ustcmike">
+                    <img src="https://avatars.githubusercontent.com/u/99316745?v=4" width="100;" alt="ustcmike"/>
+                    <br />
+                    <sub><b>ucdmike</b></sub>
                 </a>
             </td>
 		</tr>
