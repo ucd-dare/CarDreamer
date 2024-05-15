@@ -105,15 +105,15 @@ If you find this repository useful, please cite this paper (TODO)
 <p align="center">
   Birdeye view training
 </p>
-<img src="./.assets/right turn hard im.gif">
+<img src="./.assets/right_turn_hard_pre_bev.gif">
 <p align="center">
   Camera view training
 </p>
-<img src="./.assets/right turn hard only camera im.gif">
+<img src="./.assets/right_turn_hard_pre_camera.gif">
 <p align="center">
   LiDAR view training
 </p>
-<img src="./.assets/right turn hard lidar im.gif">
+<img src="./.assets/right_turn_hard_pre_lidar.gif">
 
 
 # 👥 Contributors
