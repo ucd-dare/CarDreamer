@@ -18,7 +18,6 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
 
 **Documentation:** [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
-![CarDreamer](.assets/banner.png)
 
 <table style="margin-left: auto; margin-right: auto;">
   <tr>
@@ -35,7 +34,7 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
     <td><img src="./.assets/left_turn_hard.gif" style="width: 100%"></td>
     <td><img src="./.assets/lane_merge.gif" style="width: 100%"></td>
     <td><img src="./.assets/overtake.gif" style="width: 100%"></td>
-    <td><img src="./.assets/demo_recursive.gif" style="width: 100%"></td>
+    <td><img src="./.assets/sfov.gif" style="width: 100%"></td>
   </tr>
 </table>
 
@@ -49,15 +48,16 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
     <td class="center-text">SFOV</td>
   </tr>
   <tr>
-    <td><img src="./.assets/Right turn hard.gif" style="width: 100%"></td>
-    <td><img src="./.assets/Roundabout.gif" style="width: 100%"></td>
-    <td><img src="./.assets/Left turn hard.gif" style="width: 100%"></td>
-    <td><img src="./.assets/Lane merge.gif" style="width: 100%"></td>
-    <td><img src="./.assets/Right turn simple.gif" style="width: 100%"></td>
-    <td><img src="./.assets/Recursive.gif" style="width: 100%"></td>
+    <td><img src="./.assets/right_turn_hard_camera.gif" style="width: 100%"></td>
+    <td><img src="./.assets/roundabout_camera.gif" style="width: 100%"></td>
+    <td><img src="./.assets/left_turn_hard_camera.gif" style="width: 100%"></td>
+    <td><img src="./.assets/lane_merge_camera.gif" style="width: 100%"></td>
+    <td><img src="./.assets/right_turn_simple_camera.gif" style="width: 100%"></td>
+    <td><img src="./.assets/sfov_camera.gif" style="width: 100%"></td>
   </tr>
 </table>
 
+![CarDreamer](.assets/architecture.png)
 
 
 
