@@ -26,7 +26,6 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
     <td class="center-text">Left turn hard</td>
     <td class="center-text">Lane merge</td>
     <td class="center-text">Overtake</td>
-    <td class="center-text">SFOV</td>
   </tr>
   <tr>
     <td><img src="./.assets/right_turn_hard.gif" style="width: 100%"></td>
@@ -34,7 +33,6 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
     <td><img src="./.assets/left_turn_hard.gif" style="width: 100%"></td>
     <td><img src="./.assets/lane_merge.gif" style="width: 100%"></td>
     <td><img src="./.assets/overtake.gif" style="width: 100%"></td>
-    <td><img src="./.assets/sfov.gif" style="width: 100%"></td>
   </tr>
 </table>
 
@@ -45,7 +43,6 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
     <td class="center-text">Left turn hard</td>
     <td class="center-text">Lane merge</td>
     <td class="center-text">Right turn simple</td>
-    <td class="center-text">SFOV</td>
   </tr>
   <tr>
     <td><img src="./.assets/right_turn_hard_camera.gif" style="width: 100%"></td>
@@ -53,7 +50,6 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
     <td><img src="./.assets/left_turn_hard_camera.gif" style="width: 100%"></td>
     <td><img src="./.assets/lane_merge_camera.gif" style="width: 100%"></td>
     <td><img src="./.assets/right_turn_simple_camera.gif" style="width: 100%"></td>
-    <td><img src="./.assets/sfov_camera.gif" style="width: 100%"></td>
   </tr>
 </table>
 
