@@ -89,10 +89,10 @@ Find ``README.md`` in the corresponding directory of the algorithm you want to u
 If you find this repository useful, please cite this paper (TODO)
 ```
 @article{CarDreamer2024,
-  title={CarDreamer:},
-  author={},
+  title={CarDreamer: Open-Source Learning Platform for World Model based Autonomous Driving},
+  author={Dechen Gao, Shuangyu Cai, Hanchu Zhou, Hang Wang, Iman Soltani, Junshan Zhang},
   journal={},
-  year={}
+  year={2024}
 }
 ```
 
