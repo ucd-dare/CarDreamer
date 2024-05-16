@@ -86,13 +86,14 @@ Find ``README.md`` in the corresponding directory of the algorithm you want to u
 
 ## Citation
 
-If you find this repository useful, please cite this paper (TODO)
+If you find this repository useful, please cite this paper:
 ```
 @article{CarDreamer2024,
-  title={CarDreamer: Open-Source Learning Platform for World Model based Autonomous Driving},
-  author={Dechen Gao, Shuangyu Cai, Hanchu Zhou, Hang Wang, Iman Soltani, Junshan Zhang},
-  journal={},
-  year={2024}
+  title = {{CarDreamer: Open-Source Learning Platform for World Model based Autonomous Driving}},
+  author = {Dechen Gao, Shuangyu Cai, Hanchu Zhou, Hang Wang, Iman Soltani, Junshan Zhang},
+  journal = {arXiv preprint arXiv:2405.09111},
+  year = {2024},
+  month = {May}
 }
 ```
 
