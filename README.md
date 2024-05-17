@@ -4,7 +4,7 @@
 
 Using the high-fidelity CARLA simulator, we are able to train a world model that not only learns complex environment dynamics but also have an agent interact with the neural network "simulator" to learn to drive.
 
-This means the agent learns to drive in a "dream world" from scratch, mastering maneuvers like overtaking and right turns, and avoiding collisions in heavy traffic—all within an imagined world!
+Simply put, in CarDreamer the agent can learn to drive in a "dream world" from scratch, mastering maneuvers like overtaking and right turns, and avoiding collisions in heavy traffic—all within an imagined world!
 
 Dive into our demos to see the agent skillfully navigating challenges and ensuring safe and efficient travel.
 
