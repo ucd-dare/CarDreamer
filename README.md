@@ -21,7 +21,8 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
 
 ## :sun_with_face: Built-in Task Demos
 
-A world model is learnt to model traffic dynamics; then a driving agent is trained on world model's imagination! The driving agent masters diverse driving skills including lane merge, left turn, and right turn, to random roadming purely from scratch.
+> [!TIP]
+> A world model is learnt to model traffic dynamics; then a driving agent is trained on world model's imagination! The driving agent masters diverse driving skills including lane merge, left turn, and right turn, to random roadming purely **from scratch**.
 
 We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on the observation spaces, the memory overhead ranges from 10GB-20GB alongwith 3GB reserved fro CARLA.
 
@@ -61,7 +62,10 @@ We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on
 
 ## :blossom: The Power of Intention Sharing
 
-*Human drivers use turn signals to inform their intentions of turning left or right. Autonomous vehicles can do the same!* Our experiment have demonstrated that through sharing intention, the policy learning is much easier! Specifically, a policy without knowing other agents' intentions can be conservative in our crossroad tasks; while intention sharing allows the agents to find the proper timing to cut in the traffic flow.
+> [!TIP]
+> **Human drivers use turn signals to inform their intentions** of turning left or right. **Autonomous vehicles can do the same!**
+
+Let's see how CarDreamer agents communicate and leverage intentions. Our experiment have demonstrated that through sharing intention, the policy learning is much easier! Specifically, a policy without knowing other agents' intentions can be conservative in our crossroad tasks; while intention sharing allows the agents to find the proper timing to cut in the traffic flow.
 
 <table style="margin-left: auto; margin-right: auto;">
   <tr>
@@ -76,7 +80,7 @@ We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on
 
 
 
-# 📋 Prerequisites
+## 📋 Prerequisites
 
 Clone the repository:
 
@@ -99,13 +103,13 @@ pip install flit
 flit install --symlink
 ```
 
-# Training
+## :mechanical_arm: Training
 
 Find ``README.md`` in the corresponding directory of the algorithm you want to use and follow the instructions.
 
-# Visualization Server
+## :computer: Visualization Tool
 
-We stream observations, rewards, terminal conditions, and custom metrics to a web brwoser at `carla port + 7000` in real-time, making it easier to engineer rewards and debug.
+We stream observations, rewards, terminal conditions, and custom metrics to a web brwoser for each training session in real-time, making it easier to engineer rewards and debug.
 
 <table style="margin-left: auto; margin-right: auto;">
   <tr>
@@ -116,9 +120,13 @@ We stream observations, rewards, terminal conditions, and custom metrics to a we
   </tr>
 </table>
 
+## :hammer: System
+
+To easily customize your own driving tasks, and observation spaces, etc., please refer to our [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
+
 ![CarDreamer](.assets/architecture.png)
 
-# Citation
+# :star2: Citation
 
 If you find this repository useful, please cite this paper:
 ```
