@@ -62,7 +62,7 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
 Clone the repository:
 
 ```bash
-git clone https://github.com/labdare/CarDreamer
+git clone https://github.com/ucd-dare/CarDreamer
 cd CarDreamer
 ```
 
@@ -80,11 +80,11 @@ pip install flit
 flit install --symlink
 ```
 
-## Training
+# Training
 
 Find ``README.md`` in the corresponding directory of the algorithm you want to use and follow the instructions.
 
-## Citation
+# Citation
 
 If you find this repository useful, please cite this paper:
 ```
@@ -117,7 +117,7 @@ If you find this repository useful, please cite this paper:
 
 ### Credits
 
-`CarDreamer` builds on the several amazing projects within the autonomous driving and machine learning communities.
+`CarDreamer` builds on the several projects within the autonomous driving and machine learning communities.
 
 - [gym-carla](https://github.com/cjy1992/gym-carla)
 - [DreamerV2](https://github.com/danijar/director)

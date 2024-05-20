@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Check if a port argument is provided
-if [ $# -lt 3 ]; then
-    echo "Usage: $0 <carla_port> <gpu_device> [additional_eval_parameters]"
+if [ $# -lt 4 ]; then
+    echo "Usage: $0 <carla_port> <gpu_device> <checkpoint_path> [additional_eval_parameters]"
     exit 1
 fi
 
