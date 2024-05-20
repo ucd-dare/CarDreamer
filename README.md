@@ -1,6 +1,6 @@
 # 🌍 Learn to Drive in "Dreams": CarDreamer 🚗
 
-## **Can neural networks imagine traffic dynamics for training autonomous driving agents? The answer is YES!**
+## **Can world models imagine traffic dynamics for training autonomous driving agents? The answer is YES!**
 
 Using the high-fidelity CARLA simulator, we are able to train a world model that not only learns complex environment dynamics but also have an agent interact with the neural network "simulator" to learn to drive.
 
