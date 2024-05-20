@@ -64,6 +64,15 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
   </tr>
 </table>
 
+<table style="margin-left: auto; margin-right: auto;">
+  <tr>
+    <td class="center-text">Visualization</td>
+  </tr>
+  <tr>
+    <td><img src="./.assets/visualization.png" style="width: 100%"></td>
+  </tr>
+</table>
+
 ![CarDreamer](.assets/architecture.png)
 
 
