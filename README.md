@@ -19,6 +19,12 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
 **Documentation:** [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
 
+## :sun_with_face: Built-in Task Demos
+
+A world model is learnt to model traffic dynamics; then a driving agent is trained on world model's imagination! The driving agent masters diverse driving skills including lane merge, left turn, and right turn, to random roadming purely from scratch.
+
+We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on the observation spaces, the memory overhead ranges from 10GB-20GB alongwith 3GB reserved fro CARLA.
+
 <table style="margin-left: auto; margin-right: auto;">
   <tr>
     <td class="center-text">Right turn hard</td>
@@ -53,7 +59,7 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
   </tr>
 </table>
 
-# The Power of Intention Sharing
+## :blossom: The Power of Intention Sharing
 
 *Human drivers use turn signals to inform their intentions of turning left or right. Autonomous vehicles can do the same!* Our experiment have demonstrated that through sharing intention, the policy learning is much easier! Specifically, a policy without knowing other agents' intentions can be conservative in our crossroad tasks; while intention sharing allows the agents to find the proper timing to cut in the traffic flow.
 
