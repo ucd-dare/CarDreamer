@@ -24,7 +24,7 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
 > [!TIP]
 > A world model is learnt to model traffic dynamics; then a driving agent is trained on world model's imagination! The driving agent masters diverse driving skills including lane merge, left turn, and right turn, to random roadming purely **from scratch**.
 
-We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on the observation spaces, the memory overhead ranges from 10GB-20GB alongwith 3GB reserved fro CARLA.
+We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on the observation spaces, the memory overhead ranges from 10GB-20GB alongwith 3GB reserved for CARLA.
 
 <table style="margin-left: auto; margin-right: auto;">
   <tr>
