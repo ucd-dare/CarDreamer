@@ -112,6 +112,8 @@ def get_visibility(
 
     return fov_visible, recursive_visible
 
+def should_filter(ego_transform, actor_transform):
+    return abs(actor_transform.location.z - ego_transform.location.z) > 3
 
 def get_neighbors(
     ego: carla.Actor,
@@ -129,7 +131,7 @@ def get_neighbors(
     ego_location = ego_transform.location
 
     for id, transform in actor_transforms.items():
-        if id == ego_id or not fov_visible[id]:
+        if id == ego_id or not fov_visible[id] or should_filter(ego_transform, transform):
             continue
         actor_location = transform.location
         if actor_location.x > 5.0 and actor_location.x < 16.2 and abs(actor_location.x - ego_location.x) < 4.0:

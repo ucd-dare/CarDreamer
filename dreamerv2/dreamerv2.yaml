@@ -15,7 +15,7 @@ defaults:
   filter: '.*'
   tbtt: 0
   train:
-    steps: 3e5
+    steps: 4e5
     expl_until: 0
     log_every: 2e3
     eval_every: 1e3

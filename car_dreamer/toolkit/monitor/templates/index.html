@@ -47,7 +47,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             grid-gap: 20px;
-            width: 50%;
+            width: 60%;
         }
 
         .render-item {
@@ -59,8 +59,24 @@
         .render-image {
             width: 100%;
             height: auto;
+            max-height: 512px;
+            object-fit: contain;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        .save-button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .save-button:hover {
+            background-color: #45a049;
         }
 
         .render-key {
@@ -70,15 +86,14 @@
         }
 
         .reward-plot-container {
-            width: calc(50% - 30px);
+            width: 40%;
             height: auto;
             max-height: 400px;
-            margin-right: 20px;
         }
 
         .plot-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             grid-gap: 20px;
             width: 100%;
             max-width: 100%;
@@ -169,7 +184,7 @@
             </div>
         </div>
         <div class="section">
-            <div class="section-title">Scalars</div>
+            <div class="section-title">Info</div>
             <div class="info-grid"></div>
         </div>
         <div class="section">
@@ -203,15 +218,29 @@
                 const renderItem = document.createElement('div');
                 renderItem.className = 'render-item';
                 const img = document.createElement('img');
-                img.src = `data:image/jpeg;base64,${item.image}`;
+                img.src = `data:image/webp;base64,${item.image}`;
                 img.className = 'render-image';
                 const key = document.createElement('div');
                 key.className = 'render-key';
                 key.textContent = item.key;
+                const saveButton = document.createElement('button');
+                saveButton.className = 'save-button';
+                saveButton.textContent = 'Save';
+                saveButton.addEventListener('click', () => {
+                    saveImage(item.key, item.image);
+                });
                 renderItem.appendChild(img);
                 renderItem.appendChild(key);
+                renderItem.appendChild(saveButton);
                 renderGrid.appendChild(renderItem);
             });
+        }
+
+        function saveImage(key, base64Image) {
+            const link = document.createElement('a');
+            link.href = `data:image/webp;base64,${base64Image}`;
+            link.download = `${key}_${Date.now()}.webp`;
+            link.click();
         }
 
         function updateRewardPlot(info) {
@@ -457,11 +486,11 @@
 
         function adjustGridColumns() {
             const renderItems = renderGrid.querySelectorAll('.render-item');
-            const numRenderColumns = Math.min(Math.max(Math.floor(renderGrid.clientWidth / 200), 1), renderItems.length);
+            const numRenderColumns = Math.min(Math.max(Math.floor(renderGrid.clientWidth / 200), 1), 2);
             renderGrid.style.gridTemplateColumns = `repeat(${numRenderColumns}, 1fr)`;
 
             const plotItems = plotGrid.querySelectorAll('.plot-item');
-            const numPlotColumns = Math.min(Math.max(Math.floor(plotGrid.clientWidth / 200), 1), 6);
+            const numPlotColumns = Math.min(Math.max(Math.floor(plotGrid.clientWidth / 400), 1), plotItems.length);
             plotGrid.style.gridTemplateColumns = `repeat(${numPlotColumns}, 1fr)`;
 
             const infoItems = infoGrid.querySelectorAll('.info-item');

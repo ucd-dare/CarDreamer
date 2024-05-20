@@ -130,6 +130,7 @@ class CarlaBaseEnv(gym.Env):
         terminal = False
         for k, v in terminal_conds.items():
             if v:
+                print(f'[CARLA] Terminal condition triggered: {k}')
                 terminal = True
             terminal_conds[k] = np.array([v], dtype=np.bool_)
         if terminal:

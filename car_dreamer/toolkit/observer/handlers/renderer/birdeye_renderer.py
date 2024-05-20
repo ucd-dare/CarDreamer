@@ -7,6 +7,7 @@ import cv2
 from ....carla_manager import WorldManager, Command, ActorPolygon
 from .constants import BirdeyeEntity, Color
 from .map_renderer import MapRenderer
+from ..utils import should_filter
 
 class BirdeyeRenderer:
     def __init__(
@@ -130,7 +131,7 @@ class BirdeyeRenderer:
         ego_id = self._ego.id
 
         for vehicle_id, polygon in vehicle_polygons.items():
-            if vehicle_id == ego_id:
+            if vehicle_id == ego_id or should_filter(self._ego.get_transform(), self._world_manager.actor_transforms[vehicle_id]):
                 continue
             vehicle_color = color.get(vehicle_id, None)
             if vehicle_color is not None:
@@ -148,7 +149,7 @@ class BirdeyeRenderer:
         vehicle_polygons = self._world_manager.actor_polygons
 
         for vehicle_id, path in background_waypoints.items():
-            if vehicle_id == self._ego.id:
+            if vehicle_id == self._ego.id or should_filter(self._ego.get_transform(), self._world_manager.actor_transforms[vehicle_id]):
                 continue
             vehicle_polygon = vehicle_polygons.get(vehicle_id, None)
             if vehicle_polygon is None:
@@ -193,7 +194,7 @@ class BirdeyeRenderer:
         }
 
         for vehicle_id, message in background_messages.items():
-            if vehicle_id == self._ego.id:
+            if vehicle_id == self._ego.id or should_filter(self._ego.get_transform(), self._world_manager.actor_transforms[vehicle_id]):
                 continue
             polygon = self._world_manager.actor_polygons.get(vehicle_id, None)
             if polygon is None:

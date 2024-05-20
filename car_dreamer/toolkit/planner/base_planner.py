@@ -24,6 +24,7 @@ class BasePlanner(ABC):
         # The distance below which the waypoint is considered as reached
         self._reach_threshold = reach_threshold
         self._vehicle_location = get_vehicle_pos(self._vehicle)
+        self._prev_location = self._vehicle_location
 
     @abstractmethod
     def init_route(self):
@@ -93,16 +94,17 @@ class BasePlanner(ABC):
         '''
         Run one step of the route planner, extending the route and removing expired waypoints.
 
-        :return: tuple(list of waypoints ``(x, y, yaw)``, number of completed waypoints, number of obsoleted waypoints)
+        :return: tuple(list of waypoints ``(x, y, yaw)``, additional stats)
         '''
         if not self._initialized:
             self.init_route()
             self._initialized = True
 
         self.extend_route()
+        self._vehicle_location = get_vehicle_pos(self._vehicle)
         planner_stats = self._update_waypoints_queue()
         waypoints = self._get_waypoints()
-        self._vehicle_location = get_vehicle_pos(self._vehicle)
+        self._prev_location = self._vehicle_location
         return waypoints, planner_stats
 
     def _get_waypoints(self):
@@ -117,11 +119,9 @@ class BasePlanner(ABC):
         num_completed = 0
         num_obsolete = 0
         num_to_delete = 0
-        travel_distance = 0.0
         min_distance = 100
-        vehicle_location = get_vehicle_pos(self._vehicle)
         for i, waypoint in enumerate(self._waypoints_queue):
-            dist = get_location_distance(vehicle_location, waypoint)
+            dist = get_location_distance(self._vehicle_location, waypoint)
             if dist < self._reach_threshold:
                 num_completed += 1
                 num_to_delete = i + 1
@@ -130,16 +130,12 @@ class BasePlanner(ABC):
                 min_distance = dist
                 num_to_delete = i
                 num_obsolete = i
-        prev_location = self._vehicle_location
-        for i in range(num_completed):
-            travel_distance += get_location_distance(prev_location, self._waypoints_queue[i])
-            prev_location = self._waypoints_queue[i]
         for _ in range(num_to_delete):
             self.pop_waypoint()
         num_obsolete -= num_completed
         planner_stats = dict(
             num_completed=num_completed,
             num_obsolete=num_obsolete,
-            travel_distance=travel_distance
+            travel_distance=get_location_distance(self._prev_location, self._vehicle_location)
         )
         return planner_stats

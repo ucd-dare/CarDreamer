@@ -169,8 +169,8 @@ class Config(dict):
         if len(value) == 0:
           message = 'Empty lists are disallowed because their type is unclear.'
           raise TypeError(message)
-        if not isinstance(value[0], (str, float, int, bool, list)):
-          message = 'Lists can only contain strings, floats, ints, bools, lists'
+        if not isinstance(value[0], (str, float, int, bool, list, dict)):
+          message = 'Lists can only contain strings, floats, ints, bools, lists, dict'
           message += f' but not {type(value[0])}'
           raise TypeError(message)
         if not all(isinstance(x, type(value[0])) for x in value[1:]):

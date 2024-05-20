@@ -2,7 +2,7 @@ carla_wpt: &carla_wpt
   # It's a base configuration for wpt tasks, don't use it directly
   reward:
     desired_speed: 4 # desired speed (m/s)
-    scales: { waypoint: 2.0, speed: 0.5, collision: 30.0, out_of_lane: 3.0, time: 0.0 }
+    scales: { waypoint: 2.0, speed: 0.5, collision: 30.0, out_of_lane: 3.0, time: 0.0, destination_reached: 20.0 }
   terminal:
     time_limit: 500 # maximum timesteps per episode
     out_lane_thres: 3 # threshold for out of lane

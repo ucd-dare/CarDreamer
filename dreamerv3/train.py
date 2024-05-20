@@ -2,6 +2,7 @@ import warnings
 import ruamel.yaml as yaml
 import dreamerv3
 import embodied
+import datetime
 
 import car_dreamer
 
@@ -59,6 +60,11 @@ def main(argv=None):
     env = from_gym.FromGym(env)
     env = wrap_env(env, dreamerv3_config)
     env = embodied.BatchEnv([env], parallel=False)
+
+    timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+    config_filename = f'config_{timestamp}.yaml'
+    config.save(str(logdir / config_filename))
+    print(f'[Train] Config saved to {logdir / config_filename}')
 
     agent = dreamerv3.Agent(env.obs_space, env.act_space, step, dreamerv3_config)
     replay = embodied.replay.Uniform(

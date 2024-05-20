@@ -306,7 +306,7 @@ class WorldManager:
     def _get_actor_polygons(self) -> ActorPolygonDict:
         actor_polygons: ActorPolygonDict = {}
 
-        for actor in self.actor_dict.values():
+        for actor in self.actors:
             actor_transform = actor.get_transform()
             x = actor_transform.location.x
             y = actor_transform.location.y

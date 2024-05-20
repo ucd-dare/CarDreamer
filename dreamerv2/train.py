@@ -19,8 +19,7 @@ __package__ = directory.name
 def save_configs(config, logdir):
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
     cardreamer_id = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=str(directory.parent)).decode('utf-8').strip()
-    gym_id = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=str(directory.parent / 'gym-carla')).decode('utf-8').strip()
-    config = config.update(cardreamer_id=cardreamer_id, gym_id=gym_id)
+    config = config.update(cardreamer_id=cardreamer_id)
     config_filename = f'config_{timestamp}.yaml'
     config_path = pathlib.Path(logdir) / config_filename
     config.save(str(config_path))

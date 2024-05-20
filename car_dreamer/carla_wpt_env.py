@@ -99,12 +99,17 @@ class CarlaWptEnv(CarlaBaseEnv):
             dist = perp_direction_norm
             if dist > 0.5:
                 r_out_of_lane = -reward_scales['out_of_lane'] * (dist - 0.5)
+        
+        # Reward for reaching the destination
+        r_destination = 0.0
+        if self.is_destination_reached():
+            r_destination = reward_scales['destination_reached']
 
         # Time penalty
         time_penalty = -reward_scales['time']
 
         # Total reward
-        total_reward = r_waypoints + r_speed + r_collision + r_out_of_lane + time_penalty
+        total_reward = r_waypoints + r_speed + r_collision + r_out_of_lane + r_destination + time_penalty
 
         ttc = TTCCalculator.get_ttc(ego, self._world.carla_world, self._world.carla_map)
 
@@ -124,6 +129,9 @@ class CarlaWptEnv(CarlaBaseEnv):
         }
 
         return total_reward, info
+    
+    def is_destination_reached(self):
+        return len(self.waypoints) <= 3
 
     def get_terminal_conditions(self):
         terminal_config = self._config.terminal
@@ -132,7 +140,7 @@ class CarlaWptEnv(CarlaBaseEnv):
             'is_collision': self.is_collision(),
             'time_exceeded': self._time_step > terminal_config.time_limit,
             'out_of_lane': self.get_wpt_dist(ego_location) > terminal_config.out_lane_thres,
-            'destination_reached': len(self.waypoints) == 0,
+            'destination_reached': self.is_destination_reached(),
         }
         return conds
     
