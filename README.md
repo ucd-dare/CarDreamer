@@ -2,7 +2,7 @@
 
 ## **Can world models imagine traffic dynamics for training autonomous driving agents? The answer is YES!**
 
-Integrating the high-fidelity CARLA simulator and world models, we are able to train a world model that not only learns complex environment dynamics but also have an agent interact with the neural network "simulator" to learn to drive.
+Integrating the high-fidelity CARLA simulator with world models, we are able to train a world model that not only learns complex environment dynamics but also have an agent interact with the neural network "simulator" to learn to drive.
 
 Simply put, in CarDreamer the agent can learn to drive in a "dream world" from scratch, mastering maneuvers like overtaking and right turns, and avoiding collisions in heavy traffic—all within an imagined world!
 
