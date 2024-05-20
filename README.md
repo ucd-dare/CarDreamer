@@ -53,6 +53,10 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
   </tr>
 </table>
 
+# The Power of Intention Sharing
+
+*Human drivers use turn signals to inform their intentions of turning left or right. Autonomous vehicles can do the same!* Our experiment have demonstrated that through sharing intention, the policy learning is much easier! Specifically, a policy without knowing other agents' intentions can be conservative in our crossroad tasks; while intention sharing allows the agents to find the proper timing to cut in the traffic flow.
+
 <table style="margin-left: auto; margin-right: auto;">
   <tr>
     <td class="center-text">Sharing waypoints vs. Without sharing waypoints</td>
@@ -63,17 +67,6 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
     <td><img src="./.assets/left_turn_hard.gif" style="width: 100%">&emsp;&emsp;&emsp;&emsp;&emsp;<img src="./.assets/left turn raw.gif" style="width: 100%"></td>
   </tr>
 </table>
-
-<table style="margin-left: auto; margin-right: auto;">
-  <tr>
-    <td class="center-text">Visualization</td>
-  </tr>
-  <tr>
-    <td><img src="./.assets/visualization.png" style="width: 100%"></td>
-  </tr>
-</table>
-
-![CarDreamer](.assets/architecture.png)
 
 
 
@@ -103,6 +96,21 @@ flit install --symlink
 # Training
 
 Find ``README.md`` in the corresponding directory of the algorithm you want to use and follow the instructions.
+
+# Visualization Server
+
+We stream observations, rewards, terminal conditions, and custom metrics to a web brwoser at `carla port + 7000` in real-time, making it easier to engineer rewards and debug.
+
+<table style="margin-left: auto; margin-right: auto;">
+  <tr>
+    <td class="center-text">Visualization Server</td>
+  </tr>
+  <tr>
+    <td><img src="./.assets/visualization.png" style="width: 100%"></td>
+  </tr>
+</table>
+
+![CarDreamer](.assets/architecture.png)
 
 # Citation
 
