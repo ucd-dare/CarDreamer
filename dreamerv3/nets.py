@@ -230,14 +230,13 @@ class MultiEncoder(nj.Module):
             output = self._cnn(inputs)
             output = output.reshape((output.shape[0], -1))
             outputs.append(output)
-        # TODO: dumb hack to make it work with the eval
-        # if self.mlp_shapes:
-        #     inputs = [
-        #         data[k][..., None] if len(self.shapes[k]) == 0 else data[k]
-        #         for k in self.mlp_shapes]
-        #     inputs = jnp.concatenate([x.astype(f32) for x in inputs], -1)
-        #     inputs = jaxutils.cast_to_compute(inputs)
-        #     outputs.append(self._mlp(inputs))
+        if self.mlp_shapes:
+            inputs = [
+                data[k][..., None] if len(self.shapes[k]) == 0 else data[k]
+                for k in self.mlp_shapes]
+            inputs = jnp.concatenate([x.astype(f32) for x in inputs], -1)
+            inputs = jaxutils.cast_to_compute(inputs)
+            outputs.append(self._mlp(inputs))
         outputs = jnp.concatenate(outputs, -1)
         outputs = outputs.reshape(batch_dims + outputs.shape[1:])
         return outputs
