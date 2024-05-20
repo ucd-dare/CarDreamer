@@ -6,7 +6,13 @@ Usage
 Installation
 ------------
 
-First, download `Carla release <https://github.com/carla-simulator/carla/releases>`_ of version ``0.9.15`` as we experiemented with this version. Set the following environment variables:
+First, clone the repository.
+.. code-block:: console
+
+   git clone https://github.com/ucd-dare/CarDreamer
+   cd CarDreamer
+
+Download `Carla release <https://github.com/carla-simulator/carla/releases>`_ of version ``0.9.15`` as we experiemented with this version. Set the following environment variables:
 
 .. code-block:: console
 
