@@ -43,9 +43,9 @@ Go to ``http://localhost:6006/`` in your browser to see the output.
 To use ``wandb`` for visualization, add the WandB logger to ``dreamerv3/train.py``:
 ```python
 logger = embodied.Logger(step, [
-        # ...
-        embodied.logger.WandBOutput(logdir.name, config),
-    ])
+    # ...
+    embodied.logger.WandBOutput(logdir.name, config),
+])
 ```
 
 Once you log in ``wandb``, put your project and entity name in ``dreamerv3/embodied/logger.py``:

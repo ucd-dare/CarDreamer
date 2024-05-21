@@ -8,8 +8,8 @@ numpy==1.24.3
 optax==0.2.2
 rich==13.7.1
 ruamel.yaml==0.18.6
-tensorflow[and-cuda]==2.13.0
-tensorflow_probability==0.21.0
+tensorflow[and-cuda]==2.15.1
+tensorflow_probability==0.23.0
 scikit-image==0.23.2
 ffmpeg==1.4
 moviepy==1.0.3
