@@ -2,7 +2,7 @@
 
 ## **Can world models imagine traffic dynamics for training autonomous driving agents? The answer is YES!**
 
-Using the high-fidelity CARLA simulator, we are able to train a world model that not only learns complex environment dynamics but also have an agent interact with the neural network "simulator" to learn to drive.
+Integrating the high-fidelity CARLA simulator with world models, we are able to train a world model that not only learns complex environment dynamics but also have an agent interact with the neural network "simulator" to learn to drive.
 
 Simply put, in CarDreamer the agent can learn to drive in a "dream world" from scratch, mastering maneuvers like overtaking and right turns, and avoiding collisions in heavy traffic—all within an imagined world!
 
@@ -18,6 +18,13 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
 
 **Documentation:** [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
+
+## :sun_with_face: Built-in Task Demos
+
+> [!TIP]
+> A world model is learnt to model traffic dynamics; then a driving agent is trained on world model's imagination! The driving agent masters diverse driving skills including lane merge, left turn, and right turn, to random roadming purely **from scratch**.
+
+We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on the observation spaces, the memory overhead ranges from 10GB-20GB alongwith 3GB reserved for CARLA.
 
 <table style="margin-left: auto; margin-right: auto;">
   <tr>
@@ -53,11 +60,27 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
   </tr>
 </table>
 
-![CarDreamer](.assets/architecture.png)
+## :blossom: The Power of Intention Sharing
+
+> [!TIP]
+> **Human drivers use turn signals to inform their intentions** of turning left or right. **Autonomous vehicles can do the same!**
+
+Let's see how CarDreamer agents communicate and leverage intentions. Our experiment have demonstrated that through sharing intention, the policy learning is much easier! Specifically, a policy without knowing other agents' intentions can be conservative in our crossroad tasks; while intention sharing allows the agents to find the proper timing to cut in the traffic flow.
+
+<table style="margin-left: auto; margin-right: auto;">
+  <tr>
+    <td class="center-text">Sharing waypoints vs. Without sharing waypoints</td>
+    <td class="center-text">Sharing waypoints vs. Without sharing waypoints</td>
+  </tr>
+  <tr>
+    <td><img src="./.assets/right_turn_hard.gif" style="width: 100%">&emsp;&emsp;&emsp;&emsp;&emsp;<img src="./.assets/right_turn_hard_no_wpt.gif" style="width: 100%"></td>
+    <td><img src="./.assets/left_turn_hard.gif" style="width: 100%">&emsp;&emsp;&emsp;&emsp;&emsp;<img src="./.assets/left turn raw.gif" style="width: 100%"></td>
+  </tr>
+</table>
 
 
 
-# 📋 Prerequisites
+## 📋 Prerequisites
 
 Clone the repository:
 
@@ -80,11 +103,30 @@ pip install flit
 flit install --symlink
 ```
 
-# Training
+## :mechanical_arm: Training
 
 Find ``README.md`` in the corresponding directory of the algorithm you want to use and follow the instructions.
 
-# Citation
+## :computer: Visualization Tool
+
+We stream observations, rewards, terminal conditions, and custom metrics to a web brwoser for each training session in real-time, making it easier to engineer rewards and debug.
+
+<table style="margin-left: auto; margin-right: auto;">
+  <tr>
+    <td class="center-text">Visualization Server</td>
+  </tr>
+  <tr>
+    <td><img src="./.assets/visualization.png" style="width: 100%"></td>
+  </tr>
+</table>
+
+## :hammer: System
+
+To easily customize your own driving tasks, and observation spaces, etc., please refer to our [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
+
+![CarDreamer](.assets/architecture.png)
+
+# :star2: Citation
 
 If you find this repository useful, please cite this paper:
 ```
@@ -136,13 +178,6 @@ If you find this repository useful, please cite this paper:
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/ustcmike">
-                    <img src="https://avatars.githubusercontent.com/u/32145615?v=4" width="100;" alt="ustcmike"/>
-                    <br />
-                    <sub><b>ucdmike</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/gaodechen">
                     <img src="https://avatars.githubusercontent.com/u/2103562?v=4" width="100;" alt="gaodechen"/>
                     <br />
@@ -161,6 +196,13 @@ If you find this repository useful, please cite this paper:
                     <img src="https://avatars.githubusercontent.com/u/99316745?v=4" width="100;" alt="HanchuZhou"/>
                     <br />
                     <sub><b>Hanchu Zhou</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/ustcmike">
+                    <img src="https://avatars.githubusercontent.com/u/32145615?v=4" width="100;" alt="ustcmike"/>
+                    <br />
+                    <sub><b>ucdmike</b></sub>
                 </a>
             </td>
 		</tr>
