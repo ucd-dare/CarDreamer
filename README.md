@@ -190,5 +190,3 @@ If you find this repository useful, please cite this paper:
 	<tbody>
 </table>
 <!-- readme: contributors -end -->
-
-TODO: test monitor save

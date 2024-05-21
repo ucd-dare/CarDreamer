@@ -5,11 +5,6 @@ from . import agent
 from . import expl
 from . import tfutils
 
-from .hierarchy import Hierarchy
-from .semantic_hierarchy import SemanticHierarchy
-from .semantic_extr_hierarchy import SemanticExtrHierarchy
-
-
 class Greedy(tfutils.Module):
 
   def __init__(self, wm, act_space, config):

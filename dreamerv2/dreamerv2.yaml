@@ -35,7 +35,7 @@ defaults:
     sync_every: 180
 
   # Agent
-  task_behavior: Hierarchy
+  task_behavior: Greedy
   expl_behavior: None
   batch_size: 16
   transform_rewards: off
