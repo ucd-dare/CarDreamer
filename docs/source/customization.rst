@@ -4,7 +4,7 @@ Customization
 Configurations
 ----------------
 
-The simplest way to customize your own task is to modify the configurations in ``car_dreamer/configs/common.yaml`` and ``car_dreamer/configs/tasks.yaml``.  See :doc:`<./tasks>` for more details.
+The simplest way to customize your own task is to modify the configurations in ``car_dreamer/configs/common.yaml`` and ``car_dreamer/configs/tasks.yaml``.  See :doc:`configurations <./tasks>` for more details.
 
 Creating a new environment
 ----------------------------
