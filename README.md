@@ -99,6 +99,8 @@ export PYTHONPATH="${CARLA_ROOT}/PythonAPI/carla":${PYTHONPATH}
 Install the package using flit. The ``--symlink`` flag is used to create a symlink to the package in the Python environment, so that changes to the package are immediately available without reinstallation. (``--pth-file`` also works, as an alternative to ``--symlink``.)
 
 ```bash
+conda create python=3.10 --name cardreamer
+conda activate cardreamer
 pip install flit
 flit install --symlink
 ```

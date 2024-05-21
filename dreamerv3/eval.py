@@ -108,9 +108,9 @@ def main(argv=None):
     config = embodied.Config({'dreamerv3': model_configs['defaults']})
     config = config.update({'dreamerv3': model_configs['small']})
 
-    parsed, other = embodied.Flags(scenario=['carla_navigation']).parse_known(argv)
-    for name in parsed.scenario:
-        print("Using scenario: ", name)
+    parsed, other = embodied.Flags(task=['carla_navigation']).parse_known(argv)
+    for name in parsed.task:
+        print("Using task: ", name)
         env, env_config = car_dreamer.create_task(name, argv)
         config = config.update(env_config)
     config = embodied.Flags(config).parse(other)

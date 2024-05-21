@@ -1,13 +1,13 @@
 cloudpickle==3.0.0
 crafter==1.8.3
-gym==0.26.2
+gym==0.12.5
 dm_control==1.0.18
 jax==0.4.26
 jaxlib==0.4.26+cuda12.cudnn89
 numpy==1.24.3
 optax==0.2.2
 rich==13.7.1
-ruamel.yaml==0.18.5
+ruamel.yaml==0.18.6
 tensorflow[and-cuda]==2.13.0
 tensorflow_probability==0.21.0
 scikit-image==0.23.2

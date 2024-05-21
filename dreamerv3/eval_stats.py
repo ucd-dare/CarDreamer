@@ -4,54 +4,7 @@ from tabulate import tabulate
 import argparse
 from pathlib import Path
 
-
-def compute_metrics_distance_based(episode_stats, task_success_distance_thresholds, task):
-    metrics = {}
-
-    travel_distances = np.array(episode_stats['sum_travel_distance'])
-    destination_reached = np.array(episode_stats['sum_destination_reached'])
-    time_exceeded = np.array(episode_stats['sum_time_exceeded'])
-    is_collision = np.array(episode_stats['sum_is_collision'])
-    out_of_lane = np.array(episode_stats['sum_out_of_lane'])
-    ttc = np.array(episode_stats['mean_ttc'])
-    wpt_dis = np.array(episode_stats['mean_wpt_dis'])
-    speed_norm = np.array(episode_stats['mean_speed_norm'])
-    lengths = np.array(episode_stats['lengths'])
-    scores = np.array(episode_stats['scores'])
-
-    num_episodes = len(travel_distances)
-    task_threshold = task_success_distance_thresholds.get(task, 0)
-
-    success_mask = travel_distances >= task_threshold
-    success_rate = np.mean(success_mask)
-
-    # Filter out failures after the tasks are successful
-    # is_collision[success_mask] = False
-    # time_exceeded[success_mask] = False
-    #out_of_lane[success_mask] = False
-
-    metrics['task'] = task
-    metrics['num_episodes'] = num_episodes
-    metrics['success_rate'] = success_rate
-    metrics['avg_travel_distance'] = np.mean(travel_distances)
-    metrics['avg_destination_reached'] = np.mean(destination_reached)
-    metrics['avg_destination_reached_ratio'] = np.sum(destination_reached) / num_episodes
-    metrics['avg_time_exceeded'] = np.mean(time_exceeded)
-    metrics['avg_time_exceeded_ratio'] = np.sum(time_exceeded) / num_episodes
-    metrics['avg_is_collision'] = np.mean(is_collision)
-    metrics['avg_is_collision_ratio'] = np.sum(is_collision) / num_episodes
-    metrics['avg_out_of_lane'] = np.mean(out_of_lane)
-    metrics['avg_out_of_lane_ratio'] = np.sum(out_of_lane) / num_episodes
-    metrics['avg_ttc'] = np.mean(ttc)
-    metrics['avg_wpt_dis'] = np.mean(wpt_dis)
-    metrics['avg_speed_norm'] = np.mean(speed_norm)
-    metrics['avg_length'] = np.mean(lengths)
-    metrics['avg_score'] = np.mean(scores)
-
-    return metrics
-
-
-def compute_metrics_destination_based(episode_stats, task):
+def compute_metrics_destination_based(episode_stats):
     metrics = {}
 
     travel_distances = np.array(episode_stats['sum_travel_distance'])
@@ -74,7 +27,6 @@ def compute_metrics_destination_based(episode_stats, task):
     time_exceeded[destination_reached > 0] = False
     out_of_lane[destination_reached > 0] = False
 
-    metrics['task'] = task
     metrics['num_episodes'] = num_episodes
     metrics['success_rate'] = success_rate
     metrics['avg_travel_distance'] = np.mean(travel_distances)
@@ -96,24 +48,8 @@ def compute_metrics_destination_based(episode_stats, task):
 
 
 def main(args):
-    task_success_distance_thresholds = {
-        'carla_left_turn_simple': 43,
-        'carla_left_turn_medium': 43,
-        'carla_left_turn_hard': 43,
-        'carla_right_turn_simple': 32,
-        'carla_right_turn_medium': 32,
-        'carla_right_turn_hard': 32,
-        'carla_navigation': 50,
-        'carla_lane_merge': 92,
-        'carla_four_lane': 70,
-        'carla_roundabout': 60,
-        'carla_overtake': 20,
-        'carla_message': 115,
-    }
 
     jsonl_file = Path(args.logdir) / 'metrics.jsonl'
-    task = args.task
-    method = args.method
 
     episode_stats = {
         'sum_travel_distance': [],
@@ -152,15 +88,9 @@ def main(args):
             if 'episode/score' in data:
                 episode_stats['scores'].append(data['episode/score'])
 
-    if method == 'distance':
-        final_metrics = compute_metrics_distance_based(episode_stats, task_success_distance_thresholds, task)
-    elif method == 'destination':
-        final_metrics = compute_metrics_destination_based(episode_stats, task)
-    else:
-        raise ValueError("Method should be either 'distance' or 'destination'")
+    final_metrics = compute_metrics_destination_based(episode_stats)
 
     table = [
-        ["Task", final_metrics['task']],
         ["Number of Episodes", final_metrics['num_episodes']],
         ["Success Rate", f"{final_metrics['success_rate']:.2%}"],
         ["Avg. Travel Distance", f"{final_metrics['avg_travel_distance']:.2f}"],

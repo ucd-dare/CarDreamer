@@ -23,6 +23,8 @@ Then, install the package using flit. The ``--symlink`` flag is used to create a
 
 .. code-block:: console
 
+   conda create python=3.10 --name cardreamer
+   conda activate cardreamer
    pip install flit
    flit install --symlink
 
@@ -58,7 +60,7 @@ After creating the task, the visualization is automatically started if ``env.dis
    import car_dreamer
    import time
 
-   task, _ = car_dreamer.create_task('carla_four_lane', argv)
+   task, _ = car_dreamer.create_task('carla_four_lane')
    task.reset()
    while True:
       _, _, is_terminal, _ = task.step(12)  # 12 is the action of going straight and accelerating
