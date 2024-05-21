@@ -362,8 +362,6 @@ class WorldManager:
         :return: a dictionary mapping vehicle IDs to their known actions.
         :rtype: dict[int, list[tuple[Command, carla.Waypoint]]]
 
-        .. seealso:: :py:class:`Command`
-
         .. warning::
            Actors not controlled by autopilot will not have actions.
            They will not be included in the returned dictionary.
