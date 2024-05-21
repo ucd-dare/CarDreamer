@@ -21,7 +21,11 @@ class BaseHandler(ABC):
 
     @abstractmethod
     def get_observation(self, env_state: Dict) -> Tuple[Dict, Dict]:
-        """ Fetch observations from the environment """
+        """
+        Fetch observations from the environment.
+
+        :param env_state: The state returned by :py:meth:`carla_manager.CarlaBaseEnv.get_state`.
+        """
         pass
 
     @abstractmethod
