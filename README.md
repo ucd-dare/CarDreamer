@@ -18,7 +18,7 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
 
 **Documentation:** [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
-**[Technical Report](https://arxiv.org/abs/2405.09111)**
+**Looking for more techincal details? Check our report here!** ---> **[Paper link](https://arxiv.org/abs/2405.09111)** <---
 
 
 ## :sun_with_face: Built-in Task Demos
@@ -112,6 +112,8 @@ To easily customize your own driving tasks, and observation spaces, etc., please
 # :star2: Citation
 
 If you find this repository useful, please cite this paper:
+
+**[Paper link](https://arxiv.org/abs/2405.09111)**
 ```
 @article{CarDreamer2024,
   title = {{CarDreamer: Open-Source Learning Platform for World Model based Autonomous Driving}},
@@ -122,7 +124,6 @@ If you find this repository useful, please cite this paper:
 }
 ```
 
-**[ArXiv preprint](https://arxiv.org/abs/2405.09111)**
 
 # Suppliment Material
 ## World model imagination
