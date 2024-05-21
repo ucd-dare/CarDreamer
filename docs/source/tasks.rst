@@ -99,7 +99,7 @@ Here is the descriptions of some common configurations in ``car_dreamer/configs/
     * ``discrete_acc`` (default: ``[-2.0, 0.0, 2.0]``): the discrete values for acceleration.
     * ``discrete_steer`` (default: ``[-0.6, -0.2, 0.0, 0.2, 0.6]``): the discrete values for steering.
 
-tasks and Environments
+Tasks and Environments
 --------------------------
 
 For task specific configurations in ``car_dreamer/configs/tasks.yaml``, two keys are important:

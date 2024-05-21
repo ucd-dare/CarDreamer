@@ -7,6 +7,7 @@ Installation
 ------------
 
 First, clone the repository.
+
 .. code-block:: console
 
    git clone https://github.com/ucd-dare/CarDreamer

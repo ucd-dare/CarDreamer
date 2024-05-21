@@ -31,6 +31,7 @@ A typical implementation looks like:
            # self.ego is a must to inherit from CarlaBaseEnv
            spawn_transform = carla.Transform(carla.Location(x=5.8, y=100, z=0.1), carla.Rotation(yaw=-90))
            self.ego = self._world_manager.spawn_actor(transform=spawn_transform)
+           
            # use random planner to generate waypoints for the ego vehicle
            # self.ego_planner is a must to inherit from CarlaWptEnv or CarlaWptFixedEnv
            self.ego_planner = RandomPlanner(vehicle=self.ego)
