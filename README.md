@@ -69,8 +69,11 @@ Let's see how CarDreamer agents communicate and leverage intentions. Our experim
 
 <table style="margin-left: auto; margin-right: auto;">
   <tr>
-    <td class="center-text">Sharing waypoints vs. Without sharing waypoints</td>
-    <td class="center-text">Sharing waypoints vs. Without sharing waypoints</td>
+    <td class="center-text" colspan="2">Sharing waypoints vs. Without sharing waypoints</td>
+  </tr>
+  <tr>
+    <td class="center-text">Right turn</td>
+    <td class="center-text">Left turn</td>
   </tr>
   <tr>
     <td><img src="./.assets/right_turn_hard.gif" style="width: 100%">&emsp;&emsp;&emsp;&emsp;&emsp;<img src="./.assets/right_turn_hard_no_wpt.gif" style="width: 100%"></td>
@@ -78,6 +81,15 @@ Let's see how CarDreamer agents communicate and leverage intentions. Our experim
   </tr>
 </table>
 
+
+<table style="margin-left: auto; margin-right: auto;">
+  <tr>
+    <td class="center-text">Full observability vs. Partial observability</td>
+  </tr>
+  <tr>
+    <td><img src="./.assets/right_turn_hard.gif" style="width: 100%">&emsp;&emsp;&emsp;&emsp;&emsp;<img src="./.assets/right_turn_hard_fov.gif" style="width: 100%"></td>
+  </tr>
+</table>
 
 
 ## 📋 Prerequisites
