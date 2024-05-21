@@ -18,6 +18,8 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
 
 **Documentation:** [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
+**[Technical Report](https://arxiv.org/abs/2405.09111)**
+
 
 ## :sun_with_face: Built-in Task Demos
 
@@ -119,6 +121,8 @@ If you find this repository useful, please cite this paper:
   month = {May}
 }
 ```
+
+**[ArXiv preprint](https://arxiv.org/abs/2405.09111)**
 
 # Suppliment Material
 ## World model imagination
