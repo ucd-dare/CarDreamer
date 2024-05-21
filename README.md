@@ -26,39 +26,14 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
 
 We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on the observation spaces, the memory overhead ranges from 10GB-20GB alongwith 3GB reserved for CARLA.
 
-<table style="margin-left: auto; margin-right: auto;">
-  <tr>
-    <td class="center-text">Right turn hard</td>
-    <td class="center-text">Roundabout</td>
-    <td class="center-text">Left turn hard</td>
-    <td class="center-text">Lane merge</td>
-    <td class="center-text">Overtake</td>
-  </tr>
-  <tr>
-    <td><img src="./.assets/right_turn_hard.gif" style="width: 100%"></td>
-    <td><img src="./.assets/roundabout.gif" style="width: 100%"></td>
-    <td><img src="./.assets/left_turn_hard.gif" style="width: 100%"></td>
-    <td><img src="./.assets/lane_merge.gif" style="width: 100%"></td>
-    <td><img src="./.assets/overtake.gif" style="width: 100%"></td>
-  </tr>
-</table>
+| Right turn hard | Roundabout | Left turn hard | Lane merge | Overtake |
+| :-------------: | :--------: | :------------: | :--------: | :------: |
+| ![Right turn hard](./.assets/right_turn_hard.gif) | ![Roundabout](./.assets/roundabout.gif) | ![Left turn hard](./.assets/left_turn_hard.gif) | ![Lane merge](./.assets/lane_merge.gif) | ![Overtake](./.assets/overtake.gif) |
 
-<table style="margin-left: auto; margin-right: auto;">
-  <tr>
-    <td class="center-text">Right turn hard</td>
-    <td class="center-text">Roundabout</td>
-    <td class="center-text">Left turn hard</td>
-    <td class="center-text">Lane merge</td>
-    <td class="center-text">Right turn simple</td>
-  </tr>
-  <tr>
-    <td><img src="./.assets/right_turn_hard_camera.gif" style="width: 100%"></td>
-    <td><img src="./.assets/roundabout_camera.gif" style="width: 100%"></td>
-    <td><img src="./.assets/left_turn_hard_camera.gif" style="width: 100%"></td>
-    <td><img src="./.assets/lane_merge_camera.gif" style="width: 100%"></td>
-    <td><img src="./.assets/right_turn_simple_camera.gif" style="width: 100%"></td>
-  </tr>
-</table>
+| Right turn hard | Roundabout | Left turn hard | Lane merge | Right turn simple |
+| :-------------: | :--------: | :------------: | :--------: | :---------------: |
+| ![Right turn hard](./.assets/right_turn_hard_camera.gif) | ![Roundabout](./.assets/roundabout_camera.gif) | ![Left turn hard](./.assets/left_turn_hard_camera.gif) | ![Lane merge](./.assets/lane_merge_camera.gif) | ![Right turn simple](./.assets/right_turn_simple_camera.gif) |
+
 
 ## :blossom: The Power of Intention Sharing
 
@@ -67,16 +42,20 @@ We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on
 
 Let's see how CarDreamer agents communicate and leverage intentions. Our experiment have demonstrated that through sharing intention, the policy learning is much easier! Specifically, a policy without knowing other agents' intentions can be conservative in our crossroad tasks; while intention sharing allows the agents to find the proper timing to cut in the traffic flow.
 
-<table style="margin-left: auto; margin-right: auto;">
-  <tr>
-    <td class="center-text">Sharing waypoints vs. Without sharing waypoints</td>
-    <td class="center-text">Sharing waypoints vs. Without sharing waypoints</td>
-  </tr>
-  <tr>
-    <td><img src="./.assets/right_turn_hard.gif" style="width: 100%">&emsp;&emsp;&emsp;&emsp;&emsp;<img src="./.assets/right_turn_hard_no_wpt.gif" style="width: 100%"></td>
-    <td><img src="./.assets/left_turn_hard.gif" style="width: 100%">&emsp;&emsp;&emsp;&emsp;&emsp;<img src="./.assets/left turn raw.gif" style="width: 100%"></td>
-  </tr>
-</table>
+
+<!-- Table 1: Sharing waypoints vs. Without sharing waypoints -->
+| Sharing waypoints vs. Without sharing waypoints | Sharing waypoints vs. Without sharing waypoints |
+| :---------------------------------------------: | :---------------------------------------------: |
+| **Right turn hard**                                  | **Left turn hard**                                  |
+| ![Right turn hard](./.assets/right_turn_hard.gif) &emsp;&emsp;&emsp; ![Right turn hard no waypoint](./.assets/right_turn_hard_no_wpt.gif) | ![Left turn hard](./.assets/left_turn_hard.gif) &emsp;&emsp;&emsp;<img src="./.assets/left turn raw.gif" style="width: 100%"> |
+
+<!-- Table 2: Full observability vs. Partial observability -->
+| Full observability vs. Partial observability |
+| :------------------------------------------: |
+| **Right turn hard**                               |
+| ![Right turn hard](./.assets/right_turn_hard.gif) &emsp;&emsp;&emsp; ![Right turn hard FOV](./.assets/right_turn_hard_fov.gif) |
+
+
 
 
 
@@ -180,6 +159,13 @@ If you find this repository useful, please cite this paper:
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/HanchuZhou">
+                    <img src="https://avatars.githubusercontent.com/u/99316745?v=4" width="100;" alt="HanchuZhou"/>
+                    <br />
+                    <sub><b>Hanchu Zhou</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/gaodechen">
                     <img src="https://avatars.githubusercontent.com/u/2103562?v=4" width="100;" alt="gaodechen"/>
                     <br />
@@ -191,13 +177,6 @@ If you find this repository useful, please cite this paper:
                     <img src="https://avatars.githubusercontent.com/u/111560343?v=4" width="100;" alt="junshanzhangJZ2080"/>
                     <br />
                     <sub><b>junshanzhangJZ2080</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/HanchuZhou">
-                    <img src="https://avatars.githubusercontent.com/u/99316745?v=4" width="100;" alt="HanchuZhou"/>
-                    <br />
-                    <sub><b>Hanchu Zhou</b></sub>
                 </a>
             </td>
             <td align="center">
