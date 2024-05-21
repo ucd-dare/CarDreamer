@@ -67,5 +67,5 @@ class WandBOutput:
 # Evaluation
 
 ```bash
-bash eval_dm3.sh 2000 0 ~/logdir/path_to_your_checkpoint.ckpt --task carla_four_lane --dreamerv3.logdir ~/logdir/eval_carla_four_lane
+bash eval_dm3.sh 2000 0 ./logdir/carla_four_lane/checkpoint.ckpt --task carla_four_lane --dreamerv3.logdir ./logdir/eval_carla_four_lane
 ```
