@@ -15,9 +15,6 @@ Here are the API calls provided by our task development suite. See :doc:`../cust
 
 .. _planner:
 
-.. autoclass:: BasePlanner
-   :members:
-
 .. autoclass:: RandomPlanner
    :members:
 
