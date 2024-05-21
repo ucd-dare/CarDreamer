@@ -66,6 +66,14 @@ class WandBOutput:
 
 # Evaluation
 
+Run the following commands to evaluate the trained model where the third argument is the path to the checkpoint:
+
 ```bash
 bash eval_dm3.sh 2000 0 ./logdir/carla_four_lane/checkpoint.ckpt --task carla_four_lane --dreamerv3.logdir ./logdir/eval_carla_four_lane
+```
+
+After running for some episodes, you can visualize the evaluation results using TensorBoard or WandB as described above. Furthermore, you can get the evaluation metrics by running the following command:
+
+```bash
+python dreamerv3/eval_stats.py --logdir ./logdir/eval_carla_four_lane
 ```

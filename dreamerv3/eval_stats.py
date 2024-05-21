@@ -113,8 +113,6 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--logdir', type=str, required=True, help='Directory containing metrics.jsonl')
-    parser.add_argument('--task', type=str, required=True, help='Task name')
-    parser.add_argument('--method', type=str, required=True, choices=['distance', 'destination'], help='Method to compute success rate: distance or destination')
     args = parser.parse_args()
 
     main(args)
