@@ -47,6 +47,15 @@ env:
       blueprint: sensor.other.collision
       key: collision
       shape: [1]
+    
+    spectator:
+      handler: spectator
+      key: spectator
+      shape: [512, 512, 3]
+      height: 40
+      fov: 90
+      sensor_tick: 0.1
+      pitch: -90
 
     # BEV with only roadmap, vehicles, and waypoints
     birdeye_raw:

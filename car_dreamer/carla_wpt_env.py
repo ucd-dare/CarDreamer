@@ -99,7 +99,7 @@ class CarlaWptEnv(CarlaBaseEnv):
             dist = perp_direction_norm
             if dist > 0.5:
                 r_out_of_lane = -reward_scales['out_of_lane'] * (dist - 0.5)
-        
+
         # Reward for reaching the destination
         r_destination = 0.0
         if self.is_destination_reached():
@@ -129,7 +129,7 @@ class CarlaWptEnv(CarlaBaseEnv):
         }
 
         return total_reward, info
-    
+
     def is_destination_reached(self):
         return len(self.waypoints) <= 3
 

@@ -1,6 +1,8 @@
 Tasks and Configurations
 =============================
 
+``car_dreamer`` provides a collection of urban driving tasks with gym interfaces. Each task is defined by a set of configurations, and an environment python script, which can be easily modified to create new tasks or adapt existing ones. This document describes the configurations and how to use them to create tasks.
+
 File Structure
 --------------
 
