@@ -1,4 +1,4 @@
-Usage
+Quick Start
 =====
 
 .. _installation:
@@ -54,7 +54,7 @@ Then, call the python function :py:func:`car_dreamer.create_task` with the name 
 Visualization
 -------------
 
-After creating the task, the visualization is automatically started if ``env.display.enable`` is set to ``True`` in ``car_dreamer/configs/common.yaml``. The visualization server runs on port 9000 by default  (See :ref:`port configuration <config-port>`). You can run the following demo and browse to ``http://localhost:9000`` to see the visualization.
+After creating the task, the visualization is automatically started if ``env.display.enable`` is set to ``True`` in ``car_dreamer/configs/common.yaml``. The visualization server runs on port 9000 by default  (See :ref:`port configuration <config-port>`). You can run the following demo and access to ``http://localhost:9000`` for visualization.
 
 .. code-block:: python
    
@@ -64,7 +64,7 @@ After creating the task, the visualization is automatically started if ``env.dis
    task, _ = car_dreamer.create_task('carla_four_lane')
    task.reset()
    while True:
-      _, _, is_terminal, _ = task.step(12)  # 12 is the action of going straight and accelerating
+      _, _, is_terminal, _ = task.step(12)  # 12 is the one-hot action index of going straight and accelerating
       if is_terminal:
          task.reset()
       time.sleep(0.1)  # prevents from running too fast to see the visualization

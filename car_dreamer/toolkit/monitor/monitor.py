@@ -62,7 +62,7 @@ class EnvMonitorBase:
                         img = np.repeat(img[:, :, np.newaxis], 3, axis=2)
                     else:
                         img = img[:, :, ::-1]
-                    _, img_encoded = cv2.imencode('.jpg', img)
+                    _, img_encoded = cv2.imencode('.webp', img)
                     img_base64 = base64.b64encode(img_encoded).decode('utf-8')
                     images.append({'key': key, 'image': img_base64})
         return images

@@ -1,12 +1,14 @@
 Welcome to use ``car_dreamer``!
 ===================================
 
-Package ``car_dreamer`` is a collection of tasks aimed at facilitating RL algorithm designing, especially world model based ones. Each task is a certain driving environment in Carla simulator, varying from a single skill such as lane following or left turning, to random roaming in mixed road conditions which may encounter crossroads, roundabouts, and stop signs. They expose the same gym interface for backbone RL algorithm use.
+``car_dreamer`` aims at facilitating the training and evaluation of reinforcement learning and world model algorithms in the highly realistic simulator `CARLA <http://carla.org/>`_.
 
-Furthermore, ``car_dreamer`` includes a task development suite for those who want to customize their own tasks. It provides a number of API calls to minimize users' efforts in spawning the vehicles, planning the routes, and obtaining observation data as RL algorithm inputs. And an integrated traning visualization server automatically grasps the observation data, displaying the videos and plotting the statistics through an HTTP server. This eases algorithm designing and hyper-parameter tuning.
+``car_dreamer`` provides a collection of well-defined urban driving tasks. Each task encompasses a driving environment and a task goal. The tasks vary from a single skill such as lane following or left turning, to random roaming in mixed road conditions which may encounter crossroads, roundabouts, and stop signs. All the tasks support the `Gym <https://gym.openai.com/>`_ interface so that users can easily plug in their own algorithms.
+
+Furthermore, ``car_dreamer`` includes a task development suite that simplifies the customization of driving tasks. It provides a number of API calls to minimize users' efforts in spawning and managing the vehicles, planning routes, and obtaining diverse observation data for RL algorithms. A visualization server automatically grasps the observation data, displaying the videos and the statistics (e.g., terminal conditions, rewards, other information of user interest) through an HTTP server. This eases task and algorithm engineering and debugging.
 
 .. note::
-   This document only describes the installation and customization of this package, but it should be used with an RL backbone. For examples of training a world model using our tasks, please refer to `CarDreamer <https://github.com/ucd-dare/CarDreamer>`_.
+   This document details the installation and customization of ``car_dreamer``. For information regarding training and evaluation using specific RL and world model algorithms, please refer to `CarDreamer <https://github.com/ucd-dare/CarDreamer>`_ and the `arXiv paper <https://arxiv.org/abs/2405.09111>`_.
 
 Contents
 --------
@@ -14,7 +16,7 @@ Contents
 .. toctree::
    :maxdepth: 3
 
-   usage
+   quick_start
    tasks
    customization
    api

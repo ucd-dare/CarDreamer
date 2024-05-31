@@ -1,13 +1,17 @@
 Customization
 ================
 
+To customize a driving task, one can either adapt existing tasks by modifying the configurations or create a new task from scratch.
+
 Configurations
 ----------------
 
-The simplest way to customize your own task is to modify the configurations in ``car_dreamer/configs/common.yaml`` and ``car_dreamer/configs/tasks.yaml``.  See :doc:`configurations <./tasks>` for more details.
+The simplest way to customize your own task is to modify the configurations in ``car_dreamer/configs/common.yaml`` and ``car_dreamer/configs/tasks.yaml``.  The common configurations define the observations, terminal conditions, etc., that are re-used by all different tasks; task configurations define each the observation, action, terminal conditions, reward scales, display options, for each specific task. See :doc:`configurations <./tasks>` for more details.
 
 Creating a new environment
 ----------------------------
+
+In this section, we will guide you through the process of creating a new task script, defining a new observation source, and implementing a new planner.
 
 .. py:currentmodule:: car_dreamer
 
@@ -65,7 +69,9 @@ A typical implementation looks like:
                'waypoints': self.waypoints,
            }
 
-You can also inherit from :py:class:`CarlaWptEnv` or :py:class:`CarlaWptFixedEnv` where some of the methods have been implemented. In these cases, initialiAfter you create the environment, the task will be automatically registered in gym with id ``CarlaCustomEnv-v0``. Note that you must follow the same naming style in order to be recognized by the toolkit (``Carla{TaskName}Env`` and ``carla_{task_name}_env.py``).
+You can also inherit from :py:class:`CarlaWptEnv` or :py:class:`CarlaWptFixedEnv` where some of the methods have been implemented.
+
+After you create the environment, the task will be automatically registered in gym with id ``CarlaCustomEnv-v0``. Note that you must follow the same naming style in order to be recognized by the toolkit (``Carla{TaskName}Env`` and ``carla_{task_name}_env.py``).
 
 Finally, create a task configuration in ``car_dreamer/configs/tasks.yaml``. It will be available in ``self._config`` in the environment class. For example:
 

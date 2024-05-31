@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Tuple 
+from typing import Callable, Dict, Tuple
 
 import carla
 from gym import spaces

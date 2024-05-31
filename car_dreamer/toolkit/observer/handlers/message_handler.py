@@ -20,7 +20,7 @@ class MessageHandler(BaseHandler):
 
     def get_observation_space(self) -> Dict:
         return {
-            'message': spaces.Box(low=0, high=1, shape=(self._config.neighbor_num, self._config.n_commands), dtype=np.float32),
+            'message': spaces.Box(low=0, high=1, shape=(self._config.neighbor_num * self._config.n_commands, ), dtype=np.float32),
             'dest': spaces.Box(low=0, high=1, shape=(self._config.dest_num,), dtype=np.float32)
         }
 
@@ -38,9 +38,9 @@ class MessageHandler(BaseHandler):
                 if len(actions) == 0:
                     continue
                 label = actions[0][0]
-                label = self._command_to_label[label] if label in self._command_to_label else 0
+                label = self._command_to_label.get(label, 0)
                 text[i][label] = 1
-
+        text = text.flatten()
         return {
             'message': text,
             'dest': dest
