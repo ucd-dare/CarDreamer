@@ -1,4 +1,4 @@
-# 🌍 Learn to Drive in "Dreams": CarDreamer 🚗
+# 🌍 Learn to Drive in "Imagination and Generalization": CarDreamer 🚗
 
 ## **Can world models imagine traffic dynamics for training autonomous driving agents? The answer is YES!**
 
