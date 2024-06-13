@@ -20,7 +20,7 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
 
 **Documentation:** [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
-**Looking for more techincal details? Check our report here!** ---> **[Paper link](https://arxiv.org/abs/2405.09111)** <---
+**Looking for more techincal details? Check our report here! [Paper link](https://arxiv.org/abs/2405.09111)**
 
 
 ## :sun_with_face: Built-in Task Demos
@@ -87,6 +87,21 @@ conda activate cardreamer
 pip install flit
 flit install --symlink
 ```
+
+## :gear: Creating Tasks
+
+Check out built-in tasks at [CarDreamer Docs: Tasks and Confiugrations](https://car-dreamer.readthedocs.io/en/latest/tasks.html).
+
+```python
+# To create the gym environment with default task configurations
+import car_dreamer
+task, task_configs = car_dreamer.create_task('carla_four_lane')
+
+# Or only load default environment configurations without instantiation
+task_configs = car_dreamer.load_task_configs('carla_right_turn_hard')
+```
+
+To create your own driving tasks using the development suite, see [CarDreamer Docs: Customization](https://car-dreamer.readthedocs.io/en/latest/customization.html).
 
 ## :mechanical_arm: Training
 

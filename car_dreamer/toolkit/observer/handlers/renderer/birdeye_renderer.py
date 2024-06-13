@@ -206,6 +206,29 @@ class BirdeyeRenderer:
             if message:
                 location = carla.Location(x=(polygon[0][0] + polygon[1][0]) / 2, y=(polygon[0][1] + polygon[1][1]) / 2)
                 render_character(location, message, message_color)
+    
+    def _render_traffic_lights(self, **env_state):
+        traffic_lights = self._world_manager.carla_actors('traffic_light')
+        for traffic_light in traffic_lights:
+            # Get the color based on the traffic light state
+            if traffic_light.state == carla.TrafficLightState.Red:
+                color = Color.SCARLET_RED_0
+            elif traffic_light.state == carla.TrafficLightState.Yellow:
+                color = Color.ORANGE_0
+            elif traffic_light.state == carla.TrafficLightState.Green:
+                color = Color.CHAMELEON_0
+            else:
+                continue
+
+            # Render the traffic light
+            self._render_traffic_light(self._surface, traffic_light, color)
+
+    def _render_traffic_light(self, surface, traffic_light: carla.Actor, color: Color):
+        """Render a traffic light on the surface."""
+        world_pos = traffic_light.get_location()
+        pos = self._world_to_pixel(world_pos)
+        radius = int(self._pixels_per_meter * 1.2)
+        cv2.circle(surface, center=pos, radius=radius, color=color, thickness=cv2.FILLED)
 
     def _blit_to_display(self, display: np.ndarray):
         """Blit the rendered surface to the display."""
@@ -275,5 +298,6 @@ class BirdeyeRenderer:
         BirdeyeEntity.FOV_LINES: _render_fov_lines,
         BirdeyeEntity.WAYPOINTS: _render_waypoints,
         BirdeyeEntity.BACKGROUND_WAYPOINTS: _render_background_waypoints,
+        BirdeyeEntity.TRAFFIC_LIGHTS: _render_traffic_lights,
         BirdeyeEntity.MESSAGES: _render_messages,
     }

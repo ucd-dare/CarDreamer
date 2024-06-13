@@ -401,3 +401,21 @@ class WorldManager:
     @property
     def carla_map(self):
         return self._get_map()
+
+    @cached_step_wise
+    def _get_carla_actors(self, actor_type: str = "") -> List[carla.Actor]:
+        filtered_actors = []
+        carla_actors = self._world.get_actors()
+        for actor in carla_actors:
+            if actor_type in actor.type_id:
+                filtered_actors.append(actor)
+        return filtered_actors
+    
+    def carla_actors(self, actor_type: str = "") -> List[carla.Actor]:
+        """
+        Get all actors of a specific type directly through CARLA APIs.
+
+        :param actor_type: the type of the actors to retrieve (e.g., 'vehicle', 'traffic_light').
+        :return: a list of actors of the specified type.
+        """
+        return self._get_carla_actors(actor_type)
