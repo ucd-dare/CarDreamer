@@ -109,7 +109,7 @@ Find ``README.md`` in the corresponding directory of the algorithm you want to u
 
 ## :computer: Visualization Tool
 
-We stream observations, rewards, terminal conditions, and custom metrics to a web brwoser for each training session in real-time, making it easier to engineer rewards and debug.
+We stream observations, rewards, terminal conditions, and custom metrics to a web browser for each training session in real-time, making it easier to engineer rewards and debug.
 
 <table style="margin-left: auto; margin-right: auto;">
   <tr>
