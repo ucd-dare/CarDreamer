@@ -88,20 +88,58 @@ pip install flit
 flit install --symlink
 ```
 
-## :gear: Creating Tasks
+Here's a polished version of the Quick Start section:
 
-Check out built-in tasks at [CarDreamer Docs: Tasks and Confiugrations](https://car-dreamer.readthedocs.io/en/latest/tasks.html).
+## :gear: Quick Start
+
+### Creating Tasks
+
+CarDreamer offers a range of built-in task classes, which you can explore in the [CarDreamer Docs: Tasks and Configurations](https://car-dreamer.readthedocs.io/en/latest/tasks.html#tasks-and-environments).
+
+Each task class can be instantiated with various configurations. For instance, the right-turn task can be set up with simple, medium, or hard settings. These settings are defined in YAML blocks within [tasks.yaml](https://github.com/ucd-dare/CarDreamer/blob/master/car_dreamer/configs/tasks.yaml). The task creation API retrieves the given identifier (e.g., `carla_four_lane_hard`) from these YAML task blocks and injects the settings into the task class to create a gym task instance.
 
 ```python
-# To create the gym environment with default task configurations
+# Create a gym environment with default task configurations
 import car_dreamer
-task, task_configs = car_dreamer.create_task('carla_four_lane')
+task, task_configs = car_dreamer.create_task('carla_four_lane_hard')
 
-# Or only load default environment configurations without instantiation
+# Or load default environment configurations without instantiation
 task_configs = car_dreamer.load_task_configs('carla_right_turn_hard')
 ```
 
-To create your own driving tasks using the development suite, see [CarDreamer Docs: Customization](https://car-dreamer.readthedocs.io/en/latest/customization.html).
+To create your own driving tasks using the development suite, refer to [CarDreamer Docs: Customization](https://car-dreamer.readthedocs.io/en/latest/customization.html).
+
+### Observation Customization
+
+CarDreamer employs an Observer-Handler system to manage complex observation spaces. Each handler defines its own observation space and lifecycle for stepping, resetting, or fetching information, similar to a gym environment. A task instance communicates with the environment through an observer that manages these handlers.
+
+Users can enable built-in observation handlers such as BEV, camera, LiDAR, and spectator in task configurations. Check out [common.yaml](https://github.com/ucd-dare/CarDreamer/blob/master/car_dreamer/configs/common.yaml) for all available built-in handlers. Additionally, users can customize observation handlers to suit their specific needs.
+
+```yaml
+your_task_name:
+  env:
+    observation.enabled: [camera, collision, birdeye_view]
+```
+
+For example, a BEV handler setting can be defined as:
+
+```yaml
+birdeye_view:
+   # Specify the handler name used to produce `birdeye_view` observation
+   handler: birdeye
+   # The observation key
+   key: birdeye_view
+   # Define what to render in the birdeye view
+   entities: [roadmap, waypoints, background_waypoints, fov_lines, ego_vehicle, background_vehicles]
+   # ... other settings used by the BEV handler
+```
+
+For custom observations (e.g., text, velocity, locations, or more complex data), CarDreamer provides two methods:
+
+1. Register a callback as a [SimpleHandler](https://github.com/ucd-dare/CarDreamer/blob/master/car_dreamer/toolkit/observer/handlers/simple_handler.py) to fetch data at each step.
+2. For observations requiring complex workflows that cannot be conveyed by a `SimpleHandler`, create an handler maintaining the full lifecycle of that observation, similar to our built-in message, BEV, spectator handlers.
+
+For more details on defining new observation sources, see [CarDreamer Docs: Defining a new observation source](https://car-dreamer.readthedocs.io/en/latest/customization.html#defining-a-new-observation-source).
 
 ## :mechanical_arm: Training
 
