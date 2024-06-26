@@ -64,7 +64,7 @@ After creating the task, the visualization is automatically started if ``env.dis
    task, _ = car_dreamer.create_task('carla_four_lane')
    task.reset()
    while True:
-      _, _, is_terminal, _ = task.step(12)  # 12 is the one-hot action index of going straight and accelerating
+      _, _, is_terminal, _ = task.step(12)  # 12 is the one-hot action index of going straight and accelerating with default settings
       if is_terminal:
          task.reset()
-      time.sleep(0.1)  # prevents from running too fast to see the visualization
+      time.sleep(0.1)  # prevents from running too fast to visualize

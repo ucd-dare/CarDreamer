@@ -5,7 +5,7 @@ Tasks range from basic maneuvers, such as lane following, to complex navigation 
 All tasks are integrated with OpenAI Gym interfaces, enabling straightforward evaluation of algorithms.
 The platform includes decoupled data handlers and an observer to manage multi-modal observations,
 allowing users to easily customize modality and observability.
-The development suite aims at facilitating creation of new urban driving tasks.
+The Development Suite aims at facilitating creation of new urban driving tasks.
 """
 
 from .carla_base_env import CarlaBaseEnv

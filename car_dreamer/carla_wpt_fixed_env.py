@@ -15,7 +15,7 @@ class CarlaWptFixedEnv(CarlaWptEnv):
 
     * ``lane_start_point``: The starting point of the ego vehicle in ``[x, y, z, yaw]``
     * ``ego_path``: The fixed path for the ego vehicle in array of ``[x, y, z]``
-    * ``ego_path_wave_line``: For each segment, whether to adapt the path according to road or use straight line
+    * ``use_road_waypoints``: For each segment, whether to adapt the path according to road or use straight line
     * ``flow_spawn_point``: The spawn point of the car flow in ``[x, y, z, yaw]``
     * ``min_flow_dist``: Minimum distance between two cars in the flow, if ``None``, no cars will be spawned
     * ``max_flow_dist``: Maximum distance between two cars in the flow
@@ -27,8 +27,8 @@ class CarlaWptFixedEnv(CarlaWptEnv):
         ego_transform = carla.Transform(carla.Location(*self.ego_src[:3]), carla.Rotation(yaw=self.ego_src[3]))
         self.ego = self._world.spawn_actor(transform=ego_transform)
         self.ego_path = self._config.ego_path
-        self.ego_path_wave_line = self._config.ego_path_wave_line
-        self.ego_planner = FixedPathPlanner(vehicle=self.ego, vehicle_path=self.ego_path, wave_line=self.ego_path_wave_line)
+        self.use_road_waypoints = self._config.use_road_waypoints
+        self.ego_planner = FixedPathPlanner(vehicle=self.ego, vehicle_path=self.ego_path, use_road_waypoints=self.use_road_waypoints)
         self.waypoints, self.planner_stats = self.ego_planner.run_step()
         self.num_completed = self.planner_stats['num_completed']
 

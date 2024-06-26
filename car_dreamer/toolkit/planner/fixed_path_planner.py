@@ -14,19 +14,19 @@ class FixedPathPlanner(BasePlanner):
         self,
         vehicle: carla.Actor,
         vehicle_path: List[Tuple[float, float, float]],
-        wave_line: List[bool]=None,
+        use_road_waypoints: List[bool]=None,
         sampling_radius=0.8
     ):
         super(FixedPathPlanner, self).__init__(vehicle)
         self._vehicle_path = vehicle_path
-        self._wave_line = wave_line
+        self._use_road_waypoints = use_road_waypoints
         self._grp = GlobalRoutePlanner(self._map, sampling_resolution=sampling_radius)
         self._sampling_radius = sampling_radius
 
     def init_route(self):
         for i, start in enumerate(self._vehicle_path[:-1]):
             end = self._vehicle_path[i+1]
-            if self._wave_line is not None and self._wave_line[i]:
+            if self._use_road_waypoints is not None and self._use_road_waypoints[i]:
                 segment_waypoints = self._grp.trace_route(
                     carla.Location(x=start[0], y=start[1], z=start[2]),
                     carla.Location(x=end[0], y=end[1], z=end[2])
