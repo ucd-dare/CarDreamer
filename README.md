@@ -88,8 +88,6 @@ pip install flit
 flit install --symlink
 ```
 
-Here's a polished version of the Quick Start section:
-
 ## :gear: Quick Start
 
 ### Creating Tasks
@@ -111,15 +109,9 @@ To create your own driving tasks using the development suite, refer to [CarDream
 
 ### Observation Customization
 
-CarDreamer employs an Observer-Handler system to manage complex observation spaces. Each handler defines its own observation space and lifecycle for stepping, resetting, or fetching information, similar to a gym environment. A task instance communicates with the environment through an observer that manages these handlers.
+`CarDreamer` employs an `Observer-Handler` system to manage complex **multi-modal** observation spaces. Each handler defines its own observation space and lifecycle for stepping, resetting, or fetching information, similar to a gym environment. A task instance communicates with the environment through an observer that manages these handlers.
 
 Users can enable built-in observation handlers such as BEV, camera, LiDAR, and spectator in task configurations. Check out [common.yaml](https://github.com/ucd-dare/CarDreamer/blob/master/car_dreamer/configs/common.yaml) for all available built-in handlers. Additionally, users can customize observation handlers to suit their specific needs.
-
-```yaml
-your_task_name:
-  env:
-    observation.enabled: [camera, collision, birdeye_view]
-```
 
 For example, a BEV handler setting can be defined as:
 
@@ -134,7 +126,15 @@ birdeye_view:
    # ... other settings used by the BEV handler
 ```
 
-For custom observations (e.g., text, velocity, locations, or more complex data), CarDreamer provides two methods:
+Then, enable the observation key in your environment settings.
+
+```yaml
+your_task_name:
+  env:
+    observation.enabled: [camera, collision, spectator, birdeye_view]
+```
+
+To customize observations (e.g., text, velocity, locations, or more complex data), `CarDreamer` provides two methods:
 
 1. Register a callback as a [SimpleHandler](https://github.com/ucd-dare/CarDreamer/blob/master/car_dreamer/toolkit/observer/handlers/simple_handler.py) to fetch data at each step.
 2. For observations requiring complex workflows that cannot be conveyed by a `SimpleHandler`, create an handler maintaining the full lifecycle of that observation, similar to our built-in message, BEV, spectator handlers.
