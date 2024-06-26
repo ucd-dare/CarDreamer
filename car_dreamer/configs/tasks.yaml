@@ -134,8 +134,94 @@ carla_right_turn_medium:
   env.min_flow_dist: 8
   env.max_flow_dist: 16
 
+carla_right_turn_simple2: &carla_right_turn_simple2
+  env:
+    world:
+      town: Town03
+    name: CarlaRightTurnEnv-v0
+    action:
+      discrete_steer: [-0.9, -0.3, 0.0, 0.3, 0.9]
+    observation.enabled: [camera, collision, birdeye_wpt]
+    <<: *carla_wpt
+    lane_start_point: [-107.4, 140.2, 0.1, 0.0]
+    ego_path: [[-107.4, 140.2, 0.1], [-87.4, 159.3, 0.1]]
+    ego_path_wave_line: [True, False]
+    flow_spawn_point: [-85.4, 114.5, 0.1, 90.0]
+
+  dreamerv3:
+    encoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_keys: "birdeye_wpt"
+    run.log_keys_video: [camera, birdeye_wpt]
+
+  dreamerv2:
+    encoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_kernels: [5, 5, 5, 6, 6]
+    train.log_keys_video: [camera, birdeye_wpt]
+
+carla_right_turn_simple3: &carla_right_turn_simple3
+  env:
+    world:
+      town: Town03
+    name: CarlaRightTurnEnv-v0
+    action:
+      discrete_steer: [-0.9, -0.3, 0.0, 0.3, 0.9]
+    observation.enabled: [camera, collision, birdeye_wpt]
+    <<: *carla_wpt
+    lane_start_point: [-39.8, -135.1, 0.1, 0.0]
+    ego_path: [[-39.8, -135.1, 0.1], [-5.0, -82.8, 0.1]]
+    ego_path_wave_line: [True, False]
+    flow_spawn_point: [-3.4, -151.2, 0.1, 90.0]
+
+  dreamerv3:
+    encoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_keys: "birdeye_wpt"
+    run.log_keys_video: [camera, birdeye_wpt]
+
+  dreamerv2:
+    encoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_kernels: [5, 5, 5, 6, 6]
+    train.log_keys_video: [camera, birdeye_wpt]
+
+carla_right_turn_simple4: &carla_right_turn_simple4
+  env:
+    world:
+      town: Town03
+    name: CarlaRightTurnEnv-v0
+    action:
+      discrete_steer: [-0.9, -0.3, 0.0, 0.3, 0.9]
+    observation.enabled: [camera, collision, birdeye_wpt]
+    <<: *carla_wpt
+    # bottom to right
+    # lane_start_point: [-3.7, -167.5, 0.1, 90.0]
+    # ego_path: [[-3.7, -167.5, 0.1], [-28.3, -141.7, 0.1]]
+    # flow_spawn_point: [23.1, -141.7, 0.1, 180.0]
+
+    # top to left
+    # lane_start_point: [23.1, -138.7, 0.5, 180.0]
+    # ego_path: [[23.1, -138.7, 0.5], [10.4, -165.9, 0.1]]
+    # flow_spawn_point: [10.4, -122.1, 0.1, 270.0]
+
+    # left to bottom
+    lane_start_point: [-3.7, -162.2, 0.1, 90.0]
+    ego_path: [[-3.7, -162.2, 0.1], [-27.9, -142.4, 0.1]]
+    flow_spawn_point: [17.0, -140.0, 0.1, 180.0]
+    ego_path_wave_line: [True, False]
+
+  dreamerv3:
+    encoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_keys: "birdeye_wpt"
+    run.log_keys_video: [camera, birdeye_wpt]
+
+  dreamerv2:
+    encoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_kernels: [5, 5, 5, 6, 6]
+    train.log_keys_video: [camera, birdeye_wpt]
+
 carla_right_turn_hard:
-  <<: *carla_right_turn_simple
+  <<: *carla_right_turn_simple4
   env.min_flow_dist: 6
   env.max_flow_dist: 8
 
