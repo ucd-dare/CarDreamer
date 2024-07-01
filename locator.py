@@ -441,7 +441,7 @@ class KeyboardControl(object):
 
 class HUD(object):
     def __init__(self, width, height):
-        self.dim = (width, height)
+        self.dim = (2500, 1100)
         font = pygame.font.Font(pygame.font.get_default_font(), 50)
         font_name = 'courier' if os.name == 'nt' else 'mono'
         fonts = [x for x in pygame.font.get_fonts() if font_name in x]
@@ -646,7 +646,7 @@ def game_loop(args):
             sim_world.apply_settings(settings)
 
         display = pygame.display.set_mode(
-            (args.width, args.height),
+            (2500,1100),
             pygame.HWSURFACE | pygame.DOUBLEBUF)
         display.fill((0, 0, 0))
         pygame.display.flip()

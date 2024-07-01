@@ -14,7 +14,7 @@ class CarlaRightTurnEnv(CarlaWptFixedEnv):
             x, y = get_vehicle_pos(self.actor_flow[0])
             # if y > -81.2 or x < -38.4 or x > 31.6:
             # if y > -89.2 or x < -109.9 or x > -76.1:
-            if y < -160.6 or x < -38.4 or x > 31.6:
+            if y > 99.5 or x < -133.2 or x > 133.2:
                 self._world.destroy_actor(vehicle.id)
                 self.actor_flow.popleft()
         super().on_step()
