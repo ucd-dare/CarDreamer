@@ -36,10 +36,10 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
 
         p_traffic_light_violation = self.calculate_traffic_light_violation_penalty(reward_scales['traffic_light_violate'])
 
-        r_speed_before_stop = 0
-        # Enter stop sign range while have not stopped
-        if hasattr(self, '_first_enter_time') and self._stop_time == 0:
-            r_speed_before_stop = 1 / (0.1 + np.abs(np.linalg.norm(np.array([*get_vehicle_velocity(self.ego)])))) * reward_scales['speed_before_stop']
+        # r_speed_before_stop = 0
+        # # Enter stop sign range while have not stopped
+        # if hasattr(self, '_first_enter_time') and self._stop_time == 0:
+        #     r_speed_before_stop = 1 / (0.1 + np.abs(np.linalg.norm(np.array([*get_vehicle_velocity(self.ego)])))) * reward_scales['speed_before_stop']
 
         r_stop = 0  # Encourage vehicle stops and moves
         if 0 <= self._stop_time <= self._config.stopping_time:
@@ -47,10 +47,10 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         elif self._stop_time > self._config.stopping_time:
             r_stop = - reward_scales['stop'] * (self._stop_time - self._config.stopping_time)
 
-        total_reward += p_traffic_light_violation + r_stop + r_speed_before_stop
+        total_reward += p_traffic_light_violation + r_stop
         info['r_traffic_light_violation'] = p_traffic_light_violation
         info['r_stop'] = r_stop
-        info['r_speed_before_stop'] = r_speed_before_stop
+        # info['r_speed_before_stop'] = r_speed_before_stop
 
         return total_reward, info
     
