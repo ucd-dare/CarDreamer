@@ -289,6 +289,8 @@ carla_stop_sign:
         time: 0.0
         destination_reached: 20.0
         traffic_light_violate: 100.0
+        stop: 0.5
+        speed_before_stop: 1.0
     terminal:
       time_limit: 500 # maximum timesteps per episode
       out_lane_thres: 3 # threshold for out of lane

@@ -1,8 +1,9 @@
 import carla
 import random
 import time
+import numpy as np
 from .carla_wpt_fixed_env import CarlaWptFixedEnv
-from .toolkit import FixedPathPlanner
+from .toolkit import FixedPathPlanner, get_vehicle_velocity
 
 class CarlaStopSignEnv(CarlaWptFixedEnv):
     """
@@ -24,6 +25,7 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         self.ego_planner = FixedPathPlanner(vehicle=self.ego, vehicle_path=self.ego_path, use_road_waypoints=self.use_road_waypoints)
         self.waypoints, self.planner_stats = self.ego_planner.run_step()
         self.num_completed = self.planner_stats['num_completed']
+        self._stop_time = 0
 
         traffic_location = carla.Location(*self._config.traffic_locations)
         self.stop_sign = self.find_stop_sign_by_location(traffic_location)
@@ -34,8 +36,21 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
 
         p_traffic_light_violation = self.calculate_traffic_light_violation_penalty(reward_scales['traffic_light_violate'])
 
-        total_reward += p_traffic_light_violation
+        r_speed_before_stop = 0
+        # Enter stop sign range while have not stopped
+        if hasattr(self, '_first_enter_time') and self._stop_time == 0:
+            r_speed_before_stop = 1 / (0.1 + np.abs(np.linalg.norm(np.array([*get_vehicle_velocity(self.ego)])))) * reward_scales['speed_before_stop']
+
+        r_stop = 0  # Encourage vehicle stops and moves
+        if 0 <= self._stop_time <= self._config.stopping_time:
+            r_stop = reward_scales['stop'] * self._stop_time
+        elif self._stop_time > self._config.stopping_time:
+            r_stop = - reward_scales['stop'] * (self._stop_time - self._config.stopping_time)
+
+        total_reward += p_traffic_light_violation + r_stop + r_speed_before_stop
         info['r_traffic_light_violation'] = p_traffic_light_violation
+        info['r_stop'] = r_stop
+        info['r_speed_before_stop'] = r_speed_before_stop
 
         return total_reward, info
     
@@ -60,11 +75,7 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         traffic_light = vehicle.get_traffic_light()
         traffic_state = vehicle.get_traffic_light_state()
         if traffic_light is None and traffic_state == carla.TrafficLightState.Red:    # Have stop sign nearby
-            if not hasattr(self, '_stop_time'):
-                self._stop_time = 0
-                self._first_enter_time = None
-
-            if self._first_enter_time is None:
+            if not hasattr(self, '_first_enter_time'):
                 self._first_enter_time = self._time_step
 
             time_in_range = self._time_step - self._first_enter_time
