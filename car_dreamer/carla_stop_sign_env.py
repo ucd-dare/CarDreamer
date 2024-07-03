@@ -82,11 +82,17 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
             time_in_range = self._time_step - self._first_enter_time
             if vehicle.get_velocity().length() < 0.1 and self._has_stopped is False:
                 self._stop_time += 1
+            elif vehicle.get_velocity().length() >= 0.1 and self._stop_time > 0:
                 self._has_stopped = True
+                self._stop_time = 0
             else:
                 self._stop_time = 0
 
-            # print(f"time range: {time_in_range}, stop time:{self._stop_time}")
+            # if self._stop_time > self._config.stopping_time:
+            #     traffic_state = carla.TrafficLightState.Green
+
+            # # print(f"time range: {time_in_range}, stop time:{self._stop_time}")
+            # print(f"light state: {vehicle.get_traffic_light_state()}, stop time: {self._stop_time}, has stopped: {self._has_stopped}")
             
             if time_in_range < self._config.stop_start_time:
                 return False
