@@ -27,7 +27,7 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         self.num_completed = self.planner_stats['num_completed']
         self._stop_time = 0
         self._first_stop = True
-        self._entered = False
+        self._entered = 0   # 0 haven't enter, 1 in range, 2 have left
 
     def reward(self):
         reward_scales = self._config.reward.scales
@@ -58,7 +58,7 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
     def get_terminal_conditions(self):
         conds = super().get_terminal_conditions()
         conds['insufficient_stop_time'] = self._stop_time < self._config.stopping_time and self._first_stop is False
-        conds['no_stop'] = self._stop_time == 0 and hasattr(self, '_entered') and getattr(self, '_entered') is False
+        conds['no_stop'] = self._stop_time == 0 and self._entered == 2
         return conds
 
     def calculate_traffic_light_violation_penalty(self, violate_scale):
@@ -79,10 +79,10 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         """
         ego_location = np.array([*get_vehicle_pos(self.ego), 0.1])
         distance = np.linalg.norm(ego_location - sign_location)
-        if distance <= threshold and self._entered is False: # First time enter
-            self._entered = True
-        if distance > threshold and self._entered is True:  # First time left
-            self._entered = False
+        if distance <= threshold and self._entered == 0: # First time enter
+            self._entered = 1
+        if distance > threshold and self._entered == 1:  # First time left
+            self._entered = 2
         return distance <= threshold
     
     def update_stop_time(self, sign_location):
