@@ -3,7 +3,7 @@ import random
 import time
 import numpy as np
 from .carla_wpt_fixed_env import CarlaWptFixedEnv
-from .toolkit import FixedPathPlanner, get_vehicle_velocity
+from .toolkit import FixedPathPlanner, get_vehicle_pos, get_vehicle_velocity
 
 class CarlaStopSignEnv(CarlaWptFixedEnv):
     """
@@ -26,38 +26,40 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         self.waypoints, self.planner_stats = self.ego_planner.run_step()
         self.num_completed = self.planner_stats['num_completed']
         self._stop_time = 0
-        self._has_stopped = False
+        self._first_stop = True
 
-        traffic_location = carla.Location(*self._config.traffic_locations)
-        self.stop_sign = self.find_stop_sign_by_location(traffic_location)
+        # self.traffic_location = carla.Location(*self._config.traffic_locations)
+        # self.stop_sign = self.find_stop_sign_by_location(traffic_location)
 
     def reward(self):
         reward_scales = self._config.reward.scales
+        ego_velocity = np.array([*get_vehicle_velocity(self.ego)])
         total_reward, info = super().reward()
 
-        p_traffic_light_violation = self.calculate_traffic_light_violation_penalty(reward_scales['traffic_light_violate'])
-
-        # r_speed_before_stop = 0
-        # # Enter stop sign range while have not stopped
-        # if hasattr(self, '_first_enter_time') and self._stop_time == 0:
-        #     r_speed_before_stop = 1 / (0.1 + np.abs(np.linalg.norm(np.array([*get_vehicle_velocity(self.ego)])))) * reward_scales['speed_before_stop']
+        p_speed_before_stop = 0
+        # Enter stop sign range while have not stopped
+        if self._stop_time == 0:
+            p_speed_before_stop = np.abs(np.linalg.norm(np.array([*get_vehicle_velocity(self.ego)]))) * reward_scales['speed_before_stop']
 
         r_stop = 0  # Encourage vehicle stops and moves
-        if 0 <= self._stop_time <= self._config.stopping_time:
+        if 0 <= self._stop_time <= self._config.stopping_time and np.linalg.norm(ego_velocity) < 0.1:
             r_stop = reward_scales['stop'] * self._stop_time
-        elif self._stop_time > self._config.stopping_time:
+        elif self._stop_time > self._config.stopping_time and np.linalg.norm(ego_velocity) < 0.1:
             r_stop = - reward_scales['stop'] * (self._stop_time - self._config.stopping_time)
 
-        total_reward += p_traffic_light_violation + r_stop
-        info['r_traffic_light_violation'] = p_traffic_light_violation
+        total_reward += r_stop + p_speed_before_stop
         info['r_stop'] = r_stop
-        # info['r_speed_before_stop'] = r_speed_before_stop
+        info['p_speed_before_stop'] = p_speed_before_stop
 
         return total_reward, info
     
+    def on_step(self) -> None:
+        super().on_step()
+        self.update_stop_time(np.array(self._config.traffic_locations))
+    
     def get_terminal_conditions(self):
         conds = super().get_terminal_conditions()
-        conds['violate_stop_signs'] = self.is_violating_traffic_sign(self.ego)
+        conds['violate_stop_signs'] = (self._stop_time < self._config.stopping_time and self._first_stop is False) or (self._stop_time == 0 and hasattr(self, '_entered') and getattr(self, '_entered') is False)
         return conds
 
     def calculate_traffic_light_violation_penalty(self, violate_scale):
@@ -71,38 +73,38 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
             if stop_sign.get_transform().location.distance(location) < radius:
                 return stop_sign
         return None
+        
+    def is_near_stop_sign(self, sign_location, threshold=10.0):
+        """
+        Check if the ego vehicle is near the stop sign.
+        """
+        ego_location = np.array([*get_vehicle_pos(self.ego), 0.1])
+        distance = np.linalg.norm(ego_location - sign_location)
+        if distance <= threshold and not hasattr(self, '_entered'): # First time enter
+            self._entered = True
+        if distance > threshold and hasattr(self, '_entered'):  # First time left
+            self._entered = False
+        return distance <= threshold
+    
+    def update_stop_time(self, sign_location):
+        ego_velocity = np.array([*get_vehicle_velocity(self.ego)])
 
-    def is_violating_traffic_sign(self, vehicle):
-        traffic_light = vehicle.get_traffic_light()
-        traffic_state = vehicle.get_traffic_light_state()
-        if traffic_light is None and traffic_state == carla.TrafficLightState.Red:    # Have stop sign nearby
-            if not hasattr(self, '_first_enter_time'):
-                self._first_enter_time = self._time_step
+        if not hasattr(self, '_previous_stop_time'):
+            self._previous_stop_time = None
 
-            time_in_range = self._time_step - self._first_enter_time
-            if vehicle.get_velocity().length() < 0.1 and self._has_stopped is False:
+        if not hasattr(self, '_stop_time'):
+            self._stop_time = 0
+
+        if not hasattr(self, '_first_stop'):
+            self._first_stop = True
+        
+        if self.is_near_stop_sign(sign_location) and np.linalg.norm(ego_velocity) < 0.1:
+            if self._first_stop:
                 self._stop_time += 1
-            elif vehicle.get_velocity().length() >= 0.1 and self._stop_time > 0:
-                self._has_stopped = True
-                self._stop_time = 0
-            else:
-                self._stop_time = 0
-
-            # if self._stop_time > self._config.stopping_time:
-            #     traffic_state = carla.TrafficLightState.Green
-
-            # # print(f"time range: {time_in_range}, stop time:{self._stop_time}")
-            # print(f"light state: {vehicle.get_traffic_light_state()}, stop time: {self._stop_time}, has stopped: {self._has_stopped}")
-            
-            if time_in_range < self._config.stop_start_time:
-                return False
-            elif self._stop_time == 0:
-                return True
-            elif 0 < self._stop_time <= self._config.stopping_time and vehicle.get_velocity().length() > 0.1:
-                return True
-            elif self._stop_time > self._config.stopping_time:
-                return False
-
-            return False
+        
+        if self._stop_time > 0 and np.linalg.norm(ego_velocity) >= 0.1:
+            self._first_stop = False
+        
+        print(f"stopping time:{self._stop_time}, first stop:{self._first_stop}")
 
 
