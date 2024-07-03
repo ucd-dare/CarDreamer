@@ -27,9 +27,7 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         self.num_completed = self.planner_stats['num_completed']
         self._stop_time = 0
         self._first_stop = True
-
-        # self.traffic_location = carla.Location(*self._config.traffic_locations)
-        # self.stop_sign = self.find_stop_sign_by_location(traffic_location)
+        self._entered = False
 
     def reward(self):
         reward_scales = self._config.reward.scales
@@ -59,7 +57,8 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
     
     def get_terminal_conditions(self):
         conds = super().get_terminal_conditions()
-        conds['violate_stop_signs'] = (self._stop_time < self._config.stopping_time and self._first_stop is False) or (self._stop_time == 0 and hasattr(self, '_entered') and getattr(self, '_entered') is False)
+        conds['insufficient_stop_time'] = self._stop_time < self._config.stopping_time and self._first_stop is False
+        conds['no_stop'] = self._stop_time == 0 and hasattr(self, '_entered') and getattr(self, '_entered') is False
         return conds
 
     def calculate_traffic_light_violation_penalty(self, violate_scale):
@@ -74,29 +73,20 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
                 return stop_sign
         return None
         
-    def is_near_stop_sign(self, sign_location, threshold=10.0):
+    def is_near_stop_sign(self, sign_location, threshold=2.0):
         """
         Check if the ego vehicle is near the stop sign.
         """
         ego_location = np.array([*get_vehicle_pos(self.ego), 0.1])
         distance = np.linalg.norm(ego_location - sign_location)
-        if distance <= threshold and not hasattr(self, '_entered'): # First time enter
+        if distance <= threshold and self._entered is False: # First time enter
             self._entered = True
-        if distance > threshold and hasattr(self, '_entered'):  # First time left
+        if distance > threshold and self._entered is True:  # First time left
             self._entered = False
         return distance <= threshold
     
     def update_stop_time(self, sign_location):
         ego_velocity = np.array([*get_vehicle_velocity(self.ego)])
-
-        if not hasattr(self, '_previous_stop_time'):
-            self._previous_stop_time = None
-
-        if not hasattr(self, '_stop_time'):
-            self._stop_time = 0
-
-        if not hasattr(self, '_first_stop'):
-            self._first_stop = True
         
         if self.is_near_stop_sign(sign_location) and np.linalg.norm(ego_velocity) < 0.1:
             if self._first_stop:
@@ -105,6 +95,8 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         if self._stop_time > 0 and np.linalg.norm(ego_velocity) >= 0.1:
             self._first_stop = False
         
-        print(f"stopping time:{self._stop_time}, first stop:{self._first_stop}")
+        # print(f"stopping time:{self._stop_time}, first stop:{self._first_stop}")
+        # if hasattr(self, '_entered'):
+        #     print(f"entered:{self._entered}")
 
 
