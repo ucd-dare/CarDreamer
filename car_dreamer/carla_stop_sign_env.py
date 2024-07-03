@@ -26,6 +26,7 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         self.waypoints, self.planner_stats = self.ego_planner.run_step()
         self.num_completed = self.planner_stats['num_completed']
         self._stop_time = 0
+        self._has_stopped = False
 
         traffic_location = carla.Location(*self._config.traffic_locations)
         self.stop_sign = self.find_stop_sign_by_location(traffic_location)
@@ -79,8 +80,9 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
                 self._first_enter_time = self._time_step
 
             time_in_range = self._time_step - self._first_enter_time
-            if vehicle.get_velocity().length() < 0.1:
+            if vehicle.get_velocity().length() < 0.1 and self._has_stopped is False:
                 self._stop_time += 1
+                self._has_stopped = True
             else:
                 self._stop_time = 0
 
