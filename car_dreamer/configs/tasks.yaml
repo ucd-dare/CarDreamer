@@ -289,7 +289,7 @@ carla_stop_sign:
         time: 0.0
         destination_reached: 20.0
         traffic_light_violate: 100.0
-        stop: 0.5
+        stop_sign: 5.0
         speed_before_stop: 1.0
     terminal:
       time_limit: 500 # maximum timesteps per episode
@@ -298,8 +298,7 @@ carla_stop_sign:
     lane_start_point: [[179.5, -169.5, 5, 0.0]]
     ego_path: [[[179.5, -169.5, 0.1], [215.5, -169.1, 0.1]]]
     use_road_waypoints: [True, False]
-    traffic_locations: [190.3, -169.1, 0.1] # Location of traffic sign
-    stop_start_time: 10 # When to stop after enter the range of stop sign
+    traffic_locations: [189.9, -169.6, 0.1] # Location of traffic sign
     stopping_time: 20 # How long should the vehicle stops
 
     display:

@@ -111,7 +111,7 @@ env:
       color_by_obs: False
       waypoint_obs: visible
       extend_wpt: False
-      entities: [roadmap, waypoints, background_waypoints, ego_vehicle, background_vehicles, traffic_lights]
+      entities: [roadmap, waypoints, background_waypoints, ego_vehicle, background_vehicles, traffic_lights, stop_signs]
 
   display:
     enable: True
