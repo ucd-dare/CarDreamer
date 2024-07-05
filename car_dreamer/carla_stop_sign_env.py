@@ -26,6 +26,7 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         self.waypoints, self.planner_stats = self.ego_planner.run_step()
         self.num_completed = self.planner_stats['num_completed']
         self._stop_time = 0
+        self._entered = 0   # 0 default, 1 enter, 2 leave
 
     def reward(self):
         reward_scales = self._config.reward.scales
@@ -53,11 +54,11 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
     def violate_traffic_light(self):
         if self.is_near_stop_sign(self._config.traffic_locations):
             self._stop_time += 1
-            self._entered = True
-        elif hasattr(self, '_entered') and self._entered is True: # Mark the leaving
-            self._entered = False
+            self._entered = 1
+        elif self._entered == 1: # Mark the leaving
+            self._entered = 2
         
-        if hasattr(self, '_entered') and self._entered is False and self._stop_time < self._config.stopping_time:
+        if self._entered == 2 and self._stop_time < self._config.stopping_time:
             return True
         return False
         
