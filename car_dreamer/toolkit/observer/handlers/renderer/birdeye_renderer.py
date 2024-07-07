@@ -36,10 +36,6 @@ class BirdeyeRenderer:
             Command.LaneChangeLeft: "<",
             Command.LaneChangeRight: ">"
         }
-        self._tick_count = 0
-        self._stop_sign_red_duration = 20  # Duration in ticks for red state
-        self._stop_sign_near_threshold = 3
-        self._stop_sign_state = {}
 
     def set_ego(self, ego: carla.Actor):
         """Set the ego actor for rendering."""
@@ -55,7 +51,6 @@ class BirdeyeRenderer:
         self._clear_surface()
         self._render_entities(entities, **env_state)
         self._blit_to_display(display)
-        self._tick_count += 1
 
     def _clear_surface(self):
         """Clear the rendering surface."""
@@ -236,32 +231,25 @@ class BirdeyeRenderer:
         cv2.circle(surface, center=pos, radius=radius, color=color, thickness=cv2.FILLED)
 
     def _render_stop_signs(self, **env_state):
+        stop_sign_state = env_state.get('stop_sign_state')
         stop_signs = self._world_manager.carla_actors('stop')
         for stop_sign in stop_signs:
-            if stop_sign.id not in self._stop_sign_state:
-                if self._is_ego_near_stop_sign(stop_sign):
-                    self._stop_sign_state[stop_sign.id] = {
-                        "first_seen": self._tick_count,
-                        "turned_red": True
-                    }
-                    color = Color.SCARLET_RED_0  # Initially turn red
+            if stop_sign.id in stop_sign_state:
+                if stop_sign_state[stop_sign.id]["color"] == 0:
+                    color = Color.SCARLET_RED_0
                 else:
-                    color = Color.CHAMELEON_0  # Default to green if not near and not initialized
+                    color = Color.CHAMELEON_0
             else:
-                stop_sign_info = self._stop_sign_state[stop_sign.id]
-                if self._tick_count - stop_sign_info["first_seen"] < self._stop_sign_red_duration:
-                    color = Color.SCARLET_RED_0  # Remain red during the countdown
-                else:
-                    color = Color.CHAMELEON_0  # Turn green after the countdown
+                color = Color.CHAMELEON_0
 
             self._render_stop_sign(self._surface, stop_sign, color)
 
-    def _is_ego_near_stop_sign(self, stop_sign: carla.Actor) -> bool:
-        """Check if the ego vehicle is within the proximity threshold of the stop sign."""
-        ego_location = self._ego.get_location()
-        stop_sign_location = stop_sign.get_location()
-        distance = ego_location.distance(stop_sign_location)
-        return distance < self._stop_sign_near_threshold
+    # def _is_ego_near_stop_sign(self, stop_sign: carla.Actor) -> bool:
+    #     """Check if the ego vehicle is within the proximity threshold of the stop sign."""
+    #     ego_location = self._ego.get_location()
+    #     stop_sign_location = stop_sign.get_location()
+    #     distance = ego_location.distance(stop_sign_location)
+    #     return distance < self._stop_sign_near_threshold
 
     def _render_stop_sign(self, surface, stop_sign: carla.Actor, color: Color):
         """Render a stop sign on the surface."""
