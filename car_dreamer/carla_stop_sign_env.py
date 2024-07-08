@@ -70,14 +70,14 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
             return True
         return False
         
-    def is_near_sepecific_stop_sign(self, sign_location, threshold=3.0):
+    def is_near_sepecific_stop_sign(self, sign_location):
         """
         Check if the ego vehicle is near the stop sign.
         """
         ego_location = np.array([*get_vehicle_pos(self.ego), 0.1])
         distance = np.linalg.norm(ego_location - sign_location)
 
-        return distance <= threshold
+        return distance <= self._config.stop_sign_near_threshold
 
     def _is_ego_near_stop_sign(self, stop_sign: carla.Actor) -> bool:
         """Check if the ego vehicle is within the proximity threshold of the stop sign."""
@@ -99,7 +99,6 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
                     self._stop_sign_state[stop_sign.id]["color"] = color
             else:
                 stop_sign_info = self._stop_sign_state[stop_sign.id]
-                # print(f"time step:{self._time_step}, first_seen:{stop_sign_info['first_seen']}, stopping time:{self._config.stopping_time}")
                 if self._time_step - stop_sign_info["first_seen"] < self._config.stopping_time:
                     color = 0  # Remain red during the countdown
                 else:
