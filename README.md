@@ -90,6 +90,16 @@ flit install --symlink
 
 ## :gear: Quick Start
 
+### :mechanical_arm: Training
+
+Find ``README.md`` in the corresponding directory of the algorithm you want to use and follow the instructions. For example, to train DreamerV3 agents, use
+
+```
+bash train_dm3.sh 2000 0 --task carla_four_lane --dreamerv3.logdir ./logdir/carla_four_lane
+```
+
+The command will launch CARLA at 2000 port, load task a built-in task named `carla_four_lane`, and start the visualization tool at port 9000 (2000+7000) which can be accessed through `http://localhost:9000/`. You can append flags to the command to overwrite yaml configurations.
+
 ### Creating Tasks
 
 CarDreamer offers a range of built-in task classes, which you can explore in the [CarDreamer Docs: Tasks and Configurations](https://car-dreamer.readthedocs.io/en/latest/tasks.html#tasks-and-environments).
@@ -140,10 +150,6 @@ To customize observations (e.g., text, velocity, locations, or more complex data
 2. For observations requiring complex workflows that cannot be conveyed by a `SimpleHandler`, create an handler maintaining the full lifecycle of that observation, similar to our built-in message, BEV, spectator handlers.
 
 For more details on defining new observation sources, see [CarDreamer Docs: Defining a new observation source](https://car-dreamer.readthedocs.io/en/latest/customization.html#defining-a-new-observation-source).
-
-## :mechanical_arm: Training
-
-Find ``README.md`` in the corresponding directory of the algorithm you want to use and follow the instructions.
 
 ## :computer: Visualization Tool
 
