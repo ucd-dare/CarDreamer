@@ -121,11 +121,22 @@ To create your own driving tasks using the development suite, refer to [CarDream
 
 ### Observation Customization
 
-`CarDreamer` employs an `Observer-Handler` system to manage complex **multi-modal** observation spaces. Each handler defines its own observation space and lifecycle for stepping, resetting, or fetching information, similar to a gym environment. A task instance communicates with the environment through an observer that manages these handlers.
+`CarDreamer` employs an `Observer-Handler` architecture to manage complex **multi-modal** observation spaces. Each handler defines its own observation space and lifecycle for stepping, resetting, or fetching information, similar to a gym environment. The agent communicates with the environment through an observer that manages these handlers.
 
-Users can enable built-in observation handlers such as BEV, camera, LiDAR, and spectator in task configurations. Check out [common.yaml](https://github.com/ucd-dare/CarDreamer/blob/master/car_dreamer/configs/common.yaml) for all available built-in handlers. Additionally, users can customize observation handlers to suit their specific needs.
+Users can enable built-in observation handlers such as BEV, camera, LiDAR, and spectator in task configurations. Check out [common.yaml](https://github.com/ucd-dare/CarDreamer/blob/master/car_dreamer/configs/common.yaml) for all available built-in handlers. Additionally, users can customize observation handlers and settings to suit their specific needs.
 
-For example, a BEV handler setting can be defined as:
+#### Handler Implementation
+
+To implement new handlers for different observation sources and modalities (e.g., text, velocity, locations, or even more complex data), `CarDreamer` provides two methods:
+
+1. Register a callback as a [SimpleHandler](https://github.com/ucd-dare/CarDreamer/blob/master/car_dreamer/toolkit/observer/handlers/simple_handler.py) to fetch data at each step.
+2. For observations requiring complex workflows that cannot be conveyed by a `SimpleHandler`, create an handler maintaining the full lifecycle of that observation, similar to our built-in message, BEV, spectator handlers.
+
+For more details on defining new observation sources, see [CarDreamer Docs: Defining a new observation source](https://car-dreamer.readthedocs.io/en/latest/customization.html#defining-a-new-observation-source).
+
+#### Observation Handler Configurations
+
+Each handler can access yaml configurations for further customization. For example, a BEV handler setting can be defined as:
 
 ```yaml
 birdeye_view:
@@ -138,7 +149,7 @@ birdeye_view:
    # ... other settings used by the BEV handler
 ```
 
-Then, enable the observation key in your environment settings.
+The handler field specifies which handler implementation is used to manage that observation key. Then, users can simply enable this observation in the task settings.
 
 ```yaml
 your_task_name:
@@ -146,12 +157,33 @@ your_task_name:
     observation.enabled: [camera, collision, spectator, birdeye_view]
 ```
 
-To customize observations (e.g., text, velocity, locations, or more complex data), `CarDreamer` provides two methods:
+#### Environment \& Observer Communications
 
-1. Register a callback as a [SimpleHandler](https://github.com/ucd-dare/CarDreamer/blob/master/car_dreamer/toolkit/observer/handlers/simple_handler.py) to fetch data at each step.
-2. For observations requiring complex workflows that cannot be conveyed by a `SimpleHandler`, create an handler maintaining the full lifecycle of that observation, similar to our built-in message, BEV, spectator handlers.
+One might need transfer information from the environements to a handler to compute their observations. E.g., a BEV handler might need a location to render the destination spot. These environment information can be accessed either through [WorldManager](https://car-dreamer.readthedocs.io/en/latest/api/toolkit.html#car_dreamer.toolkit.WorldManager) APIs, or through environment state management.
 
-For more details on defining new observation sources, see [CarDreamer Docs: Defining a new observation source](https://car-dreamer.readthedocs.io/en/latest/customization.html#defining-a-new-observation-source).
+A `WorldManager` instance is passed in the handler during its initialization. The environment states are defined by an environment's `get_state()` API, and passed as parameters to handler's `get_observation()`.
+
+```python
+class MyHandler(BaseHandler):
+    def __init__(self, world: WorldManager, config):
+        super().__init__(world, config)
+        self._world = world
+
+def get_observation(self, env_state: Dict) -> Tuple[Dict, Dict]:
+    # Get the waypoints through environment states
+    waypoints = env_state.get("waypoints")
+    # Get actors through the world manager API
+    actors = self._world.actors
+    # ...
+
+class MyEnv(CarlaBaseEnv):
+    # ...
+    def get_state(self):
+        return {
+            # Expose the waypoints through get_state()
+            'waypoints': self.waypoints,
+        }
+```
 
 ## :computer: Visualization Tool
 
