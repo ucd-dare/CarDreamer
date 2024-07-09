@@ -13,23 +13,23 @@ class CarlaRightTurnEnv(CarlaWptFixedEnv):
     **Provided Tasks**: ``carla_right_turn_simple``, ``carla_right_turn_medium``, ``carla_right_turn_hard``
     """
     
-    def on_reset(self) -> None:
-        random_num = random.randint(0, len(self._config.lane_start_point) - 1)
+    # def on_reset(self) -> None:
+    #     random_num = random.randint(0, len(self._config.lane_start_point) - 1)
 
-        self.ego_src = self._config.lane_start_point[random_num]
-        # print(random_num, self.ego_src)
-        ego_transform = carla.Transform(carla.Location(*self.ego_src[:3]), carla.Rotation(yaw=self.ego_src[3]))
-        self.ego = self._world.spawn_actor(transform=ego_transform)
-        self.ego_path = self._config.ego_path[random_num]
-        self.use_road_waypoints = self._config.use_road_waypoints
-        self.ego_planner = FixedPathPlanner(vehicle=self.ego, vehicle_path=self.ego_path, use_road_waypoints=self.use_road_waypoints)
-        self.waypoints, self.planner_stats = self.ego_planner.run_step()
-        self.num_completed = self.planner_stats['num_completed']
+    #     self.ego_src = self._config.lane_start_point[random_num]
+    #     # print(random_num, self.ego_src)
+    #     ego_transform = carla.Transform(carla.Location(*self.ego_src[:3]), carla.Rotation(yaw=self.ego_src[3]))
+    #     self.ego = self._world.spawn_actor(transform=ego_transform)
+    #     self.ego_path = self._config.ego_path[random_num]
+    #     self.use_road_waypoints = self._config.use_road_waypoints
+    #     self.ego_planner = FixedPathPlanner(vehicle=self.ego, vehicle_path=self.ego_path, use_road_waypoints=self.use_road_waypoints)
+    #     self.waypoints, self.planner_stats = self.ego_planner.run_step()
+    #     self.num_completed = self.planner_stats['num_completed']
 
-        # Initialize car flow
-        self.actor_flow = deque()
-        flow_spawn_point = self._config.flow_spawn_point[random_num]
-        self.flow_transform = carla.Transform(carla.Location(*flow_spawn_point[:3]), carla.Rotation(yaw=flow_spawn_point[3]))
+    #     # Initialize car flow
+    #     self.actor_flow = deque()
+    #     flow_spawn_point = self._config.flow_spawn_point[random_num]
+    #     self.flow_transform = carla.Transform(carla.Location(*flow_spawn_point[:3]), carla.Rotation(yaw=flow_spawn_point[3]))
 
     def on_step(self) -> None:
         if len(self.actor_flow) > 0:
