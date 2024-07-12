@@ -46,7 +46,7 @@ class CarlaWptFixedEnv(CarlaWptEnv):
             if len(self.actor_flow) == 0:
                 spawn = True
             else:
-                spawn_location = np.array(self._config.flow_spawn_point[:2])
+                spawn_location = np.array(self._config.flow_spawn_point[self._config.direction][:2])
                 nearest_car_location = np.array(get_vehicle_pos(self.actor_flow[-1]))
                 flow_dist = random.uniform(self._config.min_flow_dist,self._config.max_flow_dist)
                 if get_location_distance(spawn_location, nearest_car_location) >= flow_dist:

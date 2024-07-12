@@ -154,11 +154,6 @@ carla_right_turn_simple: &carla_right_turn_simple
     decoder.cnn_kernels: [5, 5, 5, 6, 6]
     train.log_keys_video: [camera, birdeye_wpt]
 
-carla_right_turn_medium:
-  <<: *carla_right_turn_simple
-  env.min_flow_dist: 8
-  env.max_flow_dist: 16
-
 carla_right_turn_simple2: &carla_right_turn_simple2
   env:
     world:
@@ -168,23 +163,22 @@ carla_right_turn_simple2: &carla_right_turn_simple2
       discrete_steer: [-0.9, -0.3, 0.0, 0.3, 0.9]
     observation.enabled: [camera, collision, birdeye_wpt]
     <<: *carla_wpt
-        reward:
-            desired_speed: 6
-
-     direction: 0    #determining which direction we are testing 
+    reward:
+      desired_speed: 6
+      scales: { waypoint: 2.0, speed: 0.5, collision: 30.0, out_of_lane: 3.0, time: 0.0, destination_reached: 20.0 }
+    
+    direction: 0    #determining which direction we are testing 
                     #0 -> bottom right
                     #1 -> right top
                     #2 -> top left
                     #3 -> left bottom
                     #4 -> random
-
+        
     lane_start_point: 
       - [-117.8, -135.8, 0.7, 0.0]
     ego_path: 
       - [[-117.8, -135.8, 0.7], [-89.0, -110.8, 0.1]]
-
     use_road_waypoints: [True, False]
-
     flow_spawn_point: 
       - [-87.5, -157.4, 0.1, 90.0]
 
@@ -208,8 +202,9 @@ carla_right_turn_simple3: &carla_right_turn_simple3
       discrete_steer: [-0.9, -0.3, 0.0, 0.3, 0.9]
     observation.enabled: [camera, collision, birdeye_wpt]
     <<: *carla_wpt
-      reward:
+    reward:
       desired_speed: 6
+      scales: { waypoint: 2.0, speed: 0.5, collision: 30.0, out_of_lane: 3.0, time: 0.0, destination_reached: 20.0 }
 
     direction: 0    #determining which direction we are testing 
                     #0 -> bottom right
@@ -255,6 +250,11 @@ carla_right_turn_hard:
   <<: *carla_right_turn_simple2
   env.min_flow_dist: 6
   env.max_flow_dist: 8
+
+carla_right_turn_medium:
+  <<: *carla_right_turn_simple
+  env.min_flow_dist: 8
+  env.max_flow_dist: 16
 
 carla_left_turn_simple: &carla_left_turn_simple
   env:
