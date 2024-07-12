@@ -194,30 +194,9 @@ carla_right_turn_simple2: &carla_right_turn_simple2
     lane_start_point: [-107.8, -135.8, 0.6, 0.0]
     ego_path: [[-107.8, -135.8, 0.6], [-89.0, -107.8, 0.1]]
 
-    #right top
-    # lane_start_point: [9.0, -106.0, 0.1, 270.0]
-    # ego_path: [[9.0, -106.0, 0.1], [24.0, -131.0, 0.1]]
-
-    #left top
-    # lane_start_point: [23.7, -141.5, 0.5, 180.0]
-    # ego_path: [[23.7, -141.5, 0.5], [10.4, -154.8, 0.1]]
-
-    #left bottom
-    # lane_start_point: [-3.4, -161.5, 0.1, 90.0]
-    # ego_path: [[-3.4, -161.5, 0.1], [-26.3, -142.4, 0.1]]
-
     use_road_waypoints: [True, False]
     #bottom right
     flow_spawn_point: [-88.2, -155.0, 0.1, 90.0]
-
-    #right top
-    # flow_spawn_point: [-21.0, -132.0, 0.1, 0.0]
-
-    #left top
-    # flow_spawn_point: [9.5, -117.8, 0.1, 270.0]
-
-    #left bottom
-    # flow_spawn_point: [21.8, -141.3, 0.5, 180.0]
 
   dreamerv3:
     encoder.cnn_keys: "birdeye_wpt"
@@ -302,7 +281,7 @@ carla_right_turn_simple3: &carla_right_turn_simple3
     train.log_keys_video: [camera, birdeye_wpt]
 
 carla_right_turn_hard:
-  <<: *carla_right_turn_simple
+  <<: *carla_right_turn_simple2
   env.min_flow_dist: 6
   env.max_flow_dist: 8
 
