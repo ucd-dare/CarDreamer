@@ -192,11 +192,11 @@ carla_right_turn_simple2: &carla_right_turn_simple2
     <<: *carla_wpt
     #bottom right
     lane_start_point: [-117.8, -135.8, 0.7, 0.0]
-    ego_path: [[-117.8, -135.8, 0.7], [-89.0, -100.8, 0.1]]
+    ego_path: [[-117.8, -135.8, 0.7], [-89.0, -110.8, 0.1]]
 
     use_road_waypoints: [True, False]
     #bottom right
-    flow_spawn_point: [-87.5, -155.4, 0.1, 90.0]
+    flow_spawn_point: [-87.5, -157.4, 0.1, 90.0]
 
   dreamerv3:
     encoder.cnn_keys: "birdeye_wpt"
