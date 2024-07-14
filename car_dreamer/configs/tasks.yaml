@@ -165,7 +165,14 @@ carla_right_turn_simple2: &carla_right_turn_simple2
     <<: *carla_wpt
     reward:
       desired_speed: 6
-      scales: { waypoint: 2.0, speed: 0.5, collision: 30.0, out_of_lane: 3.0, time: 0.0, destination_reached: 20.0 }
+      scales: { 
+        waypoint: 2.0, 
+        speed: 0.5, 
+        collision: 30.0, 
+        out_of_lane: 3.0, 
+        time: 0.0, 
+        destination_reached: 20.0 
+      }
     
     direction: 0    #determining which direction we are testing 
                     #0 -> bottom right
@@ -204,7 +211,14 @@ carla_right_turn_simple3: &carla_right_turn_simple3
     <<: *carla_wpt
     reward:
       desired_speed: 6
-      scales: { waypoint: 2.0, speed: 0.5, collision: 30.0, out_of_lane: 3.0, time: 0.0, destination_reached: 20.0 }
+      scales: { 
+        waypoint: 2.0, 
+        speed: 0.5, 
+        collision: 30.0, 
+        out_of_lane: 3.0, 
+        time: 0.0, 
+        destination_reached: 20.0 
+      }
 
     direction: 0    #determining which direction we are testing 
                     #0 -> bottom right
@@ -348,9 +362,26 @@ carla_follow:
     name: CarlaFollowEnv-v0
     observation.enabled: [camera, collision, birdeye_wpt]
     <<: *carla_wpt
-    nonego_spawn_points: [5.8, 80.0, 0.1, 0.0, -90.0, 0.0] 
-    lane_start_points: [5.8, 0.0, 0.1]
-    lane_end_points: [5.8, 0.0, 0.1]
+    reward:
+      desired_speed: 4
+      scales: { 
+        waypoint: 0.0, 
+        speed: 5.0, 
+        collision: 30.0, 
+        out_of_lane: 0.0, 
+        time: 0.0, 
+        destination_reached: 20.0, 
+        stay_in_lane: 20.0,
+        distance: 15.0
+      }
+    terminal:
+      time_limit: 500 # maximum timesteps per episode
+      out_lane_thres: 5 # threshold for out of lane
+      terminal_dist: 15
+
+    nonego_spawn_points: [-7.6, 50.1, 0.1, 0.0, 90.0, 0.0] 
+    lane_start_points: [-7.6, 41.7, 0.1]
+    lane_end_points: [-7.6, 116.6, 0.1]
   
   dreamerv3:
     encoder.cnn_keys: "birdeye_wpt"
