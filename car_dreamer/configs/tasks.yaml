@@ -370,9 +370,9 @@ carla_follow:
         collision: 30.0, 
         out_of_lane: 0.0, 
         time: 0.0, 
-        destination_reached: 20.0, 
+        destination_reached: 10.0, 
         stay_in_lane: 20.0,
-        distance: 15.0
+        distance: 20.0
       }
     terminal:
       time_limit: 500 # maximum timesteps per episode

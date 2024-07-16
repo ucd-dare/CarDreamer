@@ -63,17 +63,19 @@ class CarlaFollowEnv(CarlaWptEnv):
         reward_scales = self._config.reward.scales
         ego_x, ego_y = get_vehicle_pos(self.ego)
         nonego_loc = self.nonego.get_transform().location
-        dist = math.sqrt((ego_x - nonego_loc.x) ** 2 + (ego_y - nonego_loc.y) ** 2)
 
         if ego_x < nonego_loc.x + 0.1 and ego_x > nonego_loc.x - 0.1:
-            p_stay_in_lane = reward_scales['stay_in_lane']
+            p_stay_in_lane = 0.3 * reward_scales['stay_in_lane']
         else:
-            p_stay_in_lane = -1.5 * reward_scales['stay_in_lane']
+            p_stay_in_lane = -reward_scales['stay_in_lane']
 
-        if dist < 5 and nonego_loc.y > ego_y + 12:
-            p_dist = reward_scales["distance"]
+        original_dist = math.sqrt((self._config.lane_start_points[0] - self._config.nonego_spawn_points[0]) ** 2 + 
+                                  (self._config.lane_start_points[1] - self._config.nonego_spawn_points[1]) ** 2)
+        current_dist = math.sqrt((ego_x - nonego_loc.x) ** 2 + (ego_y - nonego_loc.y) ** 2)
+        if current_dist < original_dist + 5 and current_dist >= original_dist:
+            p_dist = 0.3 * reward_scales["distance"]
         else:
-            p_dist = -1.5 * reward_scales["distance"]
+            p_dist = -reward_scales["distance"]
 
         total_reward += p_dist + p_stay_in_lane
         return total_reward, info
