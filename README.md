@@ -51,7 +51,7 @@ Let's see how CarDreamer agents communicate and leverage intentions. Our experim
 | Sharing waypoints vs. Without sharing waypoints | Sharing waypoints vs. Without sharing waypoints |
 | :---------------------------------------------: | :---------------------------------------------: |
 | **Right turn hard**                                  | **Left turn hard**                                  |
-| ![Right turn hard](./.assets/right_turn_hard.gif) &emsp;&emsp;&emsp; ![Right turn hard no waypoint](./.assets/right_turn_hard_no_wpt.gif) | ![Left turn hard](./.assets/left_turn_hard.gif) &emsp;&emsp;&emsp;<img src="./.assets/left turn raw.gif" style="width: 100%"> |
+| ![Right turn hard](./.assets/right_turn_hard.gif) &emsp;&emsp;&emsp; ![Right turn hard no waypoint](./.assets/right_turn_raw_fail.gif) | ![Left turn hard](./.assets/left_turn_hard.gif) &emsp;&emsp;&emsp;<img src="./.assets/left turn raw.gif" style="width: 100%"> |
 
 <!-- Table 2: Full observability vs. Partial observability -->
 | Full observability vs. Partial observability |
