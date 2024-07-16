@@ -259,17 +259,17 @@ If you find this repository useful, please cite this paper:
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/gaodechen">
-                    <img src="https://avatars.githubusercontent.com/u/2103562?v=4" width="100;" alt="gaodechen"/>
-                    <br />
-                    <sub><b>GaoDechen</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/HanchuZhou">
                     <img src="https://avatars.githubusercontent.com/u/99316745?v=4" width="100;" alt="HanchuZhou"/>
                     <br />
                     <sub><b>Hanchu Zhou</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/gaodechen">
+                    <img src="https://avatars.githubusercontent.com/u/2103562?v=4" width="100;" alt="gaodechen"/>
+                    <br />
+                    <sub><b>GaoDechen</b></sub>
                 </a>
             </td>
             <td align="center">
