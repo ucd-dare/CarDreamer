@@ -34,9 +34,9 @@ We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on
 | :-------------: | :--------: | :------------: | :--------: | :------: |
 | ![Right turn hard](./.assets/right_turn_hard.gif) | ![Roundabout](./.assets/roundabout.gif) | ![Left turn hard](./.assets/left_turn_hard.gif) | ![Lane merge](./.assets/lane_merge.gif) | ![Overtake](./.assets/overtake.gif) |
 
-| Right turn hard | Roundabout | Left turn hard | Lane merge | Right turn simple |
+| Right turn hard | Roundabout | Left turn hard | Lane merge | Overtake |
 | :-------------: | :--------: | :------------: | :--------: | :---------------: |
-| ![Right turn hard](./.assets/right_turn_hard_camera.gif) | ![Roundabout](./.assets/roundabout_camera.gif) | ![Left turn hard](./.assets/left_turn_hard_camera.gif) | ![Lane merge](./.assets/lane_merge_camera.gif) | ![Right turn simple](./.assets/right_turn_simple_camera.gif) |
+| ![Right turn hard](./.assets/right_turn_hard_camera.gif) | ![Roundabout](./.assets/roundabout_camera.gif) | ![Left turn hard](./.assets/left_turn_hard_camera.gif) | ![Lane merge](./.assets/lane_merge_camera.gif) | ![Right turn simple](./.assets/overtake.gif) |
 
 
 ## :blossom: The Power of Intention Sharing
