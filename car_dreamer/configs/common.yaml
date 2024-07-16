@@ -99,6 +99,20 @@ env:
       extend_wpt: False
       entities: [roadmap, waypoints, background_waypoints, fov_lines, ego_vehicle, background_vehicles]
 
+    # Render traffic sign on BEV
+    birdeye_traffic:
+      handler: birdeye
+      key: birdeye_traffic
+      shape: [128, 128, 3]
+      obs_range: 32
+      ego_offset: 12
+      camera_fov: 150
+      observability: full
+      color_by_obs: False
+      waypoint_obs: visible
+      extend_wpt: False
+      entities: [roadmap, waypoints, background_waypoints, ego_vehicle, background_vehicles, traffic_lights, stop_signs]
+
   display:
     enable: True
     render_keys: [camera, birdeye_wpt]

@@ -34,9 +34,9 @@ We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on
 | :-------------: | :--------: | :------------: | :--------: | :------: |
 | ![Right turn hard](./.assets/right_turn_hard.gif) | ![Roundabout](./.assets/roundabout.gif) | ![Left turn hard](./.assets/left_turn_hard.gif) | ![Lane merge](./.assets/lane_merge.gif) | ![Overtake](./.assets/overtake.gif) |
 
-| Right turn hard | Roundabout | Left turn hard | Lane merge | Right turn simple |
+| Right turn hard | Roundabout | Left turn hard | Lane merge | Overtake |
 | :-------------: | :--------: | :------------: | :--------: | :---------------: |
-| ![Right turn hard](./.assets/right_turn_hard_camera.gif) | ![Roundabout](./.assets/roundabout_camera.gif) | ![Left turn hard](./.assets/left_turn_hard_camera.gif) | ![Lane merge](./.assets/lane_merge_camera.gif) | ![Right turn simple](./.assets/right_turn_simple_camera.gif) |
+| ![Right turn hard](./.assets/right_turn_hard_camera.gif) | ![Roundabout](./.assets/roundabout_camera.gif) | ![Left turn hard](./.assets/left_turn_hard_camera.gif) | ![Lane merge](./.assets/lane_merge_camera.gif) | ![Right turn simple](./.assets/overtake_camera.gif) |
 
 
 ## :blossom: The Power of Intention Sharing
@@ -51,7 +51,7 @@ Let's see how CarDreamer agents communicate and leverage intentions. Our experim
 | Sharing waypoints vs. Without sharing waypoints | Sharing waypoints vs. Without sharing waypoints |
 | :---------------------------------------------: | :---------------------------------------------: |
 | **Right turn hard**                                  | **Left turn hard**                                  |
-| ![Right turn hard](./.assets/right_turn_hard.gif) &emsp;&emsp;&emsp; ![Right turn hard no waypoint](./.assets/right_turn_hard_no_wpt.gif) | ![Left turn hard](./.assets/left_turn_hard.gif) &emsp;&emsp;&emsp;<img src="./.assets/left turn raw.gif" style="width: 100%"> |
+| ![Right turn hard](./.assets/right_turn_hard.gif) &emsp;&emsp;&emsp; ![Right turn hard no waypoint](./.assets/right_turn_raw_fail.gif) | ![Left turn hard](./.assets/left_turn_hard.gif) &emsp;&emsp;&emsp;<img src="./.assets/left turn raw.gif" style="width: 100%"> |
 
 <!-- Table 2: Full observability vs. Partial observability -->
 | Full observability vs. Partial observability |

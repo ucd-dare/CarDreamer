@@ -16,9 +16,11 @@ from .carla_navigation_env import CarlaNavigationEnv
 from .carla_left_turn_env import CarlaLeftTurnEnv
 from .carla_lane_merge_env import CarlaLaneMergeEnv
 from .carla_four_lane_env import CarlaFourLaneEnv
+from .carla_traffic_lights_env import CarlaTrafficLightsEnv
+from .carla_stop_sign_env import CarlaStopSignEnv
 from .carla_wpt_fixed_env import CarlaWptFixedEnv
 from .carla_wpt_env import CarlaWptEnv
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 from . import toolkit
 

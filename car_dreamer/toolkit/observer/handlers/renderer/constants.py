@@ -78,4 +78,5 @@ class BirdeyeEntity(Enum):
     WAYPOINTS = "waypoints"
     BACKGROUND_WAYPOINTS = "background_waypoints"
     TRAFFIC_LIGHTS = "traffic_lights"
+    STOP_SIGNS = "stop_signs"
     MESSAGES = "messages"

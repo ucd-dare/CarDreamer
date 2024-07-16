@@ -83,7 +83,8 @@ carla_overtake:
         time: 0.0,
         exceeding: 200.0,
         overtake: 200.0,
-        early_lane_change: 0.0
+        early_lane_change: 0.0,
+        destination_reached: 20.0
       }
     terminal:
       out_lane_thres: 5 # threshold for out of lane
@@ -225,3 +226,93 @@ carla_lane_merge:
     decoder.cnn_keys: "birdeye_wpt"
     decoder.cnn_kernels: [5, 5, 5, 6, 6]
     train.log_keys_video: [camera, birdeye_wpt]
+
+carla_traffic_lights:
+  env:
+    world:
+      town: Town03
+    name: CarlaTrafficLightsEnv-v0
+    action:
+      discrete_steer: [-0.9, -0.3, 0.0, 0.3, 0.9]
+    observation.enabled: [camera, collision, birdeye_traffic]
+    observation.birdeye_traffic.obs_range: 64
+    reward:
+      desired_speed: 4
+      scales:
+        waypoint: 2.0
+        speed: 0.5
+        collision: 30.0
+        out_of_lane: 3.0
+        time: 0.0
+        destination_reached: 20.0
+        traffic_light_violate: 100.0
+    terminal:
+      time_limit: 500 # maximum timesteps per episode
+      out_lane_thres: 3 # threshold for out of lane
+
+    lane_start_point: [[-0.3, -163.4, 0.1, 90.0], [-0.3, -163.4, 0.1, 90.0], [-3.5, -163.8, 0.1, 90.0], [-3.5, -163.8, 0.1, 90.0]]
+    ego_path: [[[-0.3, -163.4, 0.1], [32.5, -133.8, 0.1]], [[-0.3, -163.4, 0.1], [-1.5, -111.0, 0.1]], [[-3.5, -163.8, 0.1], [-4.7, -110.6, 0.1]], [[-3.5, -163.8, 0.1], [-27.0, -138.8, 0.1]]]
+    use_road_waypoints: [True, False]
+    traffic_locations: [-3.4, -125.1, 0.1]  # Location of traffic sign
+    red_duration: [60, 80]
+    green_duration: [40, 50]
+
+    display:
+      render_keys: [camera, birdeye_traffic]
+
+  dreamerv3:
+    encoder.cnn_keys: "birdeye_traffic"
+    decoder.cnn_keys: "birdeye_traffic"
+    run.log_keys_video: [camera, birdeye_traffic]
+
+  dreamerv2:
+    encoder.cnn_keys: "birdeye_traffic"
+    decoder.cnn_keys: "birdeye_traffic"
+    decoder.cnn_kernels: [5, 5, 5, 6, 6]
+    train.log_keys_video: [camera, birdeye_traffic]
+
+carla_stop_sign:
+  env:
+    world:
+      town: Town04
+    name: CarlaStopSignEnv-v0
+    action:
+      discrete_steer: [-0.9, -0.3, 0.0, 0.3, 0.9]
+    observation.enabled: [camera, collision, birdeye_traffic]
+    observation.birdeye_traffic.obs_range: 64
+    reward:
+      desired_speed: 4
+      scales:
+        waypoint: 2.0
+        speed: 0.5
+        collision: 30.0
+        out_of_lane: 3.0
+        time: 0.0
+        destination_reached: 20.0
+        traffic_light_violate: 100.0
+        stop_sign: 5.0
+        speed_before_stop: 1.0
+    terminal:
+      time_limit: 500 # maximum timesteps per episode
+      out_lane_thres: 3 # threshold for out of lane
+
+    lane_start_point: [[179.5, -169.5, 5, 0.0]]
+    ego_path: [[[179.5, -169.5, 0.1], [215.5, -169.1, 0.1]]]
+    use_road_waypoints: [True, False]
+    traffic_locations: [189.9, -169.6, 0.1] # Location of traffic sign
+    stop_sign_near_threshold: 2
+    stopping_time: 60 # How long should the vehicle stops
+
+    display:
+      render_keys: [camera, birdeye_traffic]
+
+  dreamerv3:
+    encoder.cnn_keys: "birdeye_traffic"
+    decoder.cnn_keys: "birdeye_traffic"
+    run.log_keys_video: [camera, birdeye_traffic]
+
+  dreamerv2:
+    encoder.cnn_keys: "birdeye_traffic"
+    decoder.cnn_keys: "birdeye_traffic"
+    decoder.cnn_kernels: [5, 5, 5, 6, 6]
+    train.log_keys_video: [camera, birdeye_traffic]
