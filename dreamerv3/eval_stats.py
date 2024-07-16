@@ -5,7 +5,7 @@ import argparse
 from pathlib import Path
 
 
-def compute_metrics_destination_based(episode_stats):
+def compute_metrics_destination_based(episode_stats, distance_threshold=None):
     metrics = {}
 
     travel_distances = np.array(episode_stats['sum_travel_distance'])
@@ -28,14 +28,17 @@ def compute_metrics_destination_based(episode_stats):
         sem = np.std(batch_means, ddof=1) / np.sqrt(3)
         return mean, sem
 
-    success_rate = np.mean(destination_reached)
+    if distance_threshold is not None:
+        success_rate = np.mean(travel_distances >= distance_threshold)
+    else:
+        success_rate = np.mean(destination_reached)
 
     is_collision[destination_reached > 0] = False
     time_exceeded[destination_reached > 0] = False
     out_of_lane[destination_reached > 0] = False
 
     metrics['num_episodes'] = num_episodes
-    metrics['success_rate'], metrics['success_rate_sem'] = compute_mean_and_sem(destination_reached)
+    metrics['success_rate'], metrics['success_rate_sem'] = compute_mean_and_sem(travel_distances >= distance_threshold if distance_threshold is not None else destination_reached)
     metrics['avg_travel_distance'], metrics['avg_travel_distance_sem'] = compute_mean_and_sem(travel_distances)
     metrics['avg_destination_reached'], metrics['avg_destination_reached_sem'] = compute_mean_and_sem(destination_reached)
     metrics['avg_time_exceeded'], metrics['avg_time_exceeded_sem'] = compute_mean_and_sem(time_exceeded)
@@ -91,7 +94,7 @@ def main(args):
             if 'episode/score' in data:
                 episode_stats['scores'].append(data['episode/score'])
 
-    final_metrics = compute_metrics_destination_based(episode_stats)
+    final_metrics = compute_metrics_destination_based(episode_stats, distance_threshold=args.distance)
 
     table = [
         ["Number of Episodes", final_metrics['num_episodes']],
@@ -116,6 +119,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--logdir', type=str, required=True, help='Directory containing metrics.jsonl')
+    parser.add_argument('--distance', type=float, help='Distance threshold for calculating success rate')
     args = parser.parse_args()
 
     main(args)
