@@ -21,6 +21,14 @@ class CarlaFollowEnv(CarlaWptEnv):
         self.ego_planner = FixedEndingPlanner(self.ego, dest_location)
         self.waypoints, self.planner_stats = self.ego_planner.run_step()
         self.num_completed = self.planner_stats['num_completed']
+        self.on_step()
+    
+    def on_step(self) -> None:
+        nonego_x, nonego_y = get_vehicle_pos(self.nonego)
+        dest_location = carla.Location(x = nonego_x, y = nonego_y, z=self._config.lane_end_points[2])
+        self.ego_planner = FixedEndingPlanner(self.ego, dest_location)
+        self.waypoints, self.planner_stats = self.ego_planner.run_step()
+        self.num_completed = self.planner_stats['num_completed']
         super().on_step()
     
     def apply_control(self, action) -> None:
