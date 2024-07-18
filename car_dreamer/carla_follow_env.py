@@ -16,11 +16,11 @@ class CarlaFollowEnv(CarlaWptEnv):
         self.ego = self._world.spawn_actor(transform=ego_transform)
 
         # Path planning
-        ego_dest = self._config.lane_end_points
-        dest_location = carla.Location(x=ego_dest[0], y=ego_dest[1], z=ego_dest[2])
-        self.ego_planner = FixedEndingPlanner(self.ego, dest_location)
-        self.waypoints, self.planner_stats = self.ego_planner.run_step()
-        self.num_completed = self.planner_stats['num_completed']
+        # ego_dest = self._config.lane_end_points
+        # dest_location = carla.Location(x=ego_dest[0], y=ego_dest[1], z=ego_dest[2])
+        # self.ego_planner = FixedEndingPlanner(self.ego, dest_location)
+        # self.waypoints, self.planner_stats = self.ego_planner.run_step()
+        # self.num_completed = self.planner_stats['num_completed']
         self.on_step()
     
     def on_step(self) -> None:
