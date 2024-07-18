@@ -1,6 +1,31 @@
 # 🌍 Learn to Drive in "Dreams": CarDreamer 🚗
 
-Unleash the power of **imagination** and **generalization** of world models for self-driving cars
+<div align="center">
+    <a href="https://huggingface.co/ucd-dare/CarDreamer/tree/main">
+        <img src="https://img.icons8.com/?size=32&id=sop9ROXku5bb" alt="HuggingFace Checkpoints" />
+        HuggingFace Checkpoints
+    </a>
+    &nbsp;|&nbsp;
+    <a href="https://car-dreamer.readthedocs.io/en/latest/">
+        <img src="https://img.icons8.com/nolan/32/api.png" alt="CarDreamer API Documents" />
+        CarDreamer API Documents
+    </a>
+    &nbsp;|&nbsp;
+    <a href="https://arxiv.org/abs/2405.09111">
+        <img src="https://img.icons8.com/?size=32&id=48326&format=png" alt="ArXiv Pre-print" />
+        ArXiv Pre-print
+    </a>
+</div>
+
+---
+
+
+Unleash the power of **imagination** and **generalization** of world models for self-driving cars.
+
+> [!NOTE]
+> - **July 2024:** Created a stop-sign task and a traffic-light task!
+> - **July 2024:** Uploaded all the task checkpoints to [HuggingFace](https://huggingface.co/ucd-dare/CarDreamer/tree/main)
+
 
 ## **Can world models imagine traffic dynamics for training autonomous driving agents? The answer is YES!**
 
