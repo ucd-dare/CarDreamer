@@ -366,22 +366,40 @@ carla_follow:
       desired_speed: 4
       scales: { 
         waypoint: 0.0, 
-        speed: 5.0, 
+        speed: 15.0, 
         collision: 30.0, 
         out_of_lane: 0.0, 
         time: 0.0, 
-        destination_reached: 10.0, 
+        destination_reached: 10.0,
         stay_in_lane: 20.0,
-        distance: 20.0
+        distance: 15.0
       }
     terminal:
       time_limit: 500 # maximum timesteps per episode
       out_lane_thres: 5 # threshold for out of lane
       terminal_dist: 15
 
-    nonego_spawn_points: [-7.6, 50.1, 0.1, 0.0, 90.0, 0.0] 
-    lane_start_points: [-7.6, 41.7, 0.1]
-    lane_end_points: [-7.6, 116.6, 0.1]
+    direction: 0    #determining which direction we are testing 
+                    #4 -> random
+
+    nonego_spawn_points: 
+      - [-22.8, -140.1, 0.2, 0.0, 0.0, 0.0]
+      - [-7.6, 50.1, 0.1, 0.0, 90.0, 0.0] 
+      - [-5.0, -135.2, 0.1, 0.0, 90.0, 0.0]
+      - [-60.0, -136.0, 0.1, 0.0, 0.0, 0.0]
+      - [-33.8, -135.1, 0.1, 0.0, 0.0, 0.0]
+    lane_start_points:
+      - [-33.8, -140.1, 0.2]
+      - [-7.6, 41.7, 0.1]
+      - [-5.0, -139.2, 0.1]
+      - [-65.2, -136.0, 0.1]
+      - [-33.8, -135.1, 0.1]
+    lane_end_points: 
+      - [-15.0, -140.1, 0.1]
+      - [-7.6, 116.6, 0.1]
+      - [-5.0, -110.3, 0.1]
+      - [-14.2, -136.0, 0.1]
+      - [-15.0, -135.1, 0.1]
   
   dreamerv3:
     encoder.cnn_keys: "birdeye_wpt"
