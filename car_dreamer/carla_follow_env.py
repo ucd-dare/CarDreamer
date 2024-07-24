@@ -8,17 +8,14 @@ from .toolkit import FixedEndingPlanner, get_vehicle_pos, get_location_distance,
 
 class CarlaFollowEnv(CarlaWptEnv):
     def on_reset(self) -> None:
-        if self._config.direction == 4:
-            random_num = random.randint(0, len(self._config.lane_start_point) - 1)
-        elif self._config.direction >= 0 and self._config.direction < 4:
-            random_num = self._config.direction
+        random_num = self._config.direction
 
         # print(random_num)
         self.nonego_spawn_point = self._config.nonego_spawn_points[random_num]
         # self.nonego_spawn_point = self._config.nonego_spawn_points
         nonego_transform = carla.Transform(carla.Location(*self.nonego_spawn_point[:3]), carla.Rotation(yaw = self.nonego_spawn_point[4]))
         self.nonego = self._world.spawn_actor(transform=nonego_transform)
-        print(self.nonego_spawn_point)
+        # print(self.nonego_spawn_point)
         self.ego_src = self._config.lane_start_points[random_num]
         # self.ego_src = self._config.lane_start_points
         ego_transform = carla.Transform(carla.Location(*self.ego_src[:3]), carla.Rotation(yaw = self.nonego_spawn_point[4]))
@@ -104,10 +101,7 @@ class CarlaFollowEnv(CarlaWptEnv):
         # original_dist = math.sqrt((self._config.lane_start_points[0] - self._config.nonego_spawn_points[0]) ** 2 + 
         #                           (self._config.lane_start_points[1] - self._config.nonego_spawn_points[1]) ** 2)
         # current_dist = math.sqrt((ego_x - nonego_loc.x) ** 2 + (ego_y - nonego_loc.y) ** 2)
-        if self._config.direction == 4:
-            random_num = random.randint(0, len(self._config.lane_start_point) - 1)
-        elif self._config.direction >= 0 and self._config.direction < 4:
-            random_num = self._config.direction
+        random_num = self._config.direction
         
         original_dist = get_location_distance((self._config.lane_start_points[random_num][0], self._config.lane_start_points[random_num][1]),
                                               (self._config.nonego_spawn_points[random_num][0], self._config.nonego_spawn_points[random_num][1]))
@@ -126,7 +120,7 @@ class CarlaFollowEnv(CarlaWptEnv):
             p_stay_in_lane = -reward_scales["stay_in_lane"]
 
         p_dest_reached = 0
-        if get_vehicle_pos(self.nonego) == (self._config.nonego_spawn_points[random_num][0], self._config.nonego_spawn_points[random_num][1]):
+        if get_vehicle_pos(self.nonego) == (self._config.lane_end_points[random_num][0], self._config.lane_end_points[random_num][1]):
             p_dest_reached = reward_scales["destination_reached"]
 
         total_reward += p_dist + p_speed + p_stay_in_lane + p_dest_reached
@@ -135,6 +129,7 @@ class CarlaFollowEnv(CarlaWptEnv):
     def get_terminal_conditions(self):
         terminal_config = self._config.terminal
         info = super().get_terminal_conditions()
+        del info['destination_reached']
 
         ego_x, ego_y = get_vehicle_pos(self.ego)
         nonego_loc = self.nonego.get_transform().location
@@ -144,5 +139,8 @@ class CarlaFollowEnv(CarlaWptEnv):
         # print(dist)
         if dist > terminal_config.terminal_dist:
             info['terminal_dist'] = True
+            # print(nonego_loc.x, nonego_loc.y)
+            # print(ego_x, ego_y)
+            # print(dist)
 
         return info
