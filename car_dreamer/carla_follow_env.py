@@ -28,6 +28,12 @@ class CarlaFollowEnv(CarlaWptEnv):
         # self.ego_planner = FixedEndingPlanner(self.ego, dest_location)
         # self.waypoints, self.planner_stats = self.ego_planner.run_step()
         # self.num_completed = self.planner_stats['num_completed']
+
+        nonego_dest = self._config.lane_end_points[random_num]
+        dest_location = carla.Location(x=nonego_dest[0], y=nonego_dest[1], z=nonego_dest[2])
+        self.nonego_planner = FixedEndingPlanner(self.nonego, dest_location)
+        self.waypoints, self.planner_stats = self.nonego_planner.run_step()
+        self.num_completed = self.planner_stats['num_completed']
         self.on_step()
     
     def on_step(self) -> None:
@@ -39,36 +45,42 @@ class CarlaFollowEnv(CarlaWptEnv):
         self.ego_planner = FixedEndingPlanner(self.ego, dest_location)
         self.waypoints, self.planner_stats = self.ego_planner.run_step()
         self.num_completed = self.planner_stats['num_completed']
+
+        # nonego_velocity = np.array([*get_vehicle_velocity(self.nonego)])
+        # nonego_speed = np.linalg. norm(nonego_velocity)       
+
         super().on_step()
     
-    def apply_control(self, action) -> None:
-        control = self.get_vehicle_control(action)
-        nonego_control = self.get_nonego_vehicle_control()
-        self.ego.apply_control(control)
-        self.nonego.apply_control(nonego_control)
+    # def apply_control(self, action) -> None:
+    #     control = self.get_vehicle_control(action)
+    #     nonego_control = self.get_nonego_vehicle_control()
+    #     self.ego.apply_control(control)
+    #     self.nonego.apply_control(nonego_control)
     
-    def get_nonego_vehicle_control(self):
+    # def get_nonego_vehicle_control(self):
         '''
         Non-ego vehicle control is designed for the scenario.
         '''
-        ego_loc = self.ego.get_transform().location
-        nonego_loc = self.nonego.get_transform().location
+        # ego_loc = self.ego.get_transform().location
+        # nonego_loc = self.nonego.get_transform().location
 
-        # Keep constant speed
-        if abs(self.nonego.get_velocity().y) < 2:
-            acc = 2
-        else:
-            acc = 0
+        # # Keep constant speed
+        # nonego_velocity = np.array([*get_vehicle_velocity(self.nonego)])
+        # nonego_speed = np.linalg. norm(nonego_velocity)
+        # if nonego_speed < 2:
+        #     acc = 2
+        # else:
+        #     acc = 0
 
-        # Convert acceleration to throttle and brake
-        if acc > 0:
-            throttle = np.clip(acc/3, 0, 1)
-            brake = 0
-        else:
-            throttle = 0
-            brake = np.clip(-acc/3, 0, 1)
+        # # Convert acceleration to throttle and brake
+        # if acc > 0:
+        #     throttle = np.clip(acc/3, 0, 1)
+        #     brake = 0
+        # else:
+        #     throttle = 0
+        #     brake = np.clip(-acc/3, 0, 1)
 
-        return carla.VehicleControl(throttle=float(throttle), brake=float(brake))
+        # return carla.VehicleControl(throttle=float(throttle), brake=float(brake))
 
     
     def reward(self):
@@ -119,11 +131,7 @@ class CarlaFollowEnv(CarlaWptEnv):
         else:
             p_stay_in_lane = -reward_scales["stay_in_lane"]
 
-        p_dest_reached = 0
-        if get_vehicle_pos(self.nonego) == (self._config.lane_end_points[random_num][0], self._config.lane_end_points[random_num][1]):
-            p_dest_reached = reward_scales["destination_reached"]
-
-        total_reward += p_dist + p_speed + p_stay_in_lane + p_dest_reached
+        total_reward += p_dist + p_speed + p_stay_in_lane
         return total_reward, info
 
     def get_terminal_conditions(self):
