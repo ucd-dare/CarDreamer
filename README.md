@@ -227,7 +227,7 @@ We stream observations, rewards, terminal conditions, and custom metrics to a we
 
 To easily customize your own driving tasks, and observation spaces, etc., please refer to our [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
-![CarDreamer](.assets/architecture.png)
+![CarDreamer](.assets/cardreamer_architecture.png)
 
 # :star2: Citation
 
