@@ -364,32 +364,35 @@ carla_follow:
     name: CarlaFollowEnv-v0
     observation.enabled: [camera, collision, birdeye_wpt]
     <<: *carla_wpt
+    pid_coeffs: [0.1, 0.0, 0.0]
     reward:
       desired_speed: 4
       scales: { 
         waypoint: 0.0, 
-        speed: 15.0, 
+        speed: 11.0, 
         collision: 30.0, 
         out_of_lane: 0.0, 
         time: 0.0, 
-        destination_reached: 10.0,
-        stay_in_lane: 20.0,
-        distance: 15.0
+        destination_reached: 0.0,
+        stay_in_lane: 10.0,
+        distance: 10.0
       }
     terminal:
       time_limit: 500 # maximum timesteps per episode
       out_lane_thres: 5 # threshold for out of lane
       terminal_dist: 15
 
-    direction: 2    #determining which direction we are testing 
+    direction: 1    #determining which direction we are testing 
 
     nonego_spawn_points: 
       - [-8.4, 44.0, 0.1, 0.0, 90.0, 0.0] 
-      - [-55.5, 0.8, 0.1, 0.0, 0.0, 0.0]
+      # - [-55.5, 0.8, 0.1, 0.0, 0.0, 0.0]
+      - [-40.0, 0.8, 0.1, 0.0, 0.0, 0.0]
       - [-6.0, -40.0, 0.1, 0.0, 270.0, 0.0]
     lane_start_points:
       - [-8.4, 35.0, 0.1]
-      - [-64.4, 0.8, 0.1]
+      # - [-64.4, 0.8, 0.1]
+      - [-49.0, 0.8, 0.1]
       - [-6.0, -31.5, 0.1]
     lane_end_points: 
       - [-8.4, 81.9, 0.1]
