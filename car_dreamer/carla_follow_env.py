@@ -13,8 +13,6 @@ class CarlaFollowEnv(CarlaWptEnv):
         elif self._config.direction >= 0 and self._config.direction < 4:
             self.random_num = self._config.direction
 
-        self.prev_errors = {'last_error': 0.0, 'integral': 0.0}
-
         # print(random_num)
         self.nonego_spawn_point = self._config.nonego_spawn_points[self.random_num]
         # self.nonego_spawn_point = self._config.nonego_spawn_points
@@ -26,6 +24,9 @@ class CarlaFollowEnv(CarlaWptEnv):
         ego_transform = carla.Transform(carla.Location(*self.ego_src[:3]), carla.Rotation(yaw = self.nonego_spawn_point[4]))
         self.ego = self._world.spawn_actor(transform=ego_transform)
         # print(get_vehicle_pos(self.ego))
+
+        self.prev_errors = {'last_error': 0.0, 'integral': 0.0}
+        self.nonego_direction = self.nonego_spawn_point[4]
 
         # Path planning
         # ego_dest = self._config.lane_end_points
@@ -70,7 +71,9 @@ class CarlaFollowEnv(CarlaWptEnv):
         nonego_loc = get_vehicle_pos(self.nonego)
 
         # Keep constant speed
-        if abs(self.nonego.get_velocity().y) < 2:
+        nonego_velocity = self.nonego.get_velocity()
+        nonego_speed = math.sqrt((nonego_velocity.x) ** 2 + (nonego_velocity.y) ** 2)
+        if abs(nonego_speed) < 2:
             acc = 2
         else:
             acc = 0
@@ -78,7 +81,7 @@ class CarlaFollowEnv(CarlaWptEnv):
         if len(self.nonego_waypoints) > 0:
             closest_waypoint = self.nonego_waypoints[0]
             # print(closest_waypoint)
-            # print(self.nonego_waypoints)
+            # print(len(self.nonego_waypoints))
             heading_angle = math.degrees(math.atan2(closest_waypoint[0] - nonego_loc[0], closest_waypoint[1] - nonego_loc[1]))
             if heading_angle < 90:
                 heading_angle = 90 - heading_angle
@@ -93,7 +96,7 @@ class CarlaFollowEnv(CarlaWptEnv):
             # heading_error = -heading_error
 
             coeffs = self._config.pid_coeffs
-            control, self.prev_errors = self.pid_controller(heading_error, self.prev_errors, coeffs)
+            self.control, self.prev_errors = self.pid_controller(heading_error, self.prev_errors, coeffs)
             # print(heading_angle, heading_error, control)
 
         # Convert acceleration to throttle and brake
@@ -104,7 +107,7 @@ class CarlaFollowEnv(CarlaWptEnv):
             throttle = 0
             brake = np.clip(-acc/3, 0, 1)
 
-        return carla.VehicleControl(throttle=float(throttle), steer=np.clip(control, -1, 1), brake=float(brake))
+        return carla.VehicleControl(throttle=float(throttle), steer=np.clip(self.control, -1, 1), brake=float(brake))
         # return carla.VehicleControl(throttle=float(throttle), steer=control, brake=float(brake))
     
     def pid_controller(self, error, prev_errors, coeffs):
@@ -150,14 +153,14 @@ class CarlaFollowEnv(CarlaWptEnv):
         # else:
         #     p_stay_in_lane = -reward_scales['stay_in_lane']
 
-        ego_velocity = np.array([*get_vehicle_velocity(self.ego)])
-        ego_speed = np.linalg.norm(ego_velocity)
-        nonego_velocity = np.array([*get_vehicle_velocity(self.nonego)])
-        nonego_speed = np.linalg. norm(nonego_velocity)
-        if ego_speed > nonego_speed - 0.5 and ego_speed < nonego_speed + 0.5:
-            p_speed = 0.2 * reward_scales['speed']
-        else:
-            p_speed = -reward_scales['speed']
+        # ego_velocity = np.array([*get_vehicle_velocity(self.ego)])
+        # ego_speed = np.linalg.norm(ego_velocity)
+        # nonego_velocity = np.array([*get_vehicle_velocity(self.nonego)])
+        # nonego_speed = np.linalg. norm(nonego_velocity)
+        # if ego_speed > nonego_speed - 0.5 and ego_speed < nonego_speed + 0.5:
+        #     p_speed = 0.2 * reward_scales['speed']
+        # else:
+        #     p_speed = -reward_scales['speed']
 
         # original_dist = math.sqrt((self._config.lane_start_points[0] - self._config.nonego_spawn_points[0]) ** 2 + 
         #                           (self._config.lane_start_points[1] - self._config.nonego_spawn_points[1]) ** 2)
@@ -172,14 +175,16 @@ class CarlaFollowEnv(CarlaWptEnv):
         else:
             p_dist = -reward_scales["distance"]
         
-        ego_direction = get_vehicle_orientation(self.ego)
-        nonego_direction = get_vehicle_orientation(self.nonego)
-        if ego_direction < nonego_direction + 1.0 and ego_direction > nonego_direction - 1.0:
-            p_stay_in_lane = 0.2 * reward_scales["stay_in_lane"]
-        else:
-            p_stay_in_lane = -reward_scales["stay_in_lane"]
+        
+        # ego_direction = get_vehicle_orientation(self.ego)
+        # if ego_direction < self.nonego_direction + 1.0 and ego_direction > self.nonego_direction - 1.0:
+        #     p_stay_in_lane = 0.2 * reward_scales["stay_in_lane"]
+        # else:
+        #     p_stay_in_lane = -reward_scales["stay_in_lane"]
+        # self.nonego_direction = get_vehicle_orientation(self.nonego)
 
-        total_reward += p_dist + p_speed + p_stay_in_lane
+        # total_reward += p_dist + p_speed + p_stay_in_lane
+        total_reward += p_dist
         return total_reward, info
 
     def get_terminal_conditions(self):
