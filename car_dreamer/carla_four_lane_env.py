@@ -1,5 +1,4 @@
 import numpy as np
-import random
 import carla
 
 from .carla_wpt_env import CarlaWptEnv
@@ -20,7 +19,7 @@ class CarlaFourLaneEnv(CarlaWptEnv):
     """
 
     def on_reset(self) -> None:
-        self.ego_src = self._config.lane_start_points[random.randint(0, len(self._config.lane_start_points) - 1)]
+        self.ego_src = self._config.lane_start_points[np.random.randint(0, len(self._config.lane_start_points) - 1)]
         ego_transform = carla.Transform(carla.Location(
             x=self.ego_src[0], y=self.ego_src[1], z=self.ego_src[2]), carla.Rotation(yaw=-90))
         self.ego = self._world.spawn_actor(transform=ego_transform)
@@ -46,8 +45,7 @@ class CarlaFourLaneEnv(CarlaWptEnv):
 
         while current_y > end_y:
             # Random lane keeping distance
-            distance = min(np.abs(end_y - current_y),
-                           np.random.uniform(min_lane_keeping, max_lane_keeping))
+            distance = min(np.abs(end_y - current_y), np.random.uniform(min_lane_keeping, max_lane_keeping))
             current_x = lane_start_points[current_lane][0]
             current_y -= distance
             waypoints.append([current_x, current_y, 0.1])
