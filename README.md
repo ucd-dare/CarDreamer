@@ -16,7 +16,7 @@
         ArXiv Pre-print
     </a>
     <a href="https://ucd-dare.github.io/cardreamer.github.io/">
-        <img src="https://img.icons8.com/?size=32&id=IktywZAQQS6o&format=png&color=000000" alt="Project Page" />
+        <img src="https://img.icons8.com/?size=32&id=X-WB1cntO5xU&format=png&color=000000" alt="Project Page" />
         Project Page
     </a>
 
@@ -67,6 +67,10 @@ We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on
 | Right turn hard | Roundabout | Left turn hard | Lane merge | Overtake |
 | :-------------: | :--------: | :------------: | :--------: | :---------------: |
 | ![Right turn hard](./.assets/right_turn_hard_camera.gif) | ![Roundabout](./.assets/roundabout_camera.gif) | ![Left turn hard](./.assets/left_turn_hard_camera.gif) | ![Lane merge](./.assets/lane_merge_camera.gif) | ![Right turn simple](./.assets/overtake_camera.gif) |
+
+| Traffic Light | Stop Sign |
+| :-----------: | :-------: |
+| ![Traffic Light](https://raw.githubusercontent.com/ucd-dare/cardreamer.github.io/main/static/gifs/bev/tl_right.gif) | ![Stop Sign](https://raw.githubusercontent.com/ucd-dare/cardreamer.github.io/main/static/gifs/bev/stop%20sign.gif) |
 
 
 ## :blossom: The Power of Intention Sharing
