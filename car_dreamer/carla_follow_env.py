@@ -151,18 +151,18 @@ class CarlaFollowEnv(CarlaWptEnv):
         current_dist = get_location_distance(get_vehicle_pos(self.ego), get_vehicle_pos(self.nonego))
         
         if current_dist < original_dist + 2 and current_dist >= original_dist:
-            p_dist = reward_scales["distance"]
+            p_dist = 0.2 * reward_scales["distance"]
         else:
             p_dist = - abs(current_dist - original_dist) * reward_scales["distance"]
         
         ego_velocity = np.array([*get_vehicle_velocity(self.ego)])
         if np.array_equal(ego_velocity, self.list_velocity[0]):
-            p_velocity = reward_scales["velocity"]
+            p_velocity = 0.2 * reward_scales["velocity"]
         else:
             p_velocity = -reward_scales["velocity"]
 
         if get_vehicle_pos(self.ego) == self.list_waypoints[0]:
-            p_waypoints = reward_scales["waypoints"]
+            p_waypoints = 0.2* reward_scales["waypoints"]
             self.list_velocity.pop(0)
             self.list_waypoints.pop(0)
         else:

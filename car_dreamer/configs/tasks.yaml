@@ -376,7 +376,7 @@ carla_follow:
         destination_reached: 0.0,
         velocity: 1.0,
         waypoints: 4.0,
-        distance: 2.0
+        distance: 0.0 #2.0
       }
     terminal:
       time_limit: 500 # maximum timesteps per episode
@@ -397,7 +397,7 @@ carla_follow:
       - [-6.0, -31.5, 0.1]
     lane_end_points: 
       - [-8.4, 81.9, 0.1]
-      - [-47.0, 0.8, 0.1]
+      - [-50.0, 0.8, 0.1]
       - [-3.5, -75.0, 0.1]
   
   dreamerv3:
