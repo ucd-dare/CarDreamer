@@ -76,8 +76,8 @@ class CarlaFollowEnv(CarlaWptEnv):
             closest_waypoint = self.nonego_waypoints[0]
 
             if closest_waypoint != self.list_waypoints[0]: 
-                self.list_waypoints.insert(0, closest_waypoint)
-                self.list_velocity.insert(0, np.array([*get_vehicle_velocity(self.nonego)]))
+                self.list_waypoints.append(closest_waypoint)
+                self.list_velocity.append(np.array([*get_vehicle_velocity(self.nonego)]))
                 # print(self.list_velocity)
 
             # print(closest_waypoint)
@@ -138,8 +138,7 @@ class CarlaFollowEnv(CarlaWptEnv):
     
     def reward(self):
         total_reward, info = super().reward()
-        total_reward -= info['r_out_of_lane'] + info['r_speed'] + info['r_waypoints']
-        del info['r_out_of_lane']
+        total_reward -= info['r_speed'] + info['r_waypoints']
         del info['r_speed']
         del info['r_waypoints']
         # total_reward -= info['waypoint']
@@ -156,11 +155,11 @@ class CarlaFollowEnv(CarlaWptEnv):
         else:
             p_dist = - abs(current_dist - original_dist) * reward_scales["distance"]
         
-        # ego_velocity = np.array([*get_vehicle_velocity(self.ego)])
-        # if np.array_equal(ego_velocity, self.list_velocity[0]):
-        #     p_velocity = 0.2 * reward_scales["velocity"]
-        # else:
-        #     p_velocity = -reward_scales["velocity"]
+        ego_velocity = np.array([*get_vehicle_velocity(self.ego)])
+        if np.array_equal(ego_velocity, self.list_velocity[0]):
+            p_velocity = 0.2 * reward_scales["velocity"]
+        else:
+            p_velocity = -reward_scales["velocity"]
 
         if get_vehicle_pos(self.ego) == self.list_waypoints[0]:
             p_waypoints = 0.2 * reward_scales["waypoints"]
@@ -169,8 +168,8 @@ class CarlaFollowEnv(CarlaWptEnv):
         else:
             p_waypoints = -reward_scales["waypoints"]
         
-        # total_reward += p_dist + p_waypoints + p_velocity
-        total_reward += p_dist + p_waypoints
+        total_reward += p_dist + p_waypoints + p_velocity
+        # total_reward += p_dist + p_waypoints
         return total_reward, info
 
     def get_terminal_conditions(self):
