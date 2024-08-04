@@ -185,8 +185,9 @@ class CarlaFollowEnv(CarlaWptEnv):
         # print(dist)
         if dist > terminal_config.terminal_dist:
             info['terminal_dist'] = True
-            # print(nonego_loc.x, nonego_loc.y)
-            # print(ego_x, ego_y)
-            # print(dist)
+
+        if nonego_loc == carla.Location(self._config.lane_end_points[self.random_num][0], 
+                                        self._config.lane_end_points[self.random_num][1]):
+            info['destination_reached'] = True
 
         return info
