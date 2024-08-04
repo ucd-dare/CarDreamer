@@ -99,7 +99,9 @@ Let's see how CarDreamer agents communicate and leverage intentions. Our experim
 
 ## 📋 Prerequisites
 
-Clone the repository:
+### CarDreamer Dependencies
+
+To install CarDreamer tasks or the development suite, clone the repository:
 
 ```bash
 git clone https://github.com/ucd-dare/CarDreamer
@@ -121,6 +123,10 @@ conda activate cardreamer
 pip install flit
 flit install --symlink
 ```
+
+### Model Dependencies
+
+The model backbones are decoupled from CarDreamer tasks or the development sutie. Users can install model dependencies on their own demands. To install DreamerV2 and DreamerV3, check out the guidelines in separate folders [DreamerV3](https://github.com/ucd-dare/CarDreamer/tree/master/dreamerv3) or [DreamerV2](https://github.com/ucd-dare/CarDreamer/tree/master/dreamerv2). The experiments in our paper were conducted using DreamerV3, the current state-of-the-art world models.
 
 ## :gear: Quick Start
 
