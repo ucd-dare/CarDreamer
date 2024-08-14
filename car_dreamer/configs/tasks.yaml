@@ -373,11 +373,12 @@ carla_follow:
         collision: 350.0, 
         out_of_lane: 35.0, 
         time: 0.0, 
-        destination_reached: 10.0,
+        destination_reached: 0.0,
         velocity: 0.0, #1.0,
         waypoints: 4.0,
         distance: 2.0 
       }
+      
     terminal:
       time_limit: 500 # maximum timesteps per episode
       out_lane_thres: 5 # threshold for out of lane

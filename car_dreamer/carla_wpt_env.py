@@ -131,7 +131,8 @@ class CarlaWptEnv(CarlaBaseEnv):
         return total_reward, info
 
     def is_destination_reached(self):
-        return len(self.waypoints) <= 3
+        # return len(self.waypoints) <= 3
+        return len(self.nonego_waypoints) <= 1 # follow only
 
     def get_terminal_conditions(self):
         terminal_config = self._config.terminal

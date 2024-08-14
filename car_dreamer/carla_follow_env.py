@@ -78,10 +78,8 @@ class CarlaFollowEnv(CarlaWptEnv):
             if closest_waypoint != self.list_waypoints[0]: 
                 self.list_waypoints.append(closest_waypoint)
                 self.list_velocity.append(np.array([*get_vehicle_velocity(self.nonego)]))
-                # print(self.list_velocity)
-
-            # print(closest_waypoint)
-            # print(len(self.nonego_waypoints))
+                
+            
             heading_angle = math.degrees(math.atan2(closest_waypoint[0] - nonego_loc[0], closest_waypoint[1] - nonego_loc[1]))
             if heading_angle < 90:
                 heading_angle = 90 - heading_angle
@@ -93,11 +91,9 @@ class CarlaFollowEnv(CarlaWptEnv):
                 heading_error -= 360
             elif heading_error < -180:
                 heading_error += 360
-            # heading_error = -heading_error
 
             coeffs = self._config.pid_coeffs
             self.control, self.prev_errors = self.pid_controller(heading_error, self.prev_errors, coeffs)
-            # print(heading_angle, heading_error, control)
 
         # Convert acceleration to throttle and brake
         if acc > 0:
@@ -108,7 +104,6 @@ class CarlaFollowEnv(CarlaWptEnv):
             brake = np.clip(-acc/3, 0, 1)
 
         return carla.VehicleControl(throttle=float(throttle), steer=np.clip(self.control, -1, 1), brake=float(brake))
-        # return carla.VehicleControl(throttle=float(throttle), steer=control, brake=float(brake))
     
     def pid_controller(self, error, prev_errors, coeffs):
         """
@@ -144,6 +139,7 @@ class CarlaFollowEnv(CarlaWptEnv):
         # total_reward -= info['waypoint']
         # del info['waypoint']
 
+
         reward_scales = self._config.reward.scales
         
         original_dist = get_location_distance((self._config.lane_start_points[self.random_num][0], self._config.lane_start_points[self.random_num][1]),
@@ -158,15 +154,19 @@ class CarlaFollowEnv(CarlaWptEnv):
         ego_velocity = np.array([*get_vehicle_velocity(self.ego)])
         if np.array_equal(ego_velocity, self.list_velocity[0]):
             p_velocity = 0.2 * reward_scales["velocity"]
-        else:
-            p_velocity = -reward_scales["velocity"]
+        else: 
+            p_velocity = 0
+        # else:
+        #     p_velocity = -reward_scales["velocity"]
 
         if get_vehicle_pos(self.ego) == self.list_waypoints[0]:
-            p_waypoints = 0.2* reward_scales["waypoints"]
+            p_waypoints = 0.2 * reward_scales["waypoints"]
             self.list_velocity.pop(0)
             self.list_waypoints.pop(0)
-        else:
-            p_waypoints = -reward_scales["waypoints"]
+        else: 
+            p_waypoints = 0
+        # else:
+        #     p_waypoints = -reward_scales["waypoints"]
         
         total_reward += p_dist + p_waypoints + p_velocity
         # total_reward += p_dist + p_waypoints
@@ -186,8 +186,8 @@ class CarlaFollowEnv(CarlaWptEnv):
         if dist > terminal_config.terminal_dist:
             info['terminal_dist'] = True
 
-        if nonego_loc == carla.Location(self._config.lane_end_points[self.random_num][0], 
-                                        self._config.lane_end_points[self.random_num][1]):
-            info['destination_reached'] = True
+        # if get_vehicle_pos(self.ego) == carla.Location(self._config.lane_end_points[self.random_num][0], 
+        #                                                self._config.lane_end_points[self.random_num][1]):
+        #     info['destination_reached'] = True
 
         return info
