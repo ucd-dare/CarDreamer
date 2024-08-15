@@ -278,14 +278,7 @@ If you find this repository useful, please cite this paper:
 
 # 👥 Contributors
 
-### Credits
-
-`CarDreamer` builds on the several projects within the autonomous driving and machine learning communities.
-
-- [gym-carla](https://github.com/cjy1992/gym-carla)
-- [DreamerV2](https://github.com/danijar/director)
-- [DreamerV3](https://github.com/danijar/dreamerv3)
-- [CuriousReplay](https://github.com/AutonomousAgentsLab/curiousreplay)
+Special thanks to the community for your valuable contributions and support in making CarDreamer better for everyone! The contributor list is automatically generated based on commit history.
 
 <!-- readme: contributors -start -->
 <table>
@@ -353,3 +346,12 @@ If you find this repository useful, please cite this paper:
 	<tbody>
 </table>
 <!-- readme: contributors -end -->
+
+### Credits
+
+`CarDreamer` builds on the several projects within the autonomous driving and machine learning communities.
+
+- [gym-carla](https://github.com/cjy1992/gym-carla)
+- [DreamerV2](https://github.com/danijar/director)
+- [DreamerV3](https://github.com/danijar/dreamerv3)
+- [CuriousReplay](https://github.com/AutonomousAgentsLab/curiousreplay)
