@@ -1,5 +1,4 @@
 import numpy as np
-#import random
 import carla
 
 from .carla_wpt_env import CarlaWptEnv
