@@ -1,5 +1,6 @@
 import carla
-import random
+import numpy as np
+#import random
 import time
 from .carla_wpt_fixed_env import CarlaWptFixedEnv
 from .toolkit import FixedPathPlanner
@@ -14,8 +15,8 @@ class CarlaTrafficLightsEnv(CarlaWptFixedEnv):
         super().__init__(config)
     
     def on_reset(self) -> None:
-        random.seed(time.time())
-        random_index = random.randint(0, len(self._config.lane_start_point) - 1)
+        np.random.seed(time.time())
+        random_index = np.random.randint(0, len(self._config.lane_start_point) - 1)
         self.ego_src = self._config.lane_start_point[random_index]
         ego_transform = carla.Transform(carla.Location(*self.ego_src[:3]), carla.Rotation(yaw=self.ego_src[3]))
         self.ego = self._world.spawn_actor(transform=ego_transform)
@@ -28,8 +29,8 @@ class CarlaTrafficLightsEnv(CarlaWptFixedEnv):
         traffic_location = carla.Location(*self._config.traffic_locations)
         self.traffic_light = self.find_traffic_light_by_location(traffic_location)
         self.traffic_light.set_state(carla.TrafficLightState.Red)
-        self.red_duration = random.randint(self._config.red_duration[0], self._config.red_duration[1])
-        self.green_duration = random.randint(self._config.green_duration[0], self._config.green_duration[1])
+        self.red_duration = np.random.randint(self._config.red_duration[0], self._config.red_duration[1])
+        self.green_duration = np.random.randint(self._config.green_duration[0], self._config.green_duration[1])
         self.yellow_duration = 10
         self.total_duration = self.red_duration + self.green_duration + self.yellow_duration
 
