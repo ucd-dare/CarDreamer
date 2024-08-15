@@ -1,6 +1,5 @@
 import carla
 import numpy as np
-#import random
 import time
 from .carla_wpt_fixed_env import CarlaWptFixedEnv
 from .toolkit import FixedPathPlanner

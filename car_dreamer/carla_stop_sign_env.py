@@ -1,5 +1,4 @@
 import carla
-#import random
 import time
 import numpy as np
 from .carla_wpt_fixed_env import CarlaWptFixedEnv
