@@ -1,6 +1,6 @@
 import carla
 import numpy as np
-import random
+#import random
 import math
 
 from .carla_wpt_env import CarlaWptEnv
@@ -27,10 +27,10 @@ class CarlaOvertakeEnv(CarlaWptEnv):
 
     """
     def on_reset(self) -> None:
-        self.nonego_spawn_point = self._config.nonego_spawn_points[random.randint(0, len(self._config.nonego_spawn_points) - 1)]
+        self.nonego_spawn_point = self._config.nonego_spawn_points[np.random.randint(0, len(self._config.nonego_spawn_points) - 1)]
         nonego_transform = carla.Transform(carla.Location(*self.nonego_spawn_point[:3]), carla.Rotation(*self.nonego_spawn_point[-3:]))
         self.nonego = self._world.spawn_actor(transform=nonego_transform)
-        self.ego_src = self._config.lane_start_points[random.randint(0, len(self._config.lane_start_points) - 1)]
+        self.ego_src = self._config.lane_start_points[np.random.randint(0, len(self._config.lane_start_points) - 1)]
         ego_transform = carla.Transform(carla.Location(x=self.nonego_spawn_point[0], y=self.ego_src[1], z=self.ego_src[2]), carla.Rotation(yaw=-90)) # set x that always behind nonego
         self.ego = self._world.spawn_actor(transform=ego_transform)
 

@@ -1,5 +1,5 @@
 import numpy as np
-import random
+#import random
 import carla
 
 from .carla_wpt_env import CarlaWptEnv
@@ -20,7 +20,7 @@ class CarlaFourLaneEnv(CarlaWptEnv):
     """
 
     def on_reset(self) -> None:
-        self.ego_src = self._config.lane_start_points[random.randint(0, len(self._config.lane_start_points) - 1)]
+        self.ego_src = self._config.lane_start_points[np.random.randint(0, len(self._config.lane_start_points) - 1)]
         ego_transform = carla.Transform(carla.Location(
             x=self.ego_src[0], y=self.ego_src[1], z=self.ego_src[2]), carla.Rotation(yaw=-90))
         self.ego = self._world.spawn_actor(transform=ego_transform)
