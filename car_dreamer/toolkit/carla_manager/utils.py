@@ -1,11 +1,13 @@
-from typing import List, Tuple, Dict
-import numpy as np
 from enum import Enum
+from typing import Dict, List, Tuple
+
 import carla
+import numpy as np
 
 
 class Command(Enum):
     """Enumeration for high-level commands."""
+
     LaneFollow = "LaneFollow"
     LaneChangeLeft = "ChangeLaneLeft"
     LaneChangeRight = "ChangeLaneRight"

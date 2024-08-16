@@ -6,15 +6,14 @@ import numpy as np
 
 
 class FromGym(embodied.Env):
-
-    def __init__(self, env, obs_key='image', act_key='action', **kwargs):
+    def __init__(self, env, obs_key="image", act_key="action", **kwargs):
         if isinstance(env, str):
             self._env = gym.make(env, **kwargs)
         else:
             assert not kwargs, kwargs
             self._env = env
-        self._obs_dict = hasattr(self._env.observation_space, 'spaces')
-        self._act_dict = hasattr(self._env.action_space, 'spaces')
+        self._obs_dict = hasattr(self._env.observation_space, "spaces")
+        self._act_dict = hasattr(self._env.action_space, "spaces")
         self._obs_key = obs_key
         self._act_key = act_key
         self._done = True
@@ -33,10 +32,10 @@ class FromGym(embodied.Env):
         spaces = {k: self._convert(v) for k, v in spaces.items()}
         return {
             **spaces,
-            'reward': embodied.Space(np.float32),
-            'is_first': embodied.Space(bool),
-            'is_last': embodied.Space(bool),
-            'is_terminal': embodied.Space(bool),
+            "reward": embodied.Space(np.float32),
+            "is_first": embodied.Space(bool),
+            "is_last": embodied.Space(bool),
+            "is_terminal": embodied.Space(bool),
         }
 
     @functools.cached_property
@@ -46,11 +45,11 @@ class FromGym(embodied.Env):
         else:
             spaces = {self._act_key: self._env.action_space}
         spaces = {k: self._convert(v) for k, v in spaces.items()}
-        spaces['reset'] = embodied.Space(bool)
+        spaces["reset"] = embodied.Space(bool)
         return spaces
 
     def step(self, action):
-        if action['reset'] or self._done:
+        if action["reset"] or self._done:
             self._done = False
             obs = self._env.reset()
             return self._obs(obs, 0.0, is_first=True), {}
@@ -60,11 +59,13 @@ class FromGym(embodied.Env):
             action = action[self._act_key]
         obs, reward, self._done, self._info = self._env.step(action)
         is_last = bool(self._done)
-        is_terminal = bool(self._info.get('is_terminal', self._done))
-        return self._obs(obs, reward, is_last=is_last, is_terminal=is_terminal), self._info
+        is_terminal = bool(self._info.get("is_terminal", self._done))
+        return (
+            self._obs(obs, reward, is_last=is_last, is_terminal=is_terminal),
+            self._info,
+        )
 
-    def _obs(
-            self, obs, reward, is_first=False, is_last=False, is_terminal=False):
+    def _obs(self, obs, reward, is_first=False, is_last=False, is_terminal=False):
         if not self._obs_dict:
             obs = {self._obs_key: obs}
         obs = self._flatten(obs)
@@ -73,11 +74,12 @@ class FromGym(embodied.Env):
             reward=np.float32(reward),
             is_first=is_first,
             is_last=is_last,
-            is_terminal=is_terminal)
+            is_terminal=is_terminal,
+        )
         return obs
 
     def render(self):
-        image = self._env.render('rgb_array')
+        image = self._env.render("rgb_array")
         assert image is not None
         return image
 
@@ -90,7 +92,7 @@ class FromGym(embodied.Env):
     def _flatten(self, nest, prefix=None):
         result = {}
         for key, value in nest.items():
-            key = prefix + '/' + key if prefix else key
+            key = prefix + "/" + key if prefix else key
             if isinstance(value, gym.spaces.Dict):
                 value = value.spaces
             if isinstance(value, dict):
@@ -102,7 +104,7 @@ class FromGym(embodied.Env):
     def _unflatten(self, flat):
         result = {}
         for key, value in flat.items():
-            parts = key.split('/')
+            parts = key.split("/")
             node = result
             for part in parts[:-1]:
                 if part not in node:
@@ -112,6 +114,6 @@ class FromGym(embodied.Env):
         return result
 
     def _convert(self, space):
-        if hasattr(space, 'n'):
+        if hasattr(space, "n"):
             return embodied.Space(np.int32, (), 0, space.n)
         return embodied.Space(space.dtype, space.shape, space.low, space.high)

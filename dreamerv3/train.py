@@ -1,19 +1,20 @@
-import warnings
-import ruamel.yaml as yaml
-import dreamerv3
-import embodied
 import datetime
+import warnings
+
+import embodied
+import ruamel.yaml as yaml
 
 import car_dreamer
+import dreamerv3
 
-warnings.filterwarnings('ignore', '.*truncated to dtype int32.*')
+warnings.filterwarnings("ignore", ".*truncated to dtype int32.*")
 
 
 def wrap_env(env, config):
     args = config.wrapper
     env = embodied.wrappers.InfoWrapper(env)
     for name, space in env.act_space.items():
-        if name == 'reset':
+        if name == "reset":
             continue
         elif space.discrete:
             env = embodied.wrappers.OneHotAction(env, name)
@@ -33,12 +34,11 @@ def wrap_env(env, config):
 
 
 def main(argv=None):
+    model_configs = yaml.YAML(typ="safe").load((embodied.Path(__file__).parent / "dreamerv3.yaml").read())
+    config = embodied.Config({"dreamerv3": model_configs["defaults"]})
+    config = config.update({"dreamerv3": model_configs["small"]})
 
-    model_configs = yaml.YAML(typ='safe').load((embodied.Path(__file__).parent / 'dreamerv3.yaml').read())
-    config = embodied.Config({'dreamerv3': model_configs['defaults']})
-    config = config.update({'dreamerv3': model_configs['small']})
-
-    parsed, other = embodied.Flags(task=['carla_navigation']).parse_known(argv)
+    parsed, other = embodied.Flags(task=["carla_navigation"]).parse_known(argv)
     for name in parsed.task:
         print("Using task: ", name)
         env, env_config = car_dreamer.create_task(name, argv)
@@ -48,11 +48,14 @@ def main(argv=None):
 
     logdir = embodied.Path(config.dreamerv3.logdir)
     step = embodied.Counter()
-    logger = embodied.Logger(step, [
-        embodied.logger.TerminalOutput(),
-        embodied.logger.JSONLOutput(logdir, 'metrics.jsonl'),
-        embodied.logger.TensorBoardOutput(logdir),
-    ])
+    logger = embodied.Logger(
+        step,
+        [
+            embodied.logger.TerminalOutput(),
+            embodied.logger.JSONLOutput(logdir, "metrics.jsonl"),
+            embodied.logger.TensorBoardOutput(logdir),
+        ],
+    )
 
     from embodied.envs import from_gym
 
@@ -61,20 +64,21 @@ def main(argv=None):
     env = wrap_env(env, dreamerv3_config)
     env = embodied.BatchEnv([env], parallel=False)
 
-    timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
-    config_filename = f'config_{timestamp}.yaml'
+    timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    config_filename = f"config_{timestamp}.yaml"
     config.save(str(logdir / config_filename))
-    print(f'[Train] Config saved to {logdir / config_filename}')
+    print(f"[Train] Config saved to {logdir / config_filename}")
 
     agent = dreamerv3.Agent(env.obs_space, env.act_space, step, dreamerv3_config)
-    replay = embodied.replay.Uniform(
-        dreamerv3_config.batch_length, dreamerv3_config.replay_size, logdir / 'replay')
+    replay = embodied.replay.Uniform(dreamerv3_config.batch_length, dreamerv3_config.replay_size, logdir / "replay")
     args = embodied.Config(
-        **dreamerv3_config.run, logdir=dreamerv3_config.logdir,
+        **dreamerv3_config.run,
+        logdir=dreamerv3_config.logdir,
         batch_steps=dreamerv3_config.batch_size * dreamerv3_config.batch_length,
-        actor_dist_disc=dreamerv3_config.actor_dist_disc)
+        actor_dist_disc=dreamerv3_config.actor_dist_disc,
+    )
     embodied.run.train(agent, env, replay, logger, args)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
