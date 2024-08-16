@@ -273,9 +273,10 @@ If you find this repository useful, please cite this paper:
 
 # 👥 Contributors
 
-Special thanks to the community for your valuable contributions and support in making CarDreamer better for everyone! The contributor list is automatically generated based on commit history.
+Special thanks to the community for your valuable contributions and support in making CarDreamer better for everyone!
 
 <!-- readme: contributors -start -->
+
 <table>
 	<tbody>
 		<tr>
@@ -341,6 +342,18 @@ Special thanks to the community for your valuable contributions and support in m
 	<tbody>
 </table>
 <!-- readme: contributors -end -->
+
+### How to Contribute?
+
+The contributor list is automatically generated based on the commit history. Please use `pre-commit` to automatically check and format changes.
+
+```bash
+# Setup pre-commit tool
+pip install pre-commit
+pre-commit install
+# Run pre-commit
+pre-commit run --all-files
+```
 
 ### Credits
 
