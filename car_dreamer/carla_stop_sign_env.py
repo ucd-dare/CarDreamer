@@ -59,7 +59,7 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
             return 0.0
     
     def violate_traffic_light(self):
-        if self.is_near_sepecific_stop_sign(self._config.traffic_locations):
+        if self.is_within_stop_sign_proximity(self._config.traffic_locations):
             self._stop_time += 1
             self._entered = 1
         elif self._entered == 1: # Mark the leaving
@@ -69,7 +69,7 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
             return True
         return False
         
-    def is_near_sepecific_stop_sign(self, sign_location):
+    def is_within_stop_sign_proximity(self, sign_location):
         """
         Check if the ego vehicle is near the stop sign.
         """
