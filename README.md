@@ -276,7 +276,6 @@ If you find this repository useful, please cite this paper:
 Special thanks to the community for your valuable contributions and support in making CarDreamer better for everyone!
 
 <!-- readme: contributors -start -->
-
 <table>
 	<tbody>
 		<tr>
