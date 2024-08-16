@@ -76,14 +76,14 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         ego_location = np.array([*get_vehicle_pos(self.ego), 0.1])
         distance = np.linalg.norm(ego_location - sign_location)
 
-        return distance <= self._config.stop_sign_near_threshold
+        return distance <= self._config.stop_sign_proximity_threshold
 
     def _is_ego_near_stop_sign(self, stop_sign: carla.Actor) -> bool:
         """Check if the ego vehicle is within the proximity threshold of the stop sign."""
         ego_location = self.ego.get_location()
         stop_sign_location = stop_sign.get_location()
         distance = ego_location.distance(stop_sign_location)
-        return distance < self._config.stop_sign_near_threshold
+        return distance < self._config.stop_sign_proximity_threshold
     
     def handle_stop_sign(self):
         stop_signs = self._world._get_world().get_actors().filter('traffic.stop')
