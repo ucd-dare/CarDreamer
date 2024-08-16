@@ -276,7 +276,6 @@ If you find this repository useful, please cite this paper:
 Special thanks to the community for your valuable contributions and support in making CarDreamer better for everyone! The contributor list is automatically generated based on commit history.
 
 <!-- readme: contributors -start -->
-
 <table>
 	<tbody>
 		<tr>
