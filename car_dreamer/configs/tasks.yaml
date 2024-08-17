@@ -1,16 +1,8 @@
-carla_wpt:
-  &carla_wpt # It's a base configuration for wpt tasks, don't use it directly
+carla_wpt: &carla_wpt
+  # It's a base configuration for wpt tasks, don't use it directly
   reward:
     desired_speed: 4 # desired speed (m/s)
-    scales:
-      {
-        waypoint: 2.0,
-        speed: 0.5,
-        collision: 30.0,
-        out_of_lane: 3.0,
-        time: 0.0,
-        destination_reached: 20.0,
-      }
+    scales: { waypoint: 2.0, speed: 0.5, collision: 30.0, out_of_lane: 3.0, time: 0.0, destination_reached: 20.0 }
   terminal:
     time_limit: 500 # maximum timesteps per episode
     out_lane_thres: 3 # threshold for out of lane
@@ -74,34 +66,33 @@ carla_overtake:
     lane_end_points:
       - [5.8, 0.0, 0.1]
     swing_steer: 0.04 # The background vehicle steer for swing .
-    swing_amplitude: 0.2 # The y-axis amplitude of background vehicle steer.
-    swing_trigger_dist: 20 # The distance between ego and background vehicle that triggers swing.
+    swing_amplitude: 0.2  # The y-axis amplitude of background vehicle steer.
+    swing_trigger_dist: 20  # The distance between ego and background vehicle that triggers swing.
     pid_coeffs: [0.03, 0.0, 0.03] # The PID controller parameter for background vehicle lane keeping.
     reward:
       desired_speed: 5 # desired speed (m/s)
       reward_overtake_dist: 8 # The distance that triggers overtake reward.
-      early_lane_change_dist: 10 # The distance that penalizes early lane change.
+      early_lane_change_dist: 10  # The distance that penalizes early lane change.
       lane_width: 3.4
-      scales:
-        {
-          waypoint: 2.0,
-          speed: 0.5,
-          stay_same_lane: 0.3,
-          out_of_lane: 3.0,
-          collision: 30.0,
-          time: 0.0,
-          exceeding: 200.0,
-          overtake: 200.0,
-          early_lane_change: 0.0,
-          destination_reached: 20.0,
-        }
+      scales: {
+        waypoint: 2.0,
+        speed: 0.5,
+        stay_same_lane: 0.3,
+        out_of_lane: 3.0,
+        collision: 30.0,
+        time: 0.0,
+        exceeding: 200.0,
+        overtake: 200.0,
+        early_lane_change: 0.0,
+        destination_reached: 20.0
+      }
     terminal:
       out_lane_thres: 5 # threshold for out of lane
       time_limit: 500 # maximum timesteps per episode
-      left_lane_boundry: 3.7 # out of lane boundry
+      left_lane_boundry: 3.7  # out of lane boundry
       right_lane_boundry: 17.7
       lane_width: 3.4
-      terminal_dist: 100 # terminate tasks
+      terminal_dist: 100  # terminate tasks
 
   dreamerv3:
     encoder.cnn_keys: "birdeye_wpt"
@@ -149,6 +140,30 @@ carla_right_turn_hard:
   env.min_flow_dist: 6
   env.max_flow_dist: 8
 
+carla_right_turn_random:
+  env:
+    world:
+      town: Town03
+    name: CarlaRightTurnRandomEnv-v0
+    action:
+      discrete_steer: [-0.9, -0.3, 0.0, 0.3, 0.9]
+    observation.enabled: [camera, collision, birdeye_wpt]
+    <<: *carla_wpt
+    lane_start_point: [[-33.8, -135.1, 0.1, 0.0], [-3.2, -165.2, 0.1, 90], [9.3, -106.2, 0.1, -90]]
+    ego_path: [[[-33.8, -135.1, 0.1], [-5.0, -110.3, 0.1]], [[-3.2, -165.2, 0.1, 90], [-20.7, -142.2, 0.1, 180]], [[9.3, -106.2, 0.1, -90], [31.3, -130.7, 0.1, 0]]]
+    use_road_waypoints: [True, False]
+
+  dreamerv3:
+    encoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_keys: "birdeye_wpt"
+    run.log_keys_video: [camera, birdeye_wpt]
+
+  dreamerv2:
+    encoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_kernels: [5, 5, 5, 6, 6]
+    train.log_keys_video: [camera, birdeye_wpt]
+
 carla_left_turn_simple: &carla_left_turn_simple
   env:
     world:
@@ -191,15 +206,7 @@ carla_roundabout:
     observation.enabled: [camera, collision, birdeye_wpt]
     <<: *carla_wpt
     lane_start_point: [-52.6, 1.0, 0.1, 0.0]
-    ego_path:
-      [
-        [-52.6, 1.0, 0.1],
-        [-23.0, 7.5, 0.1],
-        [-17.0, 11.7, 0.1],
-        [13.3, -13.2, 0.1],
-        [7.6, -21.8, 0.1],
-        [4.2, -43.2, 0.1],
-      ]
+    ego_path: [[-52.6, 1.0, 0.1], [-23.0, 7.5, 0.1], [-17.0, 11.7, 0.1], [13.3, -13.2, 0.1], [7.6, -21.8, 0.1], [4.2, -43.2, 0.1]]
     use_road_waypoints: [True, False, True, False, True, False]
     flow_spawn_point: [-14.1, -13.5, 0.1, 125.0]
     min_flow_dist: 10
@@ -267,22 +274,10 @@ carla_traffic_lights:
       time_limit: 500 # maximum timesteps per episode
       out_lane_thres: 3 # threshold for out of lane
 
-    lane_start_point:
-      [
-        [-0.3, -163.4, 0.1, 90.0],
-        [-0.3, -163.4, 0.1, 90.0],
-        [-3.5, -163.8, 0.1, 90.0],
-        [-3.5, -163.8, 0.1, 90.0],
-      ]
-    ego_path:
-      [
-        [[-0.3, -163.4, 0.1], [32.5, -133.8, 0.1]],
-        [[-0.3, -163.4, 0.1], [-1.5, -111.0, 0.1]],
-        [[-3.5, -163.8, 0.1], [-4.7, -110.6, 0.1]],
-        [[-3.5, -163.8, 0.1], [-27.0, -138.8, 0.1]],
-      ]
+    lane_start_point: [[-0.3, -163.4, 0.1, 90.0], [-0.3, -163.4, 0.1, 90.0], [-3.5, -163.8, 0.1, 90.0], [-3.5, -163.8, 0.1, 90.0]]
+    ego_path: [[[-0.3, -163.4, 0.1], [32.5, -133.8, 0.1]], [[-0.3, -163.4, 0.1], [-1.5, -111.0, 0.1]], [[-3.5, -163.8, 0.1], [-4.7, -110.6, 0.1]], [[-3.5, -163.8, 0.1], [-27.0, -138.8, 0.1]]]
     use_road_waypoints: [True, False]
-    traffic_locations: [-3.4, -125.1, 0.1] # Location of traffic sign
+    traffic_locations: [-3.4, -125.1, 0.1]  # Location of traffic sign
     red_duration: [60, 80]
     green_duration: [40, 50]
 
