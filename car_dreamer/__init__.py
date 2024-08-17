@@ -15,6 +15,7 @@ from .carla_left_turn_env import CarlaLeftTurnEnv
 from .carla_navigation_env import CarlaNavigationEnv
 from .carla_overtake_env import CarlaOvertakeEnv
 from .carla_right_turn_env import CarlaRightTurnEnv
+from .carla_right_turn_random_env import CarlaRightTurnRandomEnv
 from .carla_roundabout_env import CarlaRoundaboutEnv
 from .carla_stop_sign_env import CarlaStopSignEnv
 from .carla_traffic_lights_env import CarlaTrafficLightsEnv
