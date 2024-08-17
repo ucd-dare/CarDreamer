@@ -71,7 +71,7 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
             return 0.0
 
     def violate_traffic_light(self):
-        if self.is_near_sepecific_stop_sign(self._config.traffic_locations):
+        if self.is_within_stop_sign_proximity(self._config.traffic_locations):
             self._stop_time += 1
             self._entered = 1
         elif self._entered == 1:  # Mark the leaving
@@ -80,23 +80,24 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         if self._entered == 2 and self._stop_time < self._config.stopping_time:
             return True
         return False
+        
+    def is_within_stop_sign_proximity(self, sign_location):
 
-    def is_near_sepecific_stop_sign(self, sign_location):
         """
         Check if the ego vehicle is near the stop sign.
         """
         ego_location = np.array([*get_vehicle_pos(self.ego), 0.1])
         distance = np.linalg.norm(ego_location - sign_location)
 
-        return distance <= self._config.stop_sign_near_threshold
+        return distance <= self._config.stop_sign_proximity_threshold
 
     def _is_ego_near_stop_sign(self, stop_sign: carla.Actor) -> bool:
         """Check if the ego vehicle is within the proximity threshold of the stop sign."""
         ego_location = self.ego.get_location()
         stop_sign_location = stop_sign.get_location()
         distance = ego_location.distance(stop_sign_location)
-        return distance < self._config.stop_sign_near_threshold
-
+        return distance < self._config.stop_sign_proximity_threshold
+    
     def handle_stop_sign(self):
         stop_signs = self._world._get_world().get_actors().filter("traffic.stop")
         for stop_sign in stop_signs:
