@@ -268,13 +268,6 @@ class BirdeyeRenderer:
 
             self._render_stop_sign(self._surface, stop_sign, color)
 
-    # def _is_ego_near_stop_sign(self, stop_sign: carla.Actor) -> bool:
-    #     """Check if the ego vehicle is within the proximity threshold of the stop sign."""
-    #     ego_location = self._ego.get_location()
-    #     stop_sign_location = stop_sign.get_location()
-    #     distance = ego_location.distance(stop_sign_location)
-    #     return distance < self._stop_sign_near_threshold
-
     def _render_stop_sign(self, surface, stop_sign: carla.Actor, color: Color):
         """Render a stop sign on the surface."""
         world_pos = stop_sign.get_location()
