@@ -276,7 +276,6 @@ If you find this repository useful, please cite this paper:
 Special thanks to the community for your valuable contributions and support in making CarDreamer better for everyone!
 
 <!-- readme: contributors -start -->
-
 <table>
 	<tbody>
 		<tr>
@@ -329,6 +328,13 @@ Special thanks to the community for your valuable contributions and support in m
                     <img src="https://avatars.githubusercontent.com/u/91163000?v=4" width="100;" alt="IanGuangleiZhu"/>
                     <br />
                     <sub><b>IanGuangleiZhu</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/liamjxu">
+                    <img src="https://avatars.githubusercontent.com/u/48697394?v=4" width="100;" alt="liamjxu"/>
+                    <br />
+                    <sub><b>liamjxu</b></sub>
                 </a>
             </td>
             <td align="center">
