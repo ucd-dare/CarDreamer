@@ -337,6 +337,13 @@ Special thanks to the community for your valuable contributions and support in m
                     <sub><b>TracyYXChen</b></sub>
                 </a>
             </td>
+            <td align="center">
+                <a href="https://github.com/swsamleo">
+                    <img src="https://avatars.githubusercontent.com/u/12550596?v=4" width="100;" alt="swsamleo"/>
+                    <br />
+                    <sub><b>Wei Shao</b></sub>
+                </a>
+            </td>
 		</tr>
 	<tbody>
 </table>
