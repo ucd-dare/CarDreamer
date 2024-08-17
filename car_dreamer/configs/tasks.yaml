@@ -363,7 +363,7 @@ carla_stop_sign:
     ego_path: [[[179.5, -169.5, 0.1], [215.5, -169.1, 0.1]]]
     use_road_waypoints: [True, False]
     traffic_locations: [189.9, -169.6, 0.1] # Location of traffic sign
-    stop_sign_near_threshold: 2
+    stop_sign_proximity_threshold: 2
     stopping_time: 60 # How long should the vehicle stops
 
     display:
