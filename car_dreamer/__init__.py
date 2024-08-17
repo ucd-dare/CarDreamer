@@ -40,11 +40,11 @@ def load_task_configs(task_name: str):
 
     import yaml
 
-    dir = os.path.dirname(__file__) + "/configs/"
-    with open(dir + "common.yaml", "r") as f:
+    dir = os.path.join(os.path.dirname(__file__), "configs")
+    with open(os.path.join(dir, "common.yaml")) as f:
         config = yaml.safe_load(f)
         config = toolkit.Config(config)
-    with open(dir + "tasks.yaml", "r") as f:
+    with open(os.path.join(dir, "tasks.yaml")) as f:
         task_config = yaml.safe_load(f)
         config = config.update(task_config[task_name])
     return config
