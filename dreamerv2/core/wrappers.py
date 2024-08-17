@@ -40,14 +40,13 @@ class CarryWrapper(base.Wrapper):
         self._carry = carry
 
     def step(self, action):
-        if hasattr(self._env.unwrapped, 'set_carry') and self._carry is not None:
+        if hasattr(self._env.unwrapped, "set_carry") and self._carry is not None:
             state = tf.nest.map_structure(lambda x: x.numpy(), self._carry)
             self._env.unwrapped.set_carry(state)
         return self.env.step(action)
 
 
 class TimeLimit(base.Wrapper):
-
     def __init__(self, env, duration, reset=True):
         super().__init__(env)
         self._duration = duration
@@ -56,7 +55,7 @@ class TimeLimit(base.Wrapper):
         self._done = False
 
     def step(self, action):
-        if action['reset'] or self._done:
+        if action["reset"] or self._done:
             self._step = 0
             self._done = False
             if self._reset:
@@ -65,40 +64,38 @@ class TimeLimit(base.Wrapper):
             else:
                 action.update(reset=False)
                 obs = self.env.step(action)
-                obs['is_first'] = True
+                obs["is_first"] = True
                 return obs
         self._step += 1
         obs = self.env.step(action)
         if self._duration and self._step >= self._duration:
-            obs['is_last'] = True
-        self._done = obs['is_last']
+            obs["is_last"] = True
+        self._done = obs["is_last"]
         return obs
 
 
 class ActionRepeat(base.Wrapper):
-
     def __init__(self, env, repeat):
         super().__init__(env)
         self._repeat = repeat
         self._done = False
 
     def step(self, action):
-        if action['reset'] or self._done:
+        if action["reset"] or self._done:
             return self.env.step(action)
         reward = 0.0
         for _ in range(self._repeat):
             obs = self.env.step(action)
-            reward += obs['reward']
-            if obs['is_last'] or obs['is_terminal']:
+            reward += obs["reward"]
+            if obs["is_last"] or obs["is_terminal"]:
                 break
-        obs['reward'] = reward
-        self._done = obs['is_last']
+        obs["reward"] = reward
+        self._done = obs["is_last"]
         return obs
 
 
 class NormalizeAction(base.Wrapper):
-
-    def __init__(self, env, key='action'):
+    def __init__(self, env, key="action"):
         super().__init__(env)
         self._key = key
         space = env.act_space[key]
@@ -120,8 +117,7 @@ class NormalizeAction(base.Wrapper):
 
 
 class OneHotAction(base.Wrapper):
-
-    def __init__(self, env, key='action'):
+    def __init__(self, env, key="action"):
         super().__init__(env)
         self._count = int(env.act_space[key].high)
         self._key = key
@@ -135,7 +131,7 @@ class OneHotAction(base.Wrapper):
         return {**self.env.act_space, self._key: space}
 
     def step(self, action):
-        if not action['reset']:
+        if not action["reset"]:
             assert (action[self._key].min() == 0.0).all(), action
             assert (action[self._key].max() == 1.0).all(), action
             assert (action[self._key].sum() == 1.0).all(), action
@@ -149,8 +145,8 @@ class OneHotAction(base.Wrapper):
         action[index] = 1.0
         return action
 
-class ExpandScalars(base.Wrapper):
 
+class ExpandScalars(base.Wrapper):
     def __init__(self, env):
         super().__init__(env)
         self._obs_expanded = []
@@ -160,7 +156,7 @@ class ExpandScalars(base.Wrapper):
     def obs_space(self):
         spaces = self.env.obs_space.copy()
         for key, value in spaces.items():
-            if value.shape == () and key != 'reward' and not value.discrete:
+            if value.shape == () and key != "reward" and not value.discrete:
                 value.shape = (1,)
                 self._obs_expanded.append(key)
         return spaces
@@ -175,18 +171,13 @@ class ExpandScalars(base.Wrapper):
         return spaces
 
     def step(self, action):
-        action = {
-            key: np.squeeze(value, 0) if key in self._act_expanded else value
-            for key, value in action.items()}
+        action = {key: np.squeeze(value, 0) if key in self._act_expanded else value for key, value in action.items()}
         obs = self.env.step(action)
-        obs = {
-            key: np.expand_dims(value, 0) if key in self._obs_expanded else value
-            for key, value in obs.items()}
+        obs = {key: np.expand_dims(value, 0) if key in self._obs_expanded else value for key, value in obs.items()}
         return obs
 
 
 class FlattenTwoDimObs(base.Wrapper):
-
     def __init__(self, env):
         super().__init__(env)
         self._keys = []
@@ -208,7 +199,6 @@ class FlattenTwoDimObs(base.Wrapper):
 
 
 class CheckSpaces(base.Wrapper):
-
     def __init__(self, env):
         super().__init__(env)
 
@@ -216,19 +206,28 @@ class CheckSpaces(base.Wrapper):
         for key, value in action.items():
             space = self.env.act_space[key]
             assert value in space, (
-                value.dtype, value.shape, np.min(value), np.max(value), space)
+                value.dtype,
+                value.shape,
+                np.min(value),
+                np.max(value),
+                space,
+            )
         obs = self.env.step(action)
         for key, value in obs.items():
             space = self.env.obs_space[key]
             assert value in space, (
-                key, np.array(value).dtype, np.array(value).shape,
-                np.min(value), np.max(value), space)
+                key,
+                np.array(value).dtype,
+                np.array(value).shape,
+                np.min(value),
+                np.max(value),
+                space,
+            )
         return obs
 
 
 class DiscretizeAction(base.Wrapper):
-
-    def __init__(self, env, key='action', bins=5):
+    def __init__(self, env, key="action", bins=5):
         super().__init__(env)
         self._dims = np.squeeze(env.act_space[key].shape, 0).item()
         self._values = np.linspace(-1, 1, bins)
@@ -238,13 +237,12 @@ class DiscretizeAction(base.Wrapper):
     def act_space(self):
         shape = (self._dims, len(self._values))
         space = spacelib.Space(np.float32, shape, 0, 1)
-        space.sample = functools.partial(
-            self._sample_action, self._dims, self._values)
+        space.sample = functools.partial(self._sample_action, self._dims, self._values)
         space.discrete = True
         return {**self.env.act_space, self._key: space}
 
     def step(self, action):
-        if not action['reset']:
+        if not action["reset"]:
             assert (action[self._key].min(-1) == 0.0).all(), action
             assert (action[self._key].max(-1) == 1.0).all(), action
             assert (action[self._key].sum(-1) == 1.0).all(), action
@@ -261,16 +259,14 @@ class DiscretizeAction(base.Wrapper):
 
 
 class ResizeImage(base.Wrapper):
-
     def __init__(self, env, size=(64, 64)):
         super().__init__(env)
         self._size = size
-        self._keys = [
-            k for k, v in env.obs_space.items()
-            if len(v.shape) > 1 and v.shape[:2] != size]
+        self._keys = [k for k, v in env.obs_space.items() if len(v.shape) > 1 and v.shape[:2] != size]
         print(f'Resizing keys {",".join(self._keys)} to {self._size}.')
         if self._keys:
             from PIL import Image
+
             self._Image = Image
 
     @functools.cached_property
@@ -295,8 +291,7 @@ class ResizeImage(base.Wrapper):
 
 
 class RenderImage(base.Wrapper):
-
-    def __init__(self, env, key='image'):
+    def __init__(self, env, key="image"):
         super().__init__(env)
         self._key = key
         self._shape = self.env.render().shape
@@ -314,9 +309,7 @@ class RenderImage(base.Wrapper):
 
 
 class RestartOnException(base.Wrapper):
-
-    def __init__(
-            self, ctor, exceptions=(Exception,), window=300, maxfails=2, wait=20):
+    def __init__(self, ctor, exceptions=(Exception,), window=300, maxfails=2, wait=20):
         if not isinstance(exceptions, (tuple, list)):
             exceptions = [exceptions]
         self._ctor = ctor
@@ -338,10 +331,10 @@ class RestartOnException(base.Wrapper):
             else:
                 self._fails += 1
             if self._fails > self._maxfails:
-                raise RuntimeError('The env crashed too many times.')
-            message = f'Restarting env after crash with {type(e).__name__}: {e}'
+                raise RuntimeError("The env crashed too many times.")
+            message = f"Restarting env after crash with {type(e).__name__}: {e}"
             print(message, flush=True)
             time.sleep(self._wait)
             self.env = self._ctor()
-            action['reset'] = np.ones_like(action['reset'])
+            action["reset"] = np.ones_like(action["reset"])
             return self.env.step(action)

@@ -1,13 +1,15 @@
-from typing import List, Dict, Tuple
-import carla
 import math
-import numpy as np
-import cv2
+from typing import Dict, List, Tuple
 
-from ....carla_manager import WorldManager, Command, ActorPolygon
+import carla
+import cv2
+import numpy as np
+
+from ....carla_manager import ActorPolygon, Command, WorldManager
+from ..utils import should_filter
 from .constants import BirdeyeEntity, Color
 from .map_renderer import MapRenderer
-from ..utils import should_filter
+
 
 class BirdeyeRenderer:
     def __init__(
@@ -34,7 +36,7 @@ class BirdeyeRenderer:
         self._command_initial = {
             Command.LaneFollow: "^",
             Command.LaneChangeLeft: "<",
-            Command.LaneChangeRight: ">"
+            Command.LaneChangeRight: ">",
         }
 
     def set_ego(self, ego: carla.Actor):
@@ -76,7 +78,7 @@ class BirdeyeRenderer:
 
     def _render_ego_vehicle(self, **env_state):
         """Render the ego actor on the surface."""
-        color = env_state.get('ego_vehicle_color', Color.RED)
+        color = env_state.get("ego_vehicle_color", Color.RED)
         ego_polygon = self._world_manager.actor_polygons[self._ego.id]
         self._render_polygon(self._surface, ego_polygon, color)
 
@@ -94,11 +96,11 @@ class BirdeyeRenderer:
         ego_location = ego_transform.location
         left_fov_endpoint = (
             ego_location.x + line_length * math.cos(math.radians(left_fov_yaw)),
-            ego_location.y + line_length * math.sin(math.radians(left_fov_yaw))
+            ego_location.y + line_length * math.sin(math.radians(left_fov_yaw)),
         )
         right_fov_endpoint = (
             ego_location.x + line_length * math.cos(math.radians(right_fov_yaw)),
-            ego_location.y + line_length * math.sin(math.radians(right_fov_yaw))
+            ego_location.y + line_length * math.sin(math.radians(right_fov_yaw)),
         )
 
         ego_location_pixel = self._world_to_pixel(ego_location)
@@ -113,25 +115,28 @@ class BirdeyeRenderer:
         Render the waypoints for the ego actor on the surface.
         You must provide 'ego_waypoints'.
         """
-        if 'dest_x' in env_state:
-            dest_start = carla.Location(x=env_state['dest_x'], y=self._ego.get_transform().location.y - 16)
+        if "dest_x" in env_state:
+            dest_start = carla.Location(x=env_state["dest_x"], y=self._ego.get_transform().location.y - 16)
             dest_start = self._world_to_pixel(dest_start)
-            dest_end = carla.Location(x=env_state['dest_x'], y=self._ego.get_transform().location.y + 10)
+            dest_end = carla.Location(x=env_state["dest_x"], y=self._ego.get_transform().location.y + 10)
             dest_end = self._world_to_pixel(dest_end)
             cv2.line(self._surface, dest_start, dest_end, Color.SKY_BLUE_0, 6)
-        color = env_state.get('waypoints_color', Color.BLUE)
-        ego_waypoints = env_state['ego_waypoints']
+        color = env_state.get("waypoints_color", Color.BLUE)
+        ego_waypoints = env_state["ego_waypoints"]
         ego_polygon = self._world_manager.actor_polygons[self._ego.id]
         self._render_path(self._surface, ego_polygon, ego_waypoints, color)
 
     def _render_background_vehicles(self, **env_state):
         """Render the background vehicles on the surface."""
-        color = env_state.get('background_vehicles_color')
+        color = env_state.get("background_vehicles_color")
         vehicle_polygons = self._world_manager.actor_polygons
         ego_id = self._ego.id
 
         for vehicle_id, polygon in vehicle_polygons.items():
-            if vehicle_id == ego_id or should_filter(self._ego.get_transform(), self._world_manager.actor_transforms[vehicle_id]):
+            if vehicle_id == ego_id or should_filter(
+                self._ego.get_transform(),
+                self._world_manager.actor_transforms[vehicle_id],
+            ):
                 continue
             vehicle_color = color.get(vehicle_id, None)
             if vehicle_color is not None:
@@ -139,17 +144,21 @@ class BirdeyeRenderer:
 
     def _render_background_waypoints(self, **env_state):
         """Render the waypoints for background actors on the surface."""
-        color = env_state.get('background_waypoints_color')
-        extend_waypoints = env_state.get('extend_waypoints', False)
+        color = env_state.get("background_waypoints_color")
+        extend_waypoints = env_state.get("extend_waypoints", False)
         background_waypoints = self._world_manager.actor_actions
         background_waypoints = {
             id: [(action[1].transform.location.x, action[1].transform.location.y) for action in actions]
-            for id, actions in background_waypoints.items() if actions
+            for id, actions in background_waypoints.items()
+            if actions
         }
         vehicle_polygons = self._world_manager.actor_polygons
 
         for vehicle_id, path in background_waypoints.items():
-            if vehicle_id == self._ego.id or should_filter(self._ego.get_transform(), self._world_manager.actor_transforms[vehicle_id]):
+            if vehicle_id == self._ego.id or should_filter(
+                self._ego.get_transform(),
+                self._world_manager.actor_transforms[vehicle_id],
+            ):
                 continue
             vehicle_polygon = vehicle_polygons.get(vehicle_id, None)
             if vehicle_polygon is None:
@@ -167,7 +176,7 @@ class BirdeyeRenderer:
         Render the messages for background actors on the surface.
         You must expose the command and goal through environment states.
         """
-        color = env_state.get('messages_color', Color.WHITE)
+        color = env_state.get("messages_color", Color.WHITE)
 
         def render_character(location, message, message_color):
             font_scale, font_thickness = 3, 2
@@ -176,25 +185,37 @@ class BirdeyeRenderer:
             # Adjusting position to center the text
             text_x = pixel[0] - text_size[0] // 2
             text_y = pixel[1] + text_size[1] // 2
-            cv2.putText(self._surface, message, (text_x, text_y), self._font,
-                        font_scale, message_color, font_thickness, cv2.LINE_AA)
+            cv2.putText(
+                self._surface,
+                message,
+                (text_x, text_y),
+                self._font,
+                font_scale,
+                message_color,
+                font_thickness,
+                cv2.LINE_AA,
+            )
 
-        command = env_state.get('command', None)
+        command = env_state.get("command", None)
         if command is not None:
             polygon = self._world_manager.actor_polygons[self._ego.id]
-            location = carla.Location(x=(polygon[0][0] + polygon[1][0]) / 2, y=(polygon[0][1] + polygon[1][1]) / 2)
+            location = carla.Location(
+                x=(polygon[0][0] + polygon[1][0]) / 2,
+                y=(polygon[0][1] + polygon[1][1]) / 2,
+            )
             message = self._command_initial.get(command, None)
             message_color = Color.WHITE
             if message:
                 render_character(location, message, message_color)
 
         background_messages = self._world_manager.actor_actions
-        background_messages = {
-            id: actions[0][0] for id, actions in background_messages.items() if actions
-        }
+        background_messages = {id: actions[0][0] for id, actions in background_messages.items() if actions}
 
         for vehicle_id, message in background_messages.items():
-            if vehicle_id == self._ego.id or should_filter(self._ego.get_transform(), self._world_manager.actor_transforms[vehicle_id]):
+            if vehicle_id == self._ego.id or should_filter(
+                self._ego.get_transform(),
+                self._world_manager.actor_transforms[vehicle_id],
+            ):
                 continue
             polygon = self._world_manager.actor_polygons.get(vehicle_id, None)
             if polygon is None:
@@ -204,11 +225,14 @@ class BirdeyeRenderer:
                 continue
             message = self._command_initial.get(message, None)
             if message:
-                location = carla.Location(x=(polygon[0][0] + polygon[1][0]) / 2, y=(polygon[0][1] + polygon[1][1]) / 2)
+                location = carla.Location(
+                    x=(polygon[0][0] + polygon[1][0]) / 2,
+                    y=(polygon[0][1] + polygon[1][1]) / 2,
+                )
                 render_character(location, message, message_color)
-    
+
     def _render_traffic_lights(self, **env_state):
-        traffic_lights = self._world_manager.carla_actors('traffic_light')
+        traffic_lights = self._world_manager.carla_actors("traffic_light")
         for traffic_light in traffic_lights:
             # Get the color based on the traffic light state
             if traffic_light.state == carla.TrafficLightState.Red:
@@ -231,8 +255,8 @@ class BirdeyeRenderer:
         cv2.circle(surface, center=pos, radius=radius, color=color, thickness=cv2.FILLED)
 
     def _render_stop_signs(self, **env_state):
-        stop_sign_state = env_state.get('stop_sign_state')
-        stop_signs = self._world_manager.carla_actors('stop')
+        stop_sign_state = env_state.get("stop_sign_state")
+        stop_signs = self._world_manager.carla_actors("stop")
         for stop_sign in stop_signs:
             if stop_sign.id in stop_sign_state:
                 if stop_sign_state[stop_sign.id]["color"] == 0:
@@ -271,23 +295,31 @@ class BirdeyeRenderer:
     def _blit_centered(self, display: np.ndarray):
         center_offset = (
             max(0, (display.shape[1] - self._map_size) // 2),
-            max(0, (display.shape[0] - self._map_size) // 2)
+            max(0, (display.shape[0] - self._map_size) // 2),
         )
         display[
-            center_offset[1]:center_offset[1] + min(self._map_size, display.shape[0]),
-            center_offset[0]:center_offset[0] + min(self._map_size, display.shape[1])
+            center_offset[1] : center_offset[1] + min(self._map_size, display.shape[0]),
+            center_offset[0] : center_offset[0] + min(self._map_size, display.shape[1]),
         ] = self._surface[
-            :min(self._map_size, display.shape[0]),
-            :min(self._map_size, display.shape[1])
+            : min(self._map_size, display.shape[0]),
+            : min(self._map_size, display.shape[1]),
         ]
 
     def _render_polygon(self, surface: np.ndarray, vehicle_polygon: ActorPolygon, color: Color):
         """Render a list of polygons on the surface."""
-        actor_corners = np.array([self._world_to_pixel(carla.Location(x=p[0], y=p[1]))
-                                 for p in vehicle_polygon], dtype=np.int32)
+        actor_corners = np.array(
+            [self._world_to_pixel(carla.Location(x=p[0], y=p[1])) for p in vehicle_polygon],
+            dtype=np.int32,
+        )
         cv2.fillPoly(surface, [actor_corners], color)
 
-    def _render_path(self, surface: np.ndarray, vehicle_polygon: ActorPolygon, path: List[Tuple[float, float]], color: Color):
+    def _render_path(
+        self,
+        surface: np.ndarray,
+        vehicle_polygon: ActorPolygon,
+        path: List[Tuple[float, float]],
+        color: Color,
+    ):
         """Render a path on the surface using the centroid of the polygon."""
         # Calculate the centroid of the polygon
         num_points = len(vehicle_polygon)
@@ -307,8 +339,10 @@ class BirdeyeRenderer:
         path = path[start:]
 
         # Convert the centroid and path points to pixel coordinates
-        corners = np.array([self._world_to_pixel(carla.Location(x=p[0], y=p[1]))
-                            for p in [polygon_center] + path], dtype=np.int32)
+        corners = np.array(
+            [self._world_to_pixel(carla.Location(x=p[0], y=p[1])) for p in [polygon_center] + path],
+            dtype=np.int32,
+        )
         # Draw the path as a polyline on the surface
         cv2.polylines(surface, [corners], False, color, 15)
 

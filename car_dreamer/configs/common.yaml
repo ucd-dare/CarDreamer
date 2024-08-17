@@ -1,7 +1,7 @@
 env:
   eval: False
   require_carry: False
-  
+
   world:
     carla_port: 2000
     town: "Town04" # which town to simulate
@@ -47,7 +47,7 @@ env:
       blueprint: sensor.other.collision
       key: collision
       shape: [1]
-    
+
     spectator:
       handler: spectator
       key: spectator
@@ -83,7 +83,14 @@ env:
       color_by_obs: False
       waypoint_obs: visible
       extend_wpt: False
-      entities: [roadmap, waypoints, background_waypoints, ego_vehicle, background_vehicles]
+      entities:
+        [
+          roadmap,
+          waypoints,
+          background_waypoints,
+          ego_vehicle,
+          background_vehicles,
+        ]
 
     # Render all information on BEV
     birdeye_gt:
@@ -97,7 +104,15 @@ env:
       color_by_obs: True
       waypoint_obs: visible
       extend_wpt: False
-      entities: [roadmap, waypoints, background_waypoints, fov_lines, ego_vehicle, background_vehicles]
+      entities:
+        [
+          roadmap,
+          waypoints,
+          background_waypoints,
+          fov_lines,
+          ego_vehicle,
+          background_vehicles,
+        ]
 
     # Render traffic sign on BEV
     birdeye_traffic:
@@ -111,7 +126,16 @@ env:
       color_by_obs: False
       waypoint_obs: visible
       extend_wpt: False
-      entities: [roadmap, waypoints, background_waypoints, ego_vehicle, background_vehicles, traffic_lights, stop_signs]
+      entities:
+        [
+          roadmap,
+          waypoints,
+          background_waypoints,
+          ego_vehicle,
+          background_vehicles,
+          traffic_lights,
+          stop_signs,
+        ]
 
   display:
     enable: True

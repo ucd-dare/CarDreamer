@@ -1,9 +1,9 @@
+from abc import abstractmethod
 from typing import Dict, Tuple
 
-from gym import spaces
-import numpy as np
-from abc import abstractmethod
 import carla
+import numpy as np
+from gym import spaces
 
 from ...carla_manager import WorldManager
 from .base_handler import BaseHandler
@@ -17,11 +17,11 @@ class SensorHandler(BaseHandler):
     def __init__(self, world: WorldManager, config):
         super().__init__(world, config)
         blueprint = self._world.get_blueprint(config.blueprint)
-        if 'transform' in config:
+        if "transform" in config:
             self._transform = carla.Transform(carla.Location(**config.transform))
         else:
             self._transform = carla.Transform()
-        if 'attributes' in config:
+        if "attributes" in config:
             for attr_name, attr_value in config.attributes.items():
                 blueprint.set_attribute(attr_name, str(attr_value))
         self._blueprint = blueprint
@@ -51,9 +51,7 @@ class SensorHandler(BaseHandler):
         return {self._config.key: self._get_observation_space()}
 
     def get_observation(self, env_state: Dict) -> Tuple[Dict, Dict]:
-        obs = {
-            self._config.key: self._data if self._data is not None else self._default_obs
-        }
+        obs = {self._config.key: (self._data if self._data is not None else self._default_obs)}
         info = {}
         return obs, info
 
@@ -97,24 +95,28 @@ class LidarHandler(SensorHandler):
         if self._data is None:
             return {self._config.key: self._default_obs}, {}
 
-        points = np.frombuffer(self._data.raw_data, dtype=np.dtype('f4')).reshape(-1, 4)
+        points = np.frombuffer(self._data.raw_data, dtype=np.dtype("f4")).reshape(-1, 4)
         points = points[np.linalg.norm(points[:, :3], axis=1) <= self._obs_range]
         points[1, :] = -points[1, :]
 
         intensities = np.interp(points[:, 3], (points[:, 3].min(), points[:, 3].max()), (0, 1))
         colors = (intensities[:, np.newaxis] * np.array([[255, 0, 0]])).astype(np.uint8)
 
-        y_bins = np.arange(-(self._obs_range - self._ego_offset), self._ego_offset + self._lidar_bin, self._lidar_bin)
+        y_bins = np.arange(
+            -(self._obs_range - self._ego_offset),
+            self._ego_offset + self._lidar_bin,
+            self._lidar_bin,
+        )
         x_bins = np.arange(-self._obs_range / 2, self._obs_range / 2 + self._lidar_bin, self._lidar_bin)
         z_bins = [-self._lidar_z - 1, -self._lidar_z + 0.25, 1]
         lidar, _ = np.histogramdd(points[:, :3], bins=(x_bins, y_bins, z_bins))
 
-        lidar = lidar[:self._config.shape[0], :self._config.shape[1], :2]
+        lidar = lidar[: self._config.shape[0], : self._config.shape[1], :2]
         ground_mask = lidar[:, :, 0] > 0
         obstacle_mask = lidar[:, :, 1] > 0
 
         image = np.zeros((lidar.shape[0], lidar.shape[1], 3), dtype=np.uint8)
-        image[ground_mask] = colors[:ground_mask.sum()]
+        image[ground_mask] = colors[: ground_mask.sum()]
         image[obstacle_mask] = np.array([0, 255, 0], dtype=np.uint8)
         image = np.flip(image, axis=0)
 

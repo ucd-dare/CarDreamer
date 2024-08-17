@@ -3,16 +3,57 @@ defaults:
   run: train_with_viz
   seed: 0
   task: dummy_discrete
-  env: {amount: 1, parallel: process, daemon: False, repeat: 1, size: [64, 64], camera: -1, gray: False, length: 0, discretize: 0, lives: False, sticky: True, episodic: True, restart: True, again: False, termination: False, weaker: 1.0, seed: 0}
+  env:
+    {
+      amount: 1,
+      parallel: process,
+      daemon: False,
+      repeat: 1,
+      size: [64, 64],
+      camera: -1,
+      gray: False,
+      length: 0,
+      discretize: 0,
+      lives: False,
+      sticky: True,
+      episodic: True,
+      restart: True,
+      again: False,
+      termination: False,
+      weaker: 1.0,
+      seed: 0,
+    }
   replay: fixed
   replay_size: 1e6
   replay_chunk: 64
-  replay_fixed: {prio_starts: 0.0, prio_ends: 1.0, sync: 0}
-  replay_consec: {sync: 0}
-  replay_prio: {prio_starts: 0.0, prio_ends: 1.0, sync: 0, fraction: 0.1, softmax: False, temp: 1.0, constant: 0.0, exponent: 0.5}
-  tf: {jit: True, platform: gpu, precision: 16, debug_nans: False, logical_gpus: 0, dist_dataset: False, dist_policy: False, tensorfloat: True, placement: False, growth: True}
-  eval_dir: ''
-  filter: '.*'
+  replay_fixed: { prio_starts: 0.0, prio_ends: 1.0, sync: 0 }
+  replay_consec: { sync: 0 }
+  replay_prio:
+    {
+      prio_starts: 0.0,
+      prio_ends: 1.0,
+      sync: 0,
+      fraction: 0.1,
+      softmax: False,
+      temp: 1.0,
+      constant: 0.0,
+      exponent: 0.5,
+    }
+  tf:
+    {
+      jit: True,
+      platform: gpu,
+      precision: 16,
+      debug_nans: False,
+      logical_gpus: 0,
+      dist_dataset: False,
+      dist_policy: False,
+      tensorfloat: True,
+      placement: False,
+      growth: True,
+    }
+  eval_dir: ""
+  filter: ".*"
   tbtt: 0
   train:
     steps: 4e5
@@ -28,9 +69,9 @@ defaults:
     pretrain: 1
     log_zeros: False
     log_keys_video: [none]
-    log_keys_sum: '^$'
-    log_keys_mean: '^$'
-    log_keys_max: '^$'
+    log_keys_sum: "^$"
+    log_keys_mean: "^$"
+    log_keys_max: "^$"
     log_timings: True
     sync_every: 180
 
@@ -48,21 +89,117 @@ defaults:
 
   # World Model
   grad_heads: [decoder, reward, cont]
-  rssm: {units: 1024, deter: 1024, stoch: 32, classes: 32, act: elu, norm: layer, initial: learned2, unroll: True}
-  encoder: {mlp_keys: 'none', cnn_keys: 'none', act: elu, norm: layer, mlp_layers: 4, mlp_units: 512, cnn: simple, cnn_depth: 64, cnn_kernels: [4, 4, 4, 4]}
-  decoder: {mlp_keys: 'none', cnn_keys: 'none', act: elu, norm: layer, mlp_layers: 4, mlp_units: 512, cnn: simple, cnn_depth: 64, cnn_kernels: [5, 5, 5, 5, 6, 6], image_dist: mse, inputs: [deter, stoch]}
-  reward_head: {layers: 4, units: 512, act: elu, norm: layer, dist: symlog, outscale: 0.1, inputs: [deter, stoch]}
-  cont_head: {layers: 4, units: 512, act: elu, norm: layer, dist: binary, outscale: 0.1, inputs: [deter, stoch]}
-  loss_scales: {kl: 1.0, image: 1.0, reward: 1.0, cont: 1.0}
-  model_opt: {opt: adam, lr: 1e-4, eps: 1e-6, clip: 100.0, wd: 1e-2, wd_pattern: 'kernel'}
-  wmkl: {impl: mult, scale: 0.1, target: 3.5, min: 1e-5, max: 1.0, vel: 0.1}
+  rssm:
+    {
+      units: 1024,
+      deter: 1024,
+      stoch: 32,
+      classes: 32,
+      act: elu,
+      norm: layer,
+      initial: learned2,
+      unroll: True,
+    }
+  encoder:
+    {
+      mlp_keys: "none",
+      cnn_keys: "none",
+      act: elu,
+      norm: layer,
+      mlp_layers: 4,
+      mlp_units: 512,
+      cnn: simple,
+      cnn_depth: 64,
+      cnn_kernels: [4, 4, 4, 4],
+    }
+  decoder:
+    {
+      mlp_keys: "none",
+      cnn_keys: "none",
+      act: elu,
+      norm: layer,
+      mlp_layers: 4,
+      mlp_units: 512,
+      cnn: simple,
+      cnn_depth: 64,
+      cnn_kernels: [5, 5, 5, 5, 6, 6],
+      image_dist: mse,
+      inputs: [deter, stoch],
+    }
+  reward_head:
+    {
+      layers: 4,
+      units: 512,
+      act: elu,
+      norm: layer,
+      dist: symlog,
+      outscale: 0.1,
+      inputs: [deter, stoch],
+    }
+  cont_head:
+    {
+      layers: 4,
+      units: 512,
+      act: elu,
+      norm: layer,
+      dist: binary,
+      outscale: 0.1,
+      inputs: [deter, stoch],
+    }
+  loss_scales: { kl: 1.0, image: 1.0, reward: 1.0, cont: 1.0 }
+  model_opt:
+    {
+      opt: adam,
+      lr: 1e-4,
+      eps: 1e-6,
+      clip: 100.0,
+      wd: 1e-2,
+      wd_pattern: "kernel",
+    }
+  wmkl: { impl: mult, scale: 0.1, target: 3.5, min: 1e-5, max: 1.0, vel: 0.1 }
   wmkl_balance: 0.8
 
   # Actor Critic
-  actor: {layers: 4, units: 512, act: elu, norm: layer, minstd: 0.03, maxstd: 1.0, outscale: 0.1, unimix: 0.01, inputs: [deter, stoch]}
-  critic: {layers: 4, units: 512, act: elu, norm: layer, dist: symlog, outscale: 0.1, inputs: [deter, stoch]}
-  actor_opt: {opt: adam, lr: 1e-4, eps: 1e-6, clip: 100.0, wd: 1e-2, wd_pattern: 'kernel'}
-  critic_opt: {opt: adam, lr: 1e-4, eps: 1e-6, clip: 100.0, wd: 1e-2, wd_pattern: 'kernel'}
+  actor:
+    {
+      layers: 4,
+      units: 512,
+      act: elu,
+      norm: layer,
+      minstd: 0.03,
+      maxstd: 1.0,
+      outscale: 0.1,
+      unimix: 0.01,
+      inputs: [deter, stoch],
+    }
+  critic:
+    {
+      layers: 4,
+      units: 512,
+      act: elu,
+      norm: layer,
+      dist: symlog,
+      outscale: 0.1,
+      inputs: [deter, stoch],
+    }
+  actor_opt:
+    {
+      opt: adam,
+      lr: 1e-4,
+      eps: 1e-6,
+      clip: 100.0,
+      wd: 1e-2,
+      wd_pattern: "kernel",
+    }
+  critic_opt:
+    {
+      opt: adam,
+      lr: 1e-4,
+      eps: 1e-6,
+      clip: 100.0,
+      wd: 1e-2,
+      wd_pattern: "kernel",
+    }
   actor_dist_disc: onehot
   actor_dist_cont: normal
   episodic: True
@@ -78,12 +215,13 @@ defaults:
   slow_target: True
   slow_target_update: 100
   slow_target_fraction: 1.0
-  actent: {impl: mult, scale: 3e-3, target: 0.5, min: 1e-5, max: 1e2, vel: 0.1}
+  actent:
+    { impl: mult, scale: 3e-3, target: 0.5, min: 1e-5, max: 1e2, vel: 0.1 }
   actent_norm: True
   actent_perdim: True
-  advnorm: {impl: mean_std, decay: 0.99, max: 1e8}
-  retnorm: {impl: std, decay: 0.999, max: 1e2}
-  scorenorm: {impl: off, decay: 0.99, max: 1e8}
+  advnorm: { impl: mean_std, decay: 0.99, max: 1e8 }
+  retnorm: { impl: std, decay: 0.999, max: 1e2 }
+  scorenorm: { impl: off, decay: 0.99, max: 1e8 }
   adv_slow_critic: True
   pengs_qlambda: False
   critic_type: vfunction
@@ -93,19 +231,46 @@ defaults:
   env_skill_duration: 8
   train_skill_duration: 8
   skill_shape: [8, 8]
-  manager_rews: {extr: 1.0, expl: 0.1, goal: 0.0}
-  worker_rews: {extr: 0.0, expl: 0.0, goal: 1.0}
+  manager_rews: { extr: 1.0, expl: 0.1, goal: 0.0 }
+  worker_rews: { extr: 0.0, expl: 0.0, goal: 1.0 }
   worker_inputs: [deter, stoch, goal]
   worker_report_horizon: 64
   goal_reward: cosine_max
-  goal_encoder: {layers: 4, units: 512, act: elu, norm: layer, dist: onehot, outscale: 0.1, unimix: 0.0, inputs: [goal]}
-  goal_decoder: {layers: 4, units: 512, act: elu, norm: layer, dist: mse, outscale: 0.1, inputs: [skill]}
+  goal_encoder:
+    {
+      layers: 4,
+      units: 512,
+      act: elu,
+      norm: layer,
+      dist: onehot,
+      outscale: 0.1,
+      unimix: 0.0,
+      inputs: [goal],
+    }
+  goal_decoder:
+    {
+      layers: 4,
+      units: 512,
+      act: elu,
+      norm: layer,
+      dist: mse,
+      outscale: 0.1,
+      inputs: [skill],
+    }
   train_strategy: joint
   vae_imag: False
   vae_replay: True
   vae_span: False
-  encdec_kl: {impl: mult, scale: 0.0, target: 10.0, min: 1e-5, max: 1.0}
-  encdec_opt: {opt: adam, lr: 1e-4, eps: 1e-6, clip: 100.0, wd: 1e-2, wd_pattern: 'kernel'}
+  encdec_kl: { impl: mult, scale: 0.0, target: 10.0, min: 1e-5, max: 1.0 }
+  encdec_opt:
+    {
+      opt: adam,
+      lr: 1e-4,
+      eps: 1e-6,
+      clip: 100.0,
+      wd: 1e-2,
+      wd_pattern: "kernel",
+    }
   explorer: False
   explorer_repeat: False
   expl_rew: adver
@@ -117,21 +282,57 @@ defaults:
   goal_kl: True
 
   # Exploration
-  expl_rewards: {extr: 0.0, disag: 0.0, vae: 0.0, ctrl: 0.0, pbe: 0.0}
+  expl_rewards: { extr: 0.0, disag: 0.0, vae: 0.0, ctrl: 0.0, pbe: 0.0 }
   expl_discount: 0.99
-  expl_retnorm: {impl: std, decay: 0.999, max: 1e8}
-  expl_scorenorm: {impl: off, decay: 0.999, max: 1e8}
-  disag_head: {layers: 4, units: 512, act: elu, norm: layer, dist: mse, inputs: [deter, stoch, action]}
-  expl_opt: {opt: adam, lr: 1e-4, eps: 1e-6, clip: 100.0, wd: 1e-2}
+  expl_retnorm: { impl: std, decay: 0.999, max: 1e8 }
+  expl_scorenorm: { impl: off, decay: 0.999, max: 1e8 }
+  disag_head:
+    {
+      layers: 4,
+      units: 512,
+      act: elu,
+      norm: layer,
+      dist: mse,
+      inputs: [deter, stoch, action],
+    }
+  expl_opt: { opt: adam, lr: 1e-4, eps: 1e-6, clip: 100.0, wd: 1e-2 }
   disag_target: [stoch]
   disag_models: 8
-  ctrl_embed: {layers: 3, units: 512, act: elu, norm: layer, dist: mse, inputs: [deter, stoch]}
-  ctrl_head: {layers: 1, units: 128, act: elu, norm: layer, dist: mse, inputs: [current, next]}
+  ctrl_embed:
+    {
+      layers: 3,
+      units: 512,
+      act: elu,
+      norm: layer,
+      dist: mse,
+      inputs: [deter, stoch],
+    }
+  ctrl_head:
+    {
+      layers: 1,
+      units: 128,
+      act: elu,
+      norm: layer,
+      dist: mse,
+      inputs: [current, next],
+    }
   ctrl_size: 32
-  ctrl_opt: {opt: adam, lr: 1e-4, eps: 1e-6, clip: 100.0, wd: 1e-2}
-  expl_enc: {layers: 4, units: 512, act: elu, norm: layer, dist: onehot, outscale: 0.1, inputs: [deter], shape: [8, 8]}
-  expl_dec: {layers: 4, units: 512, act: elu, norm: layer, dist: mse, outscale: 0.1}
-  expl_kl: {impl: mult, scale: 0.1, target: 10.0, min: 1e-2, max: 1.0, vel: 0.1}
+  ctrl_opt: { opt: adam, lr: 1e-4, eps: 1e-6, clip: 100.0, wd: 1e-2 }
+  expl_enc:
+    {
+      layers: 4,
+      units: 512,
+      act: elu,
+      norm: layer,
+      dist: onehot,
+      outscale: 0.1,
+      inputs: [deter],
+      shape: [8, 8],
+    }
+  expl_dec:
+    { layers: 4, units: 512, act: elu, norm: layer, dist: mse, outscale: 0.1 }
+  expl_kl:
+    { impl: mult, scale: 0.1, target: 10.0, min: 1e-2, max: 1.0, vel: 0.1 }
   expl_vae_elbo: False
 
 debug:

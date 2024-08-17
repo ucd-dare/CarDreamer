@@ -1,13 +1,14 @@
 import carla
 
-from .base_planner import BasePlanner
 from .agents.navigation.global_route_planner import GlobalRoutePlanner
+from .base_planner import BasePlanner
+
 
 class FixedEndingPlanner(BasePlanner):
-    ''' Route planner for a given vehicle and a given ending '''
+    """Route planner for a given vehicle and a given ending"""
 
     def __init__(self, vehicle: carla.Actor, end: carla.Location, sampling_radius=0.8):
-        super(FixedEndingPlanner, self).__init__(vehicle)
+        super().__init__(vehicle)
         self.end = end
         self._grp = GlobalRoutePlanner(self._map, sampling_resolution=sampling_radius)
 

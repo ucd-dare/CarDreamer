@@ -3,8 +3,8 @@ from typing import Callable, Dict, Tuple
 import carla
 from gym import spaces
 
-from .base_handler import BaseHandler
 from ...carla_manager import WorldManager
+from .base_handler import BaseHandler
 
 
 class SimpleHandler(BaseHandler):
@@ -17,7 +17,12 @@ class SimpleHandler(BaseHandler):
         self._observation_functions: Dict[str, Callable[..., Dict]] = {}
         self._observation_spaces: Dict[str, spaces.Space] = {}
 
-    def register_observation(self, name: str, observation_fn: Callable[[], Dict], observation_space: spaces.Space):
+    def register_observation(
+        self,
+        name: str,
+        observation_fn: Callable[[], Dict],
+        observation_space: spaces.Space,
+    ):
         """
         Register a simple observation function and its corresponding observation space.
         """

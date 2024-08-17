@@ -22,3 +22,7 @@ dependencies = [
     "Shapely==1.8.4",
     "pyyaml==6.0.1",
 ]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = ["B101"]

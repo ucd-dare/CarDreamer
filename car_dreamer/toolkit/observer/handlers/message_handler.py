@@ -1,11 +1,12 @@
-from typing import Tuple, Dict
+from typing import Dict, Tuple
 
-from gym import spaces
+import carla
 import numpy as np
+from gym import spaces
 
+from ...carla_manager import Command, WorldManager
 from .base_handler import BaseHandler
-from .utils import *
-from ...carla_manager import WorldManager, Command
+from .utils import get_neighbors, get_visibility
 
 
 class MessageHandler(BaseHandler):
@@ -20,15 +21,25 @@ class MessageHandler(BaseHandler):
 
     def get_observation_space(self) -> Dict:
         return {
-            'message': spaces.Box(low=0, high=1, shape=(self._config.neighbor_num * self._config.n_commands, ), dtype=np.float32),
-            'dest': spaces.Box(low=0, high=1, shape=(self._config.dest_num,), dtype=np.float32)
+            "message": spaces.Box(
+                low=0,
+                high=1,
+                shape=(self._config.neighbor_num * self._config.n_commands,),
+                dtype=np.float32,
+            ),
+            "dest": spaces.Box(low=0, high=1, shape=(self._config.dest_num,), dtype=np.float32),
         }
 
     def get_observation(self, env_state: Dict) -> Tuple[Dict, Dict]:
         dest = np.zeros((self._config.dest_num,), dtype=np.float32)
-        dest[env_state['dest_lane_idx']] = 1
+        dest[env_state["dest_lane_idx"]] = 1
 
-        is_fov_visible, _ = get_visibility(self._ego, self._world.actor_transforms, self._world.actor_polygons, self._config.camera_fov)
+        is_fov_visible, _ = get_visibility(
+            self._ego,
+            self._world.actor_transforms,
+            self._world.actor_polygons,
+            self._config.camera_fov,
+        )
         neighbors = get_neighbors(self._ego, self._world.actor_transforms, is_fov_visible)
         actor_actions = self._world.actor_actions
         text = np.zeros((self._config.neighbor_num, self._config.n_commands), dtype=np.float32)
@@ -41,10 +52,7 @@ class MessageHandler(BaseHandler):
                 label = self._command_to_label.get(label, 0)
                 text[i][label] = 1
         text = text.flatten()
-        return {
-            'message': text,
-            'dest': dest
-        }, {}
+        return {"message": text, "dest": dest}, {}
 
     def destroy(self) -> None:
         pass
