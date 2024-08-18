@@ -28,6 +28,7 @@ Unleash the power of **imagination** and **generalization** of world models for 
 
 > \[!NOTE\]
 >
+> - **August 2024:** Created a right turn random task!
 > - **July 2024:** Created a stop-sign task and a traffic-light task!
 > - **July 2024:** Uploaded all the task checkpoints to [HuggingFace](https://huggingface.co/ucd-dare/CarDreamer/tree/main)
 
