@@ -80,9 +80,8 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         if self._entered == 2 and self._stop_time < self._config.stopping_time:
             return True
         return False
-        
-    def is_within_stop_sign_proximity(self, sign_location):
 
+    def is_within_stop_sign_proximity(self, sign_location):
         """
         Check if the ego vehicle is near the stop sign.
         """
@@ -97,7 +96,7 @@ class CarlaStopSignEnv(CarlaWptFixedEnv):
         stop_sign_location = stop_sign.get_location()
         distance = ego_location.distance(stop_sign_location)
         return distance < self._config.stop_sign_proximity_threshold
-    
+
     def handle_stop_sign(self):
         stop_signs = self._world._get_world().get_actors().filter("traffic.stop")
         for stop_sign in stop_signs:
