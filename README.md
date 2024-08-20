@@ -260,15 +260,15 @@ If you find this repository useful, please cite this paper:
 ## World model imagination
 
 <p align="center">
-  Birdeye view training
+  Birdeye view imagination
 </p>
 <img src="./.assets/right_turn_hard_pre_bev.gif">
 <p align="center">
-  Camera view training
+  Camera view imagination
 </p>
 <img src="./.assets/right_turn_hard_pre_camera.gif">
 <p align="center">
-  LiDAR view training
+  LiDAR view imagination
 </p>
 <img src="./.assets/right_turn_hard_pre_lidar.gif">
 
