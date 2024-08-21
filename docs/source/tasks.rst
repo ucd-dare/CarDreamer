@@ -140,5 +140,11 @@ Here is a list of available environments and their supported tasks and configura
 .. autoclass:: car_dreamer.CarlaRoundaboutEnv
    :show-inheritance:
 
+.. autoclass:: car_dreamer.CarlaStopSignEnv
+   :show-inheritance:
+
+.. autoclass:: car_dreamer.CarlaTrafficLightsEnv
+   :show-inheritance:
+
 .. note::
    All configurations mentioned here can also be changed by command line arguments. For example, to change the port number of the CARLA server, you can pass ``--env.world.carla_port <number>``. See :py:func:`car_dreamer.create_task` for more details.

@@ -1,5 +1,5 @@
 Quick Start
-=====
+===========
 
 .. _installation:
 

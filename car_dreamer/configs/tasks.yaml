@@ -83,7 +83,8 @@ carla_overtake:
         time: 0.0,
         exceeding: 200.0,
         overtake: 200.0,
-        early_lane_change: 0.0
+        early_lane_change: 0.0,
+        destination_reached: 20.0
       }
     terminal:
       out_lane_thres: 5 # threshold for out of lane
