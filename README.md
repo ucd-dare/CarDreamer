@@ -28,8 +28,9 @@ Unleash the power of **imagination** and **generalization** of world models for 
 
 > \[!NOTE\]
 >
-> - **August 2024:** Created a right turn random task!
-> - **July 2024:** Created a stop-sign task and a traffic-light task!
+> - **August 2024:** Support transmission error in intention sharing.
+> - **August 2024:** Created a right turn random task.
+> - **July 2024:** Created a stop-sign task and a traffic-light task.
 > - **July 2024:** Uploaded all the task checkpoints to [HuggingFace](https://huggingface.co/ucd-dare/CarDreamer/tree/main)
 
 ## **Can world models imagine traffic dynamics for training autonomous driving agents? The answer is YES!**
