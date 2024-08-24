@@ -1,13 +1,14 @@
 from .carla_wpt_fixed_env import CarlaWptFixedEnv
 from .toolkit import get_vehicle_pos
 
+
 class CarlaRightTurnEnv(CarlaWptFixedEnv):
     """
     Vehicle passes the crossing (turn right) and avoid collision.
 
     **Provided Tasks**: ``carla_right_turn_simple``, ``carla_right_turn_medium``, ``carla_right_turn_hard``
     """
-    
+
     def on_step(self) -> None:
         if len(self.actor_flow) > 0:
             vehicle = self.actor_flow[0]

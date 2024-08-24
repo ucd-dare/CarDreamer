@@ -1,11 +1,9 @@
 try:
-  import rich.traceback
-  rich.traceback.install()
+    import rich.traceback
+
+    rich.traceback.install()
 except ImportError:
-  pass
+    pass
 
+from . import envs, replay, run
 from .core import *
-
-from . import envs
-from . import replay
-from . import run

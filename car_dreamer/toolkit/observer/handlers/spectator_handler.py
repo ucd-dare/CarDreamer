@@ -1,10 +1,11 @@
 from typing import Dict, Tuple
-from gym import spaces
-import numpy as np
-import carla
 
-from .base_handler import BaseHandler
+import carla
+import numpy as np
+from gym import spaces
+
 from ...carla_manager import WorldManager
+from .base_handler import BaseHandler
 
 
 class SpectatorHandler(BaseHandler):
@@ -15,9 +16,7 @@ class SpectatorHandler(BaseHandler):
         self._data = None
 
     def get_observation_space(self) -> Dict:
-        return {
-            self._config.key: spaces.Box(low=0, high=255, shape=self._config.shape, dtype=np.uint8)
-        }
+        return {self._config.key: spaces.Box(low=0, high=255, shape=self._config.shape, dtype=np.uint8)}
 
     def get_observation(self, env_state: Dict) -> Tuple[Dict, Dict]:
         if self._spectator_camera is None or self._ego is None or self._data is None:
@@ -27,7 +26,7 @@ class SpectatorHandler(BaseHandler):
         ego_transform = self._ego.get_transform()
         spectator_transform = carla.Transform(
             ego_transform.location + carla.Location(z=self._config.height),
-            carla.Rotation(pitch=self._config.pitch)
+            carla.Rotation(pitch=self._config.pitch),
         )
         spectator = self._world._world.get_spectator()
         spectator.set_transform(spectator_transform)
@@ -47,11 +46,11 @@ class SpectatorHandler(BaseHandler):
         self._ego = ego
 
         if self._spectator_camera is None:
-            spectator_bp = self._world.get_blueprint('sensor.camera.rgb')
-            spectator_bp.set_attribute('image_size_x', str(self._config.shape[1]))
-            spectator_bp.set_attribute('image_size_y', str(self._config.shape[0]))
-            spectator_bp.set_attribute('sensor_tick', str(self._config.sensor_tick))
-            spectator_bp.set_attribute('fov', str(self._config.fov))
+            spectator_bp = self._world.get_blueprint("sensor.camera.rgb")
+            spectator_bp.set_attribute("image_size_x", str(self._config.shape[1]))
+            spectator_bp.set_attribute("image_size_y", str(self._config.shape[0]))
+            spectator_bp.set_attribute("sensor_tick", str(self._config.sensor_tick))
+            spectator_bp.set_attribute("fov", str(self._config.fov))
             self._spectator_camera = self._world.spawn_unmanaged_actor(carla.Transform(), spectator_bp)
             self._spectator_camera.listen(self._update_data)
 

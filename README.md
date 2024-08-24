@@ -15,17 +15,22 @@
         <img src="https://img.icons8.com/?size=32&id=48326&format=png" alt="ArXiv Pre-print" />
         ArXiv Pre-print
     </a>
+    <a href="https://ucd-dare.github.io/cardreamer.github.io/">
+        <img src="https://img.icons8.com/?size=32&id=X-WB1cntO5xU&format=png&color=000000" alt="Project Page" />
+        Project Page
+    </a>
+
 </div>
 
----
-
+______________________________________________________________________
 
 Unleash the power of **imagination** and **generalization** of world models for self-driving cars.
 
-> [!NOTE]
+> \[!NOTE\]
+>
+> - **August 2024:** Created a right turn random task!
 > - **July 2024:** Created a stop-sign task and a traffic-light task!
 > - **July 2024:** Uploaded all the task checkpoints to [HuggingFace](https://huggingface.co/ucd-dare/CarDreamer/tree/main)
-
 
 ## **Can world models imagine traffic dynamics for training autonomous driving agents? The answer is YES!**
 
@@ -39,18 +44,17 @@ Dive into our demos to see the agent skillfully navigating challenges and ensuri
 
 **Explore** world model based autonomous driving with CarDreamer, an open-source platform designed for the **development** and **evaluation** of **world model** based autonomous driving.
 
-* 🏙️ **Built-in Urban Driving Tasks**: flexible and customizable observation modality and observability; optimized rewards
-* 🔧 **Task Development Suite**: create your own urban driving tasks with ease
-* 🌍 **Model Backbones**: integrated state-of-the-art world models
+- 🏙️ **Built-in Urban Driving Tasks**: flexible and customizable observation modality and observability; optimized rewards
+- 🔧 **Task Development Suite**: create your own urban driving tasks with ease
+- 🌍 **Model Backbones**: integrated state-of-the-art world models
 
 **Documentation:** [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
 **Looking for more techincal details? Check our report here! [Paper link](https://arxiv.org/abs/2405.09111)**
 
-
 ## :sun_with_face: Built-in Task Demos
 
-> [!TIP]
+> \[!TIP\]
 > A world model is learnt to model traffic dynamics; then a driving agent is trained on world model's imagination! The driving agent masters diverse driving skills including lane merge, left turn, and right turn, to random roadming purely **from scratch**.
 
 We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on the observation spaces, the memory overhead ranges from 10GB-20GB alongwith 3GB reserved for CARLA.
@@ -63,48 +67,50 @@ We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on
 | :-------------: | :--------: | :------------: | :--------: | :---------------: |
 | ![Right turn hard](./.assets/right_turn_hard_camera.gif) | ![Roundabout](./.assets/roundabout_camera.gif) | ![Left turn hard](./.assets/left_turn_hard_camera.gif) | ![Lane merge](./.assets/lane_merge_camera.gif) | ![Right turn simple](./.assets/overtake_camera.gif) |
 
+| Traffic Light | Stop Sign |
+| :-----------: | :-------: |
+| ![Traffic Light](https://raw.githubusercontent.com/ucd-dare/cardreamer.github.io/main/static/gifs/bev/tl_right.gif) | ![Stop Sign](https://raw.githubusercontent.com/ucd-dare/cardreamer.github.io/main/static/gifs/bev/stop%20sign.gif) |
 
 ## :blossom: The Power of Intention Sharing
 
-> [!TIP]
+> \[!TIP\]
 > **Human drivers use turn signals to inform their intentions** of turning left or right. **Autonomous vehicles can do the same!**
 
 Let's see how CarDreamer agents communicate and leverage intentions. Our experiment have demonstrated that through sharing intention, the policy learning is much easier! Specifically, a policy without knowing other agents' intentions can be conservative in our crossroad tasks; while intention sharing allows the agents to find the proper timing to cut in the traffic flow.
 
-
 <!-- Table 1: Sharing waypoints vs. Without sharing waypoints -->
+
 | Sharing waypoints vs. Without sharing waypoints | Sharing waypoints vs. Without sharing waypoints |
 | :---------------------------------------------: | :---------------------------------------------: |
 | **Right turn hard**                                  | **Left turn hard**                                  |
-| ![Right turn hard](./.assets/right_turn_hard.gif) &emsp;&emsp;&emsp; ![Right turn hard no waypoint](./.assets/right_turn_raw_fail.gif) | ![Left turn hard](./.assets/left_turn_hard.gif) &emsp;&emsp;&emsp;<img src="./.assets/left turn raw.gif" style="width: 100%"> |
+| ![Right turn hard](./.assets/right_turn_hard.gif)     ![Right turn hard no waypoint](./.assets/right_turn_raw_fail.gif) | ![Left turn hard](./.assets/left_turn_hard.gif)    <img src="./.assets/left turn raw.gif" style="width: 100%"> |
 
 <!-- Table 2: Full observability vs. Partial observability -->
+
 | Full observability vs. Partial observability |
 | :------------------------------------------: |
 | **Right turn hard**                               |
-| ![Right turn hard](./.assets/right_turn_hard.gif) &emsp;&emsp;&emsp; ![Right turn hard FOV](./.assets/right_turn_hard_fov.gif) |
-
-
-
-
+| ![Right turn hard](./.assets/right_turn_hard.gif)     ![Right turn hard FOV](./.assets/right_turn_hard_fov.gif) |
 
 ## 📋 Prerequisites
 
-Clone the repository:
+### CarDreamer Dependencies
+
+To install CarDreamer tasks or the development suite, clone the repository:
 
 ```bash
 git clone https://github.com/ucd-dare/CarDreamer
 cd CarDreamer
 ```
 
-Download [CARLA release](https://github.com/carla-simulator/carla/releases) of version ``0.9.15`` as we experiemented with this version. Set the following environment variables:
+Download [CARLA release](https://github.com/carla-simulator/carla/releases) of version `0.9.15` as we experiemented with this version. Set the following environment variables:
 
 ```bash
 export CARLA_ROOT="</path/to/carla>"
 export PYTHONPATH="${CARLA_ROOT}/PythonAPI/carla":${PYTHONPATH}
 ```
 
-Install the package using flit. The ``--symlink`` flag is used to create a symlink to the package in the Python environment, so that changes to the package are immediately available without reinstallation. (``--pth-file`` also works, as an alternative to ``--symlink``.)
+Install the package using flit. The `--symlink` flag is used to create a symlink to the package in the Python environment, so that changes to the package are immediately available without reinstallation. (`--pth-file` also works, as an alternative to `--symlink`.)
 
 ```bash
 conda create python=3.10 --name cardreamer
@@ -113,11 +119,15 @@ pip install flit
 flit install --symlink
 ```
 
+### Model Dependencies
+
+The model backbones are decoupled from CarDreamer tasks or the development sutie. Users can install model dependencies on their own demands. To install DreamerV2 and DreamerV3, check out the guidelines in separate folders [DreamerV3](https://github.com/ucd-dare/CarDreamer/tree/master/dreamerv3) or [DreamerV2](https://github.com/ucd-dare/CarDreamer/tree/master/dreamerv2). The experiments in our paper were conducted using DreamerV3, the current state-of-the-art world models.
+
 ## :gear: Quick Start
 
 ### :mechanical_arm: Training
 
-Find ``README.md`` in the corresponding directory of the algorithm you want to use and follow the instructions. For example, to train DreamerV3 agents, use
+Find `README.md` in the corresponding directory of the algorithm you want to use and follow the instructions. For example, to train DreamerV3 agents, use
 
 ```bash
 bash train_dm3.sh 2000 0 --task carla_four_lane --dreamerv3.logdir ./logdir/carla_four_lane
@@ -155,7 +165,7 @@ Users can enable built-in observation handlers such as BEV, camera, LiDAR, and s
 To implement new handlers for different observation sources and modalities (e.g., text, velocity, locations, or even more complex data), `CarDreamer` provides two methods:
 
 1. Register a callback as a [SimpleHandler](https://github.com/ucd-dare/CarDreamer/blob/master/car_dreamer/toolkit/observer/handlers/simple_handler.py) to fetch data at each step.
-2. For observations requiring complex workflows that cannot be conveyed by a `SimpleHandler`, create an handler maintaining the full lifecycle of that observation, similar to our built-in message, BEV, spectator handlers.
+1. For observations requiring complex workflows that cannot be conveyed by a `SimpleHandler`, create an handler maintaining the full lifecycle of that observation, similar to our built-in message, BEV, spectator handlers.
 
 For more details on defining new observation sources, see [CarDreamer Docs: Defining a new observation source](https://car-dreamer.readthedocs.io/en/latest/customization.html#defining-a-new-observation-source).
 
@@ -182,7 +192,7 @@ your_task_name:
     observation.enabled: [camera, collision, spectator, birdeye_view]
 ```
 
-#### Environment \& Observer Communications
+#### Environment & Observer Communications
 
 One might need transfer information from the environements to a handler to compute their observations. E.g., a BEV handler might need a location to render the destination spot. These environment information can be accessed either through [WorldManager](https://car-dreamer.readthedocs.io/en/latest/api/toolkit.html#car_dreamer.toolkit.WorldManager) APIs, or through environment state management.
 
@@ -227,13 +237,14 @@ We stream observations, rewards, terminal conditions, and custom metrics to a we
 
 To easily customize your own driving tasks, and observation spaces, etc., please refer to our [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
-![CarDreamer](.assets/architecture.png)
+![CarDreamer](.assets/cardreamer_architecture.png)
 
 # :star2: Citation
 
 If you find this repository useful, please cite this paper:
 
 **[Paper link](https://arxiv.org/abs/2405.09111)**
+
 ```
 @article{CarDreamer2024,
   title = {{CarDreamer: Open-Source Learning Platform for World Model based Autonomous Driving}},
@@ -244,33 +255,26 @@ If you find this repository useful, please cite this paper:
 }
 ```
 
-
 # Suppliment Material
+
 ## World model imagination
+
 <p align="center">
-  Birdeye view training
+  Birdeye view imagination
 </p>
 <img src="./.assets/right_turn_hard_pre_bev.gif">
 <p align="center">
-  Camera view training
+  Camera view imagination
 </p>
 <img src="./.assets/right_turn_hard_pre_camera.gif">
 <p align="center">
-  LiDAR view training
+  LiDAR view imagination
 </p>
 <img src="./.assets/right_turn_hard_pre_lidar.gif">
 
-
 # 👥 Contributors
 
-### Credits
-
-`CarDreamer` builds on the several projects within the autonomous driving and machine learning communities.
-
-- [gym-carla](https://github.com/cjy1992/gym-carla)
-- [DreamerV2](https://github.com/danijar/director)
-- [DreamerV3](https://github.com/danijar/dreamerv3)
-- [CuriousReplay](https://github.com/AutonomousAgentsLab/curiousreplay)
+Special thanks to the community for your valuable contributions and support in making CarDreamer better for everyone!
 
 <!-- readme: contributors -start -->
 <table>
@@ -305,6 +309,13 @@ If you find this repository useful, please cite this paper:
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/HeyGF">
+                    <img src="https://avatars.githubusercontent.com/u/23623353?v=4" width="100;" alt="HeyGF"/>
+                    <br />
+                    <sub><b>Gaofeng Dong</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/ustcmike">
                     <img src="https://avatars.githubusercontent.com/u/32145615?v=4" width="100;" alt="ustcmike"/>
                     <br />
@@ -312,6 +323,64 @@ If you find this repository useful, please cite this paper:
                 </a>
             </td>
 		</tr>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/andrewcwlee">
+                    <img src="https://avatars.githubusercontent.com/u/31760595?v=4" width="100;" alt="andrewcwlee"/>
+                    <br />
+                    <sub><b>Andrew Lee</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/IanGuangleiZhu">
+                    <img src="https://avatars.githubusercontent.com/u/91163000?v=4" width="100;" alt="IanGuangleiZhu"/>
+                    <br />
+                    <sub><b>IanGuangleiZhu</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/liamjxu">
+                    <img src="https://avatars.githubusercontent.com/u/48697394?v=4" width="100;" alt="liamjxu"/>
+                    <br />
+                    <sub><b>liamjxu</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/TracyYXChen">
+                    <img src="https://avatars.githubusercontent.com/u/31624007?v=4" width="100;" alt="TracyYXChen"/>
+                    <br />
+                    <sub><b>TracyYXChen</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/swsamleo">
+                    <img src="https://avatars.githubusercontent.com/u/12550596?v=4" width="100;" alt="swsamleo"/>
+                    <br />
+                    <sub><b>Wei Shao</b></sub>
+                </a>
+            </td>
+		</tr>
 	<tbody>
 </table>
 <!-- readme: contributors -end -->
+
+### How to Contribute?
+
+The contributor list is automatically generated based on the commit history. Please use `pre-commit` to automatically check and format changes.
+
+```bash
+# Setup pre-commit tool
+pip install pre-commit
+pre-commit install
+# Run pre-commit
+pre-commit run --all-files
+```
+
+### Credits
+
+`CarDreamer` builds on the several projects within the autonomous driving and machine learning communities.
+
+- [gym-carla](https://github.com/cjy1992/gym-carla)
+- [DreamerV2](https://github.com/danijar/director)
+- [DreamerV3](https://github.com/danijar/dreamerv3)
+- [CuriousReplay](https://github.com/AutonomousAgentsLab/curiousreplay)

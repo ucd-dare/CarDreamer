@@ -1,9 +1,11 @@
-import carla
-import numpy as np
-import cv2
 from typing import List, Tuple
 
+import carla
+import cv2
+import numpy as np
+
 from .constants import Color
+
 
 def lane_marking_color_to_tango(lane_marking_color: carla.LaneMarkingColor) -> Color:
     tango_color = Color.BLACK
@@ -22,14 +24,26 @@ def lane_marking_color_to_tango(lane_marking_color: carla.LaneMarkingColor) -> C
     return tango_color
 
 
-def render_solid_line(surface: np.ndarray, color: Color, closed: bool, points: List[Tuple[int, int]], width: int):
+def render_solid_line(
+    surface: np.ndarray,
+    color: Color,
+    closed: bool,
+    points: List[Tuple[int, int]],
+    width: int,
+):
     if len(points) >= 2:
         points_array = np.array(points, dtype=np.int32)
         cv2.polylines(surface, [points_array], closed, color, width)
 
 
-def render_dotted_line(surface: np.ndarray, color: Color, closed: bool, points: List[Tuple[int, int]], width: int):
-    dotted_lines = [points[i:i + 20] for i in range(0, len(points), 60)]
+def render_dotted_line(
+    surface: np.ndarray,
+    color: Color,
+    closed: bool,
+    points: List[Tuple[int, int]],
+    width: int,
+):
+    dotted_lines = [points[i : i + 20] for i in range(0, len(points), 60)]
     for line in dotted_lines:
         line_array = np.array(line, dtype=np.int32)
         cv2.polylines(surface, [line_array], closed, color, width)
@@ -148,34 +162,76 @@ class MapRenderer:
             elif marking_type == carla.LaneMarkingType.Broken:
                 render_dotted_line(self._surface, marking_color, False, marking_points, 5)
 
-    def get_lane_markings(self, marking_type: carla.LaneMarkingType, marking_color: carla.LaneMarkingColor, waypoints: List[carla.Waypoint], sign: int) -> List[Tuple[carla.LaneMarkingType, Color, List[Tuple[int, int]]]]:
+    def get_lane_markings(
+        self,
+        marking_type: carla.LaneMarkingType,
+        marking_color: carla.LaneMarkingColor,
+        waypoints: List[carla.Waypoint],
+        sign: int,
+    ) -> List[Tuple[carla.LaneMarkingType, Color, List[Tuple[int, int]]]]:
         margin = 0.25
-        marking_1 = np.array([self.world_to_pixel(lateral_shift(w.transform, sign * w.lane_width * 0.5))
-                             for w in waypoints], dtype=np.int32)
+        marking_1 = np.array(
+            [self.world_to_pixel(lateral_shift(w.transform, sign * w.lane_width * 0.5)) for w in waypoints],
+            dtype=np.int32,
+        )
         if marking_type == carla.LaneMarkingType.Broken or marking_type == carla.LaneMarkingType.Solid:
             return [(marking_type, lane_marking_color_to_tango(marking_color), marking_1)]
         else:
-            marking_2 = np.array([self.world_to_pixel(lateral_shift(
-                w.transform, sign * (w.lane_width * 0.5 + margin * 2))) for w in waypoints], dtype=np.int32)
+            marking_2 = np.array(
+                [self.world_to_pixel(lateral_shift(w.transform, sign * (w.lane_width * 0.5 + margin * 2))) for w in waypoints],
+                dtype=np.int32,
+            )
             if marking_type == carla.LaneMarkingType.SolidBroken:
                 return [
-                    (carla.LaneMarkingType.Broken, lane_marking_color_to_tango(marking_color), marking_1),
-                    (carla.LaneMarkingType.Solid, lane_marking_color_to_tango(marking_color), marking_2)
+                    (
+                        carla.LaneMarkingType.Broken,
+                        lane_marking_color_to_tango(marking_color),
+                        marking_1,
+                    ),
+                    (
+                        carla.LaneMarkingType.Solid,
+                        lane_marking_color_to_tango(marking_color),
+                        marking_2,
+                    ),
                 ]
             elif marking_type == carla.LaneMarkingType.BrokenSolid:
                 return [
-                    (carla.LaneMarkingType.Solid, lane_marking_color_to_tango(marking_color), marking_1),
-                    (carla.LaneMarkingType.Broken, lane_marking_color_to_tango(marking_color), marking_2)
+                    (
+                        carla.LaneMarkingType.Solid,
+                        lane_marking_color_to_tango(marking_color),
+                        marking_1,
+                    ),
+                    (
+                        carla.LaneMarkingType.Broken,
+                        lane_marking_color_to_tango(marking_color),
+                        marking_2,
+                    ),
                 ]
             elif marking_type == carla.LaneMarkingType.BrokenBroken:
                 return [
-                    (carla.LaneMarkingType.Broken, lane_marking_color_to_tango(marking_color), marking_1),
-                    (carla.LaneMarkingType.Broken, lane_marking_color_to_tango(marking_color), marking_2)
+                    (
+                        carla.LaneMarkingType.Broken,
+                        lane_marking_color_to_tango(marking_color),
+                        marking_1,
+                    ),
+                    (
+                        carla.LaneMarkingType.Broken,
+                        lane_marking_color_to_tango(marking_color),
+                        marking_2,
+                    ),
                 ]
             elif marking_type == carla.LaneMarkingType.SolidSolid:
                 return [
-                    (carla.LaneMarkingType.Solid, lane_marking_color_to_tango(marking_color), marking_1),
-                    (carla.LaneMarkingType.Solid, lane_marking_color_to_tango(marking_color), marking_2)
+                    (
+                        carla.LaneMarkingType.Solid,
+                        lane_marking_color_to_tango(marking_color),
+                        marking_1,
+                    ),
+                    (
+                        carla.LaneMarkingType.Solid,
+                        lane_marking_color_to_tango(marking_color),
+                        marking_2,
+                    ),
                 ]
 
         return [(carla.LaneMarkingType.NONE, carla.LaneMarkingColor.Other, [])]
@@ -190,15 +246,15 @@ class MapRenderer:
         sidewalk = [[], []]
 
         for w in waypoints:
-            l = w.get_left_lane()
-            while l and l.lane_type != carla.LaneType.Driving:
-                if l.lane_type == carla.LaneType.Shoulder:
-                    shoulder[0].append(l)
-                if l.lane_type == carla.LaneType.Parking:
-                    parking[0].append(l)
-                if l.lane_type == carla.LaneType.Sidewalk:
-                    sidewalk[0].append(l)
-                l = l.get_left_lane()
+            left_lane = w.get_left_lane()
+            while left_lane and left_lane.lane_type != carla.LaneType.Driving:
+                if left_lane.lane_type == carla.LaneType.Shoulder:
+                    shoulder[0].append(left_lane)
+                if left_lane.lane_type == carla.LaneType.Parking:
+                    parking[0].append(left_lane)
+                if left_lane.lane_type == carla.LaneType.Sidewalk:
+                    sidewalk[0].append(left_lane)
+                left_lane = left_lane.get_left_lane()
 
             r = w.get_right_lane()
             while r and r.lane_type != carla.LaneType.Driving:
@@ -228,16 +284,32 @@ class MapRenderer:
 
     def render_traffic_signs(self):
         actors = self._world.get_actors()
-        stops = [actor for actor in actors if 'stop' in actor.type_id]
-        yields = [actor for actor in actors if 'yield' in actor.type_id]
+        stops = [actor for actor in actors if "stop" in actor.type_id]
+        yields = [actor for actor in actors if "yield" in actor.type_id]
 
         stop_font_surface = np.zeros((self._font_size * 2, self._font_size * 4, 3), dtype=np.uint8)
-        cv2.putText(stop_font_surface, "STOP", (0, self._font_size * 2),
-                    self._font, 1, Color.ALUMINIUM_2, 2, cv2.LINE_AA)
+        cv2.putText(
+            stop_font_surface,
+            "STOP",
+            (0, self._font_size * 2),
+            self._font,
+            1,
+            Color.ALUMINIUM_2,
+            2,
+            cv2.LINE_AA,
+        )
 
         yield_font_surface = np.zeros((self._font_size * 2, self._font_size * 4, 3), dtype=np.uint8)
-        cv2.putText(yield_font_surface, "YIELD", (0, self._font_size * 2),
-                    self._font, 1, Color.ALUMINIUM_2, 2, cv2.LINE_AA)
+        cv2.putText(
+            yield_font_surface,
+            "YIELD",
+            (0, self._font_size * 2),
+            self._font,
+            1,
+            Color.ALUMINIUM_2,
+            2,
+            cv2.LINE_AA,
+        )
 
         for ts_stop in stops:
             self.render_traffic_sign(ts_stop, stop_font_surface, Color.SCARLET_RED_1)
@@ -250,21 +322,36 @@ class MapRenderer:
         waypoint = self._map.get_waypoint(transform.location)
 
         angle = -waypoint.transform.rotation.yaw - 90.0
-        font_surface = cv2.warpAffine(font_surface, cv2.getRotationMatrix2D(
-            (font_surface.shape[1] // 2, font_surface.shape[0] // 2), angle, 1.0), (font_surface.shape[1], font_surface.shape[0]))
+        font_surface = cv2.warpAffine(
+            font_surface,
+            cv2.getRotationMatrix2D((font_surface.shape[1] // 2, font_surface.shape[0] // 2), angle, 1.0),
+            (font_surface.shape[1], font_surface.shape[0]),
+        )
         pixel_pos = self.world_to_pixel(waypoint.transform.location)
-        offset = (pixel_pos[0] - font_surface.shape[1] // 2, pixel_pos[1] - font_surface.shape[0] // 2)
-        self._surface[offset[1]:offset[1] + font_surface.shape[0],
-                      offset[0]:offset[0] + font_surface.shape[1]] = font_surface
+        offset = (
+            pixel_pos[0] - font_surface.shape[1] // 2,
+            pixel_pos[1] - font_surface.shape[0] // 2,
+        )
+        self._surface[
+            offset[1] : offset[1] + font_surface.shape[0],
+            offset[0] : offset[0] + font_surface.shape[1],
+        ] = font_surface
 
         forward_vector = carla.Location(waypoint.transform.get_forward_vector())
-        left_vector = carla.Location(-forward_vector.y, forward_vector.x,
-                                     forward_vector.z) * waypoint.lane_width / 2 * 0.7
+        left_vector = carla.Location(-forward_vector.y, forward_vector.x, forward_vector.z) * waypoint.lane_width / 2 * 0.7
 
-        line = [(waypoint.transform.location + (forward_vector * 1.5 + left_vector)),
-                (waypoint.transform.location + (forward_vector * 1.5) - left_vector)]
+        line = [
+            (waypoint.transform.location + (forward_vector * 1.5 + left_vector)),
+            (waypoint.transform.location + (forward_vector * 1.5) - left_vector),
+        ]
         line_pixel = [self.world_to_pixel(p) for p in line]
-        cv2.polylines(self._surface, [np.array(line_pixel, dtype=np.int32)], True, trigger_color, 5)
+        cv2.polylines(
+            self._surface,
+            [np.array(line_pixel, dtype=np.int32)],
+            True,
+            trigger_color,
+            5,
+        )
 
     def world_to_pixel(self, location: carla.Location, offset: Tuple[float, float] = (0, 0)) -> Tuple[int, int]:
         x = self._scale * self._pixels_per_meter * (location.x - self._world_offset_in_meter[0])

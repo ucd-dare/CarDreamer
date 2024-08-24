@@ -1,10 +1,11 @@
-import numpy as np
 import atexit
-import cv2
 import base64
-import threading
-import queue
 import json
+import queue
+import threading
+
+import cv2
+import numpy as np
 from flask import Flask, Response, render_template
 
 
@@ -18,25 +19,30 @@ class EnvMonitorBase:
         atexit.register(self.stop)
 
     def _run_server(self):
-        app = Flask(__name__, template_folder='templates')
+        app = Flask(__name__, template_folder="templates")
 
-        @app.route('/')
+        @app.route("/")
         def index():
-            return render_template('index.html')
+            return render_template("index.html")
 
-        @app.route('/stream')
+        @app.route("/stream")
         def stream():
             def generate():
                 while True:
                     obs = self._obs_queue.get()
                     info = self._info_queue.get()
                     frame = self._render(obs, info)
-                    yield f'data: {json.dumps(frame)}\n\n'
+                    yield f"data: {json.dumps(frame)}\n\n"
                     self._obs_queue.task_done()
                     self._info_queue.task_done()
-            return Response(generate(), mimetype='text/event-stream')
 
-        app.run(host='0.0.0.0', port=self._config.world.carla_port + 7000, use_reloader=False)
+            return Response(generate(), mimetype="text/event-stream")
+
+        app.run(
+            host="0.0.0.0",
+            port=self._config.world.carla_port + 7000,
+            use_reloader=False,
+        )
 
     def _render_info(self, info):
         rendered_info = {}
@@ -62,16 +68,13 @@ class EnvMonitorBase:
                         img = np.repeat(img[:, :, np.newaxis], 3, axis=2)
                     else:
                         img = img[:, :, ::-1]
-                    _, img_encoded = cv2.imencode('.webp', img)
-                    img_base64 = base64.b64encode(img_encoded).decode('utf-8')
-                    images.append({'key': key, 'image': img_base64})
+                    _, img_encoded = cv2.imencode(".webp", img)
+                    img_base64 = base64.b64encode(img_encoded).decode("utf-8")
+                    images.append({"key": key, "image": img_base64})
         return images
 
     def _render(self, obs, info):
-        return {
-            'images': self._render_images(obs),
-            'info': self._render_info(info)
-        }
+        return {"images": self._render_images(obs), "info": self._render_info(info)}
 
     def stop(self):
         if self._thread and self._thread.is_alive():
@@ -79,6 +82,7 @@ class EnvMonitorBase:
 
     def __del__(self):
         self.stop()
+
 
 class EnvMonitorOpenCV(EnvMonitorBase):
     def render(self, obs, info):
