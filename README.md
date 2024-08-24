@@ -281,17 +281,17 @@ Special thanks to the community for your valuable contributions and support in m
 	<tbody>
 		<tr>
             <td align="center">
-                <a href="https://github.com/tonycaisy">
-                    <img src="https://avatars.githubusercontent.com/u/92793139?v=4" width="100;" alt="tonycaisy"/>
-                    <br />
-                    <sub><b>Shuangyu Cai</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/HanchuZhou">
                     <img src="https://avatars.githubusercontent.com/u/99316745?v=4" width="100;" alt="HanchuZhou"/>
                     <br />
                     <sub><b>Hanchu Zhou</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/tonycaisy">
+                    <img src="https://avatars.githubusercontent.com/u/92793139?v=4" width="100;" alt="tonycaisy"/>
+                    <br />
+                    <sub><b>Shuangyu Cai</b></sub>
                 </a>
             </td>
             <td align="center">
