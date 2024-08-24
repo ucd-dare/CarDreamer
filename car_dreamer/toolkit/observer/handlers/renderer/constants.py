@@ -83,3 +83,4 @@ class BirdeyeEntity(Enum):
     TRAFFIC_LIGHTS = "traffic_lights"
     STOP_SIGNS = "stop_signs"
     MESSAGES = "messages"
+    ERROR_BACKGROUND_WAYPOINTS = "error_background_waypoints"

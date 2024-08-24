@@ -3,7 +3,9 @@ from typing import Dict, List, Tuple
 
 import carla
 import cv2
+import random
 import numpy as np
+
 
 from ....carla_manager import ActorPolygon, Command, WorldManager
 from ..utils import should_filter
@@ -170,6 +172,33 @@ class BirdeyeRenderer:
                 last = path[-1]
                 path.append((last[0], last[1] - 10.0))
             self._render_path(self._surface, vehicle_polygon, path, waypoint_color)
+    
+    def _render_error_background_waypoints(self, **env_state):
+        """Render the waypoints with error for background actors on the surface."""
+        color = env_state.get('background_waypoints_color')
+        extend_waypoints = env_state.get('extend_waypoints', False)
+        error_rate = env_state.get('error_rate')
+        background_waypoints = self._world_manager.actor_actions
+        background_waypoints = {
+            id: [(action[1].transform.location.x, action[1].transform.location.y) for action in actions]
+            for id, actions in background_waypoints.items() if actions
+        }
+        vehicle_polygons = self._world_manager.actor_polygons
+
+        for vehicle_id, path in background_waypoints.items():
+            if vehicle_id == self._ego.id or should_filter(self._ego.get_transform(), self._world_manager.actor_transforms[vehicle_id]):
+                continue
+            vehicle_polygon = vehicle_polygons.get(vehicle_id, None)
+            if vehicle_polygon is None:
+                continue
+            waypoint_color = color.get(vehicle_id, None)
+            if waypoint_color is None:
+                continue
+            if extend_waypoints:
+                last = path[-1]
+                path.append((last[0], last[1] - 10.0))
+            if random.random() > error_rate:
+                self._render_path(self._surface, vehicle_polygon, path, waypoint_color)
 
     def _render_messages(self, **env_state):
         """
@@ -356,4 +385,5 @@ class BirdeyeRenderer:
         BirdeyeEntity.TRAFFIC_LIGHTS: _render_traffic_lights,
         BirdeyeEntity.STOP_SIGNS: _render_stop_signs,
         BirdeyeEntity.MESSAGES: _render_messages,
+        BirdeyeEntity.ERROR_BACKGROUND_WAYPOINTS: _render_error_background_waypoints,
     }

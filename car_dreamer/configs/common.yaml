@@ -137,6 +137,20 @@ env:
           stop_signs,
         ]
 
+    birdeye_error_wpt:
+      handler: birdeye
+      key: birdeye_error_wpt
+      shape: [128, 128, 3]
+      obs_range: 32
+      ego_offset: 12
+      camera_fov: 150
+      observability: full
+      color_by_obs: False
+      waypoint_obs: visible
+      extend_wpt: False
+      error_rate: 0.2
+      entities: [roadmap, waypoints, error_background_waypoints, ego_vehicle, background_vehicles]
+
   display:
     enable: True
     render_keys: [camera, birdeye_wpt]
