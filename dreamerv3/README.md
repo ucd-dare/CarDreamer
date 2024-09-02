@@ -1,4 +1,4 @@
-# Guide for Training DreamerV3 on CarDreaner
+# Guide for Training DreamerV3 on CarDreamer
 
 This guide assumes you have installed `car_dreamer`. If not, please follow the instructions in the [main README](../README.md).
 
