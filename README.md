@@ -15,6 +15,7 @@
         <img src="https://img.icons8.com/?size=32&id=48326&format=png" alt="ArXiv Pre-print" />
         ArXiv Pre-print
     </a>
+    &nbsp;|&nbsp;
     <a href="https://ucd-dare.github.io/cardreamer.github.io/">
         <img src="https://img.icons8.com/?size=32&id=X-WB1cntO5xU&format=png&color=000000" alt="Project Page" />
         Project Page
