@@ -8,9 +8,9 @@ from .toolkit import FixedEndingPlanner, get_vehicle_pos, get_location_distance,
 
 class CarlaFollowEnv(CarlaWptEnv):
     def on_reset(self) -> None:
-        if self._config.direction == 4:
+        if self._config.direction == 5:
             self.random_num = random.randint(0, len(self._config.lane_start_point) - 1)
-        elif self._config.direction >= 0 and self._config.direction < 4:
+        elif self._config.direction >= 0 and self._config.direction < 5:
             self.random_num = self._config.direction
 
         # print(random_num)
@@ -175,7 +175,7 @@ class CarlaFollowEnv(CarlaWptEnv):
     def get_terminal_conditions(self):
         terminal_config = self._config.terminal
         info = super().get_terminal_conditions()
-        del info['destination_reached']
+        # del info['destination_reached']
 
         ego_x, ego_y = get_vehicle_pos(self.ego)
         nonego_loc = self.nonego.get_transform().location
