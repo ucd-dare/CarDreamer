@@ -371,7 +371,7 @@ carla_follow:
         waypoint: 0.0, 
         speed: 0.0,
         collision: 350.0, 
-        out_of_lane: 35.0, 
+        out_of_lane: 50.0, 
         time: 0.0, 
         destination_reached: 0.0,
         velocity: 0.0, #1.0,
