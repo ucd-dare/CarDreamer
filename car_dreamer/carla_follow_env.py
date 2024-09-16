@@ -9,7 +9,7 @@ from .toolkit import FixedEndingPlanner, get_vehicle_pos, get_location_distance,
 class CarlaFollowEnv(CarlaWptEnv):
     def on_reset(self) -> None:
         if self._config.direction == 5:
-            self.random_num = random.randint(0, len(self._config.lane_start_point) - 1)
+            self.random_num = random.randint(2, len(self._config.lane_start_points) - 1)
         elif self._config.direction >= 0 and self._config.direction < 5:
             self.random_num = self._config.direction
 
