@@ -327,6 +327,13 @@ Special thanks to the community for your valuable contributions and support in m
 		</tr>
 		<tr>
             <td align="center">
+                <a href="https://github.com/JungDongwon">
+                    <img src="https://avatars.githubusercontent.com/u/28348839?v=4" width="100;" alt="JungDongwon"/>
+                    <br />
+                    <sub><b>Jung Dongwon</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/andrewcwlee">
                     <img src="https://avatars.githubusercontent.com/u/31760595?v=4" width="100;" alt="andrewcwlee"/>
                     <br />
