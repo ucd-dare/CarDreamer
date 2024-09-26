@@ -115,9 +115,9 @@ env:
         ]
 
     # Render traffic sign on BEV
-    birdeye_traffic:
+    birdeye_with_traffic_lights:
       handler: birdeye
-      key: birdeye_traffic
+      key: birdeye_with_traffic_lights
       shape: [128, 128, 3]
       obs_range: 32
       ego_offset: 12
@@ -137,9 +137,9 @@ env:
           stop_signs,
         ]
 
-    birdeye_error_wpt:
+    birdeye_wpt_with_errors:
       handler: birdeye
-      key: birdeye_error_wpt
+      key: birdeye_wpt_with_errors
       shape: [128, 128, 3]
       obs_range: 32
       ego_offset: 12
