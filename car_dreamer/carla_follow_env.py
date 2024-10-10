@@ -7,48 +7,50 @@ from .carla_wpt_env import CarlaWptEnv
 from .toolkit import FixedEndingPlanner, get_vehicle_pos, get_location_distance, get_vehicle_velocity, get_vehicle_orientation
 
 class CarlaFollowEnv(CarlaWptEnv):
-    def on_reset(self) -> None:
-        if self._config.direction == 5:
-            self.random_num = random.randint(2, len(self._config.lane_start_points) - 1)
-        elif self._config.direction >= 0 and self._config.direction < 5:
-            self.random_num = self._config.direction
+    """
+    Vehicle follows the car in front of it at a reasonable distance for going straight, turning left, and turning right.
 
-        # print(random_num)
+    **Provided Tasks**: ``carla_follow``
+    """
+
+    def on_reset(self) -> None:
+        # checks which path the vehicle will take this time
+        max_num_of_directions = len(self._config.lane_start_points)
+        if self._config.direction == max_num_of_directions:
+            self.random_num = random.randint(0, max_num_of_directions - 1)    # random path
+        elif self._config.direction >= 0 and self._config.direction < max_num_of_directions:
+            self.random_num = self._config.direction                          # set path
+
+        # spawn the nonego vehicle
         self.nonego_spawn_point = self._config.nonego_spawn_points[self.random_num]
-        # self.nonego_spawn_point = self._config.nonego_spawn_points
         nonego_transform = carla.Transform(carla.Location(*self.nonego_spawn_point[:3]), carla.Rotation(yaw = self.nonego_spawn_point[4]))
         self.nonego = self._world.spawn_actor(transform=nonego_transform)
-        # print(self.nonego_spawn_point)
+
+        # spawn the ego vehicle
         self.ego_src = self._config.lane_start_points[self.random_num]
-        # self.ego_src = self._config.lane_start_points
         ego_transform = carla.Transform(carla.Location(*self.ego_src[:3]), carla.Rotation(yaw = self.nonego_spawn_point[4]))
         self.ego = self._world.spawn_actor(transform=ego_transform)
-        # print(get_vehicle_pos(self.ego))
 
+        # initializes all the values needed for the waypoint and velocity tracker and pid_controller
         self.prev_errors = {'last_error': 0.0, 'integral': 0.0}
         self.nonego_direction = self.nonego_spawn_point[4]
-        self.list_waypoints = [0]
-        self.list_velocity = [0]
+        self.list_waypoints = []
+        self.list_velocity = []
 
-        # Path planning
+        # plans the path of the nonego vehicle
         nonego_dest = self._config.lane_end_points[self.random_num]
         dest_location = carla.Location(x=nonego_dest[0], y=nonego_dest[1], z=nonego_dest[2])
         self.nonego_planner = FixedEndingPlanner(self.nonego, dest_location)
         self.on_step()
     
     def on_step(self) -> None:
+        # makes the nonego vehicle the destination of the ego vehicle
         nonego_x, nonego_y = get_vehicle_pos(self.nonego)
         dest_location = carla.Location(x = nonego_x, y = nonego_y, z=self._config.lane_end_points[self.random_num][2])
-        # print(dest_location)
         self.ego_planner = FixedEndingPlanner(self.ego, dest_location)
         self.waypoints, self.planner_stats = self.ego_planner.run_step()
-        # self.num_completed = self.planner_stats['num_completed']
 
-        # nonego_velocity = np.array([*get_vehicle_velocity(self.nonego)])
-        # nonego_speed = np.linalg. norm(nonego_velocity)
-
-        self.nonego_waypoints, self.nonego_planner_stats = self.nonego_planner.run_step()
-        # self.nonego_num_completed = self.nonego_planner_stats['num_completed']       
+        self.nonego_waypoints, self.nonego_planner_stats = self.nonego_planner.run_step()  
 
         super().on_step()
     
@@ -72,14 +74,17 @@ class CarlaFollowEnv(CarlaWptEnv):
         else:
             acc = 0
         
+        # adds any new waypoints/next step to destination
         if len(self.nonego_waypoints) > 0:
             closest_waypoint = self.nonego_waypoints[0]
 
-            if closest_waypoint != self.list_waypoints[0]: 
+            # appends that new waypoint location into the waypoint tracker
+            if closest_waypoint not in self.list_waypoints: 
                 self.list_waypoints.append(closest_waypoint)
                 self.list_velocity.append(np.array([*get_vehicle_velocity(self.nonego)]))
                 
-            
+            # changes the direction of the car based on the angle it makes with its x and y components with its current
+            # location and its next location
             heading_angle = math.degrees(math.atan2(closest_waypoint[0] - nonego_loc[0], closest_waypoint[1] - nonego_loc[1]))
             if heading_angle < 90:
                 heading_angle = 90 - heading_angle
@@ -136,28 +141,28 @@ class CarlaFollowEnv(CarlaWptEnv):
         total_reward -= info['r_speed'] + info['r_waypoints']
         del info['r_speed']
         del info['r_waypoints']
-        # total_reward -= info['waypoint']
-        # del info['waypoint']
-
 
         reward_scales = self._config.reward.scales
         
+        # gets the starting distance between the two vehicles
         original_dist = get_location_distance((self._config.lane_start_points[self.random_num][0], self._config.lane_start_points[self.random_num][1]),
                                               (self._config.nonego_spawn_points[self.random_num][0], self._config.nonego_spawn_points[self.random_num][1]))
+        # gets the ending distance between the two vehicles
         current_dist = get_location_distance(get_vehicle_pos(self.ego), get_vehicle_pos(self.nonego))
         
+        # if the current distance between the two vehicles is in an acceptable range, give reward
         if current_dist < original_dist + 2 and current_dist >= original_dist:
             p_dist = 0.2 * reward_scales["distance"]
         else:
             p_dist = - abs(current_dist - original_dist) * reward_scales["distance"]
         
+        # check to make sure the ego vehicle is following the correct waypoints, speed, and direction of where the
+        # nonego vehicle was at that time
         ego_velocity = np.array([*get_vehicle_velocity(self.ego)])
         if np.array_equal(ego_velocity, self.list_velocity[0]):
             p_velocity = 0.2 * reward_scales["velocity"]
         else: 
             p_velocity = 0
-        # else:
-        #     p_velocity = -reward_scales["velocity"]
 
         if get_vehicle_pos(self.ego) == self.list_waypoints[0]:
             p_waypoints = 0.2 * reward_scales["waypoints"]
@@ -165,29 +170,19 @@ class CarlaFollowEnv(CarlaWptEnv):
             self.list_waypoints.pop(0)
         else: 
             p_waypoints = 0
-        # else:
-        #     p_waypoints = -reward_scales["waypoints"]
         
         total_reward += p_dist + p_waypoints + p_velocity
-        # total_reward += p_dist + p_waypoints
         return total_reward, info
 
     def get_terminal_conditions(self):
         terminal_config = self._config.terminal
         info = super().get_terminal_conditions()
-        # del info['destination_reached']
 
+        # if the distance between the two vehicles is too long, reset the scenario 
         ego_x, ego_y = get_vehicle_pos(self.ego)
         nonego_loc = self.nonego.get_transform().location
         dist = math.sqrt((ego_x - nonego_loc.x) ** 2 + (ego_y - nonego_loc.y) ** 2)
-        # print(nonego_loc.x, nonego_loc.y)
-        # print(ego_x, ego_y)
-        # print(dist)
         if dist > terminal_config.terminal_dist:
             info['terminal_dist'] = True
-
-        # if get_vehicle_pos(self.ego) == carla.Location(self._config.lane_end_points[self.random_num][0], 
-        #                                                self._config.lane_end_points[self.random_num][1]):
-        #     info['destination_reached'] = True
 
         return info
