@@ -11,9 +11,9 @@
         CarDreamer API Documents
     </a>
     &nbsp;|&nbsp;
-    <a href="https://arxiv.org/abs/2405.09111">
-        <img src="https://img.icons8.com/?size=32&id=48326&format=png" alt="ArXiv Pre-print" />
-        ArXiv Pre-print
+    <a href="https://ieeexplore.ieee.org/document/10714437">
+        <img src="https://img.icons8.com/?size=32&id=48326&format=png" alt="IEEE IoT" />
+        Paper
     </a>
     &nbsp;|&nbsp;
     <a href="https://ucd-dare.github.io/cardreamer.github.io/">
@@ -34,6 +34,7 @@ Unleash the power of **imagination** and **generalization** of world models for 
 > - **August 2024:** Created a right turn random task.
 > - **July 2024:** Created a stop-sign task and a traffic-light task.
 > - **July 2024:** Uploaded all the task checkpoints to [HuggingFace](https://huggingface.co/ucd-dare/CarDreamer/tree/main)
+> - **May 2024** Released [arXiv preprint](https://arxiv.org/abs/2405.09111).
 
 ## **Can world model based self-supervised reinforcement learning train autonomous driving agents via imagination of traffic dynamics? The answer is YES!**
 
