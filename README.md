@@ -29,7 +29,7 @@ Unleash the power of **imagination** and **generalization** of world models for 
 
 > \[!NOTE\]
 >
-> - **October 2024:** CarDreamer has been accepted by `IEEE IoT`!
+> - **October 2024:** CarDreamer has been accepted by [IEEE IoT](https://ieeexplore.ieee.org/document/10714437)!
 > - **August 2024:** Support transmission error in intention sharing.
 > - **August 2024:** Created a right turn random task.
 > - **July 2024:** Created a stop-sign task and a traffic-light task.
@@ -246,9 +246,21 @@ To easily customize your own driving tasks, and observation spaces, etc., please
 
 If you find this repository useful, please cite this paper:
 
-**[Paper link](https://arxiv.org/abs/2405.09111)**
+**[IEEE IoT paper link](https://ieeexplore.ieee.org/document/10714437)**
+**[ArXiv paper link](https://arxiv.org/abs/2405.09111)**
 
 ```
+@ARTICLE{10714437,
+  author={Gao, Dechen and Cai, Shuangyu and Zhou, Hanchu and Wang, Hang and Soltani, Iman and Zhang, Junshan},
+  journal={IEEE Internet of Things Journal}, 
+  title={CarDreamer: Open-Source Learning Platform for World Model Based Autonomous Driving}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={1-1},
+  keywords={Autonomous Driving;Reinforcement Learning;World Model},
+  doi={10.1109/JIOT.2024.3479088}}
+
 @article{CarDreamer2024,
   title = {{CarDreamer: Open-Source Learning Platform for World Model based Autonomous Driving}},
   author = {Dechen Gao, Shuangyu Cai, Hanchu Zhou, Hang Wang, Iman Soltani, Junshan Zhang},
