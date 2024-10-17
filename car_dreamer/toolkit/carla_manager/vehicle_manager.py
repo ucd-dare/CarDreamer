@@ -15,6 +15,6 @@ class VehicleManager:
 
     def set_auto_lane_change(self, actor, enable):
         self._tm.auto_lane_change(actor, enable)
-    
+
     def set_desired_speed(self, actor, speed):
         self._tm.set_desired_speed(actor, speed)

@@ -1,22 +1,25 @@
-import json
-import numpy as np
-from tabulate import tabulate
 import argparse
+import json
 from pathlib import Path
+
+import numpy as np
+
+from tabulate import tabulate
+
 
 def compute_metrics_destination_based(episode_stats):
     metrics = {}
 
-    travel_distances = np.array(episode_stats['sum_travel_distance'])
-    destination_reached = np.array(episode_stats['sum_destination_reached'])
-    time_exceeded = np.array(episode_stats['sum_time_exceeded'])
-    is_collision = np.array(episode_stats['sum_is_collision'])
-    out_of_lane = np.array(episode_stats['sum_out_of_lane'])
-    ttc = np.array(episode_stats['mean_ttc'])
-    wpt_dis = np.array(episode_stats['mean_wpt_dis'])
-    speed_norm = np.array(episode_stats['mean_speed_norm'])
-    lengths = np.array(episode_stats['lengths'])
-    scores = np.array(episode_stats['scores'])
+    travel_distances = np.array(episode_stats["sum_travel_distance"])
+    destination_reached = np.array(episode_stats["sum_destination_reached"])
+    time_exceeded = np.array(episode_stats["sum_time_exceeded"])
+    is_collision = np.array(episode_stats["sum_is_collision"])
+    out_of_lane = np.array(episode_stats["sum_out_of_lane"])
+    ttc = np.array(episode_stats["mean_ttc"])
+    wpt_dis = np.array(episode_stats["mean_wpt_dis"])
+    speed_norm = np.array(episode_stats["mean_speed_norm"])
+    lengths = np.array(episode_stats["lengths"])
+    scores = np.array(episode_stats["scores"])
 
     num_episodes = len(travel_distances)
 
@@ -27,71 +30,71 @@ def compute_metrics_destination_based(episode_stats):
     time_exceeded[destination_reached > 0] = False
     out_of_lane[destination_reached > 0] = False
 
-    metrics['num_episodes'] = num_episodes
-    metrics['success_rate'] = success_rate
-    metrics['avg_travel_distance'] = np.mean(travel_distances)
-    metrics['avg_destination_reached'] = np.mean(destination_reached)
-    metrics['avg_destination_reached_ratio'] = np.sum(destination_reached) / num_episodes
-    metrics['avg_time_exceeded'] = np.mean(time_exceeded)
-    metrics['avg_time_exceeded_ratio'] = np.sum(time_exceeded) / num_episodes
-    metrics['avg_is_collision'] = np.mean(is_collision)
-    metrics['avg_is_collision_ratio'] = np.sum(is_collision) / num_episodes
-    metrics['avg_out_of_lane'] = np.mean(out_of_lane)
-    metrics['avg_out_of_lane_ratio'] = np.sum(out_of_lane) / num_episodes
-    metrics['avg_ttc'] = np.mean(ttc)
-    metrics['avg_wpt_dis'] = np.mean(wpt_dis)
-    metrics['avg_speed_norm'] = np.mean(speed_norm)
-    metrics['avg_length'] = np.mean(lengths)
-    metrics['avg_score'] = np.mean(scores)
+    metrics["num_episodes"] = num_episodes
+    metrics["success_rate"] = success_rate
+    metrics["avg_travel_distance"] = np.mean(travel_distances)
+    metrics["avg_destination_reached"] = np.mean(destination_reached)
+    metrics["avg_destination_reached_ratio"] = np.sum(destination_reached) / num_episodes
+    metrics["avg_time_exceeded"] = np.mean(time_exceeded)
+    metrics["avg_time_exceeded_ratio"] = np.sum(time_exceeded) / num_episodes
+    metrics["avg_is_collision"] = np.mean(is_collision)
+    metrics["avg_is_collision_ratio"] = np.sum(is_collision) / num_episodes
+    metrics["avg_out_of_lane"] = np.mean(out_of_lane)
+    metrics["avg_out_of_lane_ratio"] = np.sum(out_of_lane) / num_episodes
+    metrics["avg_ttc"] = np.mean(ttc)
+    metrics["avg_wpt_dis"] = np.mean(wpt_dis)
+    metrics["avg_speed_norm"] = np.mean(speed_norm)
+    metrics["avg_length"] = np.mean(lengths)
+    metrics["avg_score"] = np.mean(scores)
 
     return metrics
 
 
 def main(args):
 
-    jsonl_file = Path(args.logdir) / 'metrics.jsonl'
+    jsonl_file = Path(args.logdir) / "metrics.jsonl"
 
     episode_stats = {
-        'sum_travel_distance': [],
-        'sum_destination_reached': [],
-        'sum_time_exceeded': [],
-        'sum_is_collision': [],
-        'sum_out_of_lane': [],
-        'mean_ttc': [],
-        'mean_wpt_dis': [],
-        'mean_speed_norm': [],
-        'lengths': [],
-        'scores': []
+        "sum_travel_distance": [],
+        "sum_destination_reached": [],
+        "sum_time_exceeded": [],
+        "sum_is_collision": [],
+        "sum_out_of_lane": [],
+        "mean_ttc": [],
+        "mean_wpt_dis": [],
+        "mean_speed_norm": [],
+        "lengths": [],
+        "scores": [],
     }
 
-    with jsonl_file.open('r') as f:
+    with jsonl_file.open("r") as f:
         for line in f:
             data = json.loads(line)
-            if 'stats/sum_travel_distance' in data:
-                episode_stats['sum_travel_distance'].append(data['stats/sum_travel_distance'])
-            if 'stats/sum_destination_reached' in data:
-                episode_stats['sum_destination_reached'].append(data['stats/sum_destination_reached'])
-            if 'stats/sum_time_exceeded' in data:
-                episode_stats['sum_time_exceeded'].append(data['stats/sum_time_exceeded'])
-            if 'stats/sum_is_collision' in data:
-                episode_stats['sum_is_collision'].append(data['stats/sum_is_collision'])
-            if 'stats/sum_out_of_lane' in data:
-                episode_stats['sum_out_of_lane'].append(data['stats/sum_out_of_lane'])
-            if 'stats/mean_ttc' in data:
-                episode_stats['mean_ttc'].append(data['stats/mean_ttc'])
-            if 'stats/mean_wpt_dis' in data:
-                episode_stats['mean_wpt_dis'].append(data['stats/mean_wpt_dis'])
-            if 'stats/mean_speed_norm' in data:
-                episode_stats['mean_speed_norm'].append(data['stats/mean_speed_norm'])
-            if 'episode/length' in data:
-                episode_stats['lengths'].append(data['episode/length'])
-            if 'episode/score' in data:
-                episode_stats['scores'].append(data['episode/score'])
+            if "stats/sum_travel_distance" in data:
+                episode_stats["sum_travel_distance"].append(data["stats/sum_travel_distance"])
+            if "stats/sum_destination_reached" in data:
+                episode_stats["sum_destination_reached"].append(data["stats/sum_destination_reached"])
+            if "stats/sum_time_exceeded" in data:
+                episode_stats["sum_time_exceeded"].append(data["stats/sum_time_exceeded"])
+            if "stats/sum_is_collision" in data:
+                episode_stats["sum_is_collision"].append(data["stats/sum_is_collision"])
+            if "stats/sum_out_of_lane" in data:
+                episode_stats["sum_out_of_lane"].append(data["stats/sum_out_of_lane"])
+            if "stats/mean_ttc" in data:
+                episode_stats["mean_ttc"].append(data["stats/mean_ttc"])
+            if "stats/mean_wpt_dis" in data:
+                episode_stats["mean_wpt_dis"].append(data["stats/mean_wpt_dis"])
+            if "stats/mean_speed_norm" in data:
+                episode_stats["mean_speed_norm"].append(data["stats/mean_speed_norm"])
+            if "episode/length" in data:
+                episode_stats["lengths"].append(data["episode/length"])
+            if "episode/score" in data:
+                episode_stats["scores"].append(data["episode/score"])
 
     final_metrics = compute_metrics_destination_based(episode_stats)
 
     table = [
-        ["Number of Episodes", final_metrics['num_episodes']],
+        ["Number of Episodes", final_metrics["num_episodes"]],
         ["Success Rate", f"{final_metrics['success_rate']:.2%}"],
         ["Avg. Travel Distance", f"{final_metrics['avg_travel_distance']:.2f}"],
         ["Avg. Destination Reached", f"{final_metrics['avg_destination_reached']:.2f}"],
@@ -110,9 +113,9 @@ def main(args):
     print(tabulate(table, headers=["Metric", "Value"], tablefmt="grid"))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--logdir', type=str, required=True, help='Directory containing metrics.jsonl')
+    parser.add_argument("--logdir", type=str, required=True, help="Directory containing metrics.jsonl")
     args = parser.parse_args()
 
     main(args)

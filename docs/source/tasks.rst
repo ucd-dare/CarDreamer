@@ -19,7 +19,7 @@ Here is the descriptions of some common configurations in ``car_dreamer/configs/
 
     * ``carla_port`` (default: ``2000``): the port number of the CARLA server on which you start.
       The port for Carla's Traffic Manager is set to ``carla_port + 6000``.
-      
+
       The port for Visualization Server is set to ``carla_port + 7000``.
     * ``town`` (default: ``Town04``): the map name of the CARLA world.
     * ``fixed_delta_seconds`` (default: ``0.1``): the fixed time step of the simulation.
@@ -30,7 +30,7 @@ Here is the descriptions of some common configurations in ``car_dreamer/configs/
 
 * ``observation``: the configuration for :py:class:`car_dreamer.toolkit.Observer`.
   Each sub-item is enabled if included in the list ``env.observation.enabled``.
-  
+
   For each sub-item, at least ``handler`` should be specified, which is used to find the corresponding handler in :py:mod:`car_dreamer.toolkit.observer.handlers`. Here is a list of items already defined and you may configure your own.
 
     * ``camera``: the configuration for :py:class:`car_dreamer.toolkit.observer.handlers.CameraHandler`.
@@ -45,7 +45,7 @@ Here is the descriptions of some common configurations in ``car_dreamer/configs/
             * ``image_size_x`` (default: ``128``): should equal to ``n`` in ``shape``.
             * ``image_size_y`` (default: ``128``): should equal to ``n`` in ``shape``.
             * ``fov`` (default: ``120.0``): the field of view of the camera.
-    
+
     * ``lidar``: the configuration for :py:class:`car_dreamer.toolkit.observer.handlers.LidarHandler`.
       If enabled, provides ``{${lidar.key}: ndarray(np.int8) of size ${lidar.shape}}`` in the observation data.
 
@@ -58,17 +58,17 @@ Here is the descriptions of some common configurations in ``car_dreamer/configs/
         * ``attributes``: attributes passed to the constructor of lidar sensor in CARLA.
 
             * ``range`` (default: ``32.0``): the range of the lidar in meter (in unit of CARLA).
-    
+
     * ``collision``: the configuration for :py:class:`car_dreamer.toolkit.observer.handlers.CollisionHandler`.
       If enabled, provides ``{${collision.key}: ndarray(np.float32) of size (1,)}`` in the observation data.
       It is the impulse of the collision, or zero if no collision happens.
 
         * ``key`` (default: collision): the key of the collision in the observation data.
         * ``blueprint``: the blueprint of the collision sensor in CARLA.
-    
+
     * ``birdeye_*``: the configuration for :py:class:`car_dreamer.toolkit.observer.handlers.BirdEyeHandler`.
       If enabled, provides ``{${birdeye.key}: ndarray(np.int8) of size ${birdeye.shape}}`` in the observation data.
-      
+
       **Note that** multiple birdeye handlers can be enabled at the same time to provide different birdeye views.
 
         * ``key``: the key of the birdeye in the observation data.

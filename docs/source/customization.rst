@@ -25,44 +25,44 @@ A typical implementation looks like:
 .. code-block:: python
 
    import carla
-   
+
    from .carla_base_env import CarlaBaseEnv
    from .toolkit import RandomPlanner
-   
+
    class CarlaCustomEnv(CarlaBaseEnv):
        def on_reset(self):
            # spawn the ego vehicle at a specific location in Town04
            # self.ego is a must to inherit from CarlaBaseEnv
            spawn_transform = carla.Transform(carla.Location(x=5.8, y=100, z=0.1), carla.Rotation(yaw=-90))
            self.ego = self._world_manager.spawn_actor(transform=spawn_transform)
-           
+
            # use random planner to generate waypoints for the ego vehicle
            # self.ego_planner is a must to inherit from CarlaWptEnv or CarlaWptFixedEnv
            self.ego_planner = RandomPlanner(vehicle=self.ego)
            self.waypoints, self.planner_stats = self.ego_planner.run_step()
-   
+
        def apply_control(self, action):
            # apply control to the ego vehicle according to action
            control = self.get_vehicle_control(action)
            self.ego.apply_control(control)
-   
+
        def on_step(self):
            # run the planner to generate waypoints for the ego vehicle
            self.waypoints, self.planner_stats = self.ego_planner.run_step()
            self.num_waypoint_reached = self.planner_stats['num_completed']
-   
+
        def reward(self):
            r_waypoint = self.num_waypoint_reached * self._config.waypoint_reward
            return r_waypoint, {
                'r_waypoint': r_waypoint,
            }
-   
+
        def get_terminal_conditions(self):
            return {
                'is_collision': self.is_collision(),
                'time_exceeded': self._time_step > self._config.time_limit,
            }
-   
+
        def get_state(self):
            return {
                'timesteps': self._time_step,
@@ -108,15 +108,15 @@ For example, if you want to include the speed and the number of remaining waypoi
 
    from .base_handler import BaseHandler
    from ...carla_manager import get_vehicle_velocity
-   
+
    class CustomHandler(BaseHandler):
-   
+
        def get_observation_space(self):
            return {
                 'num_waypoints': spaces.Box(low=0, high=65535, shape=(1,), dtype=np.uint16),
                 'speed': spaces.Box(low=-np.inf, high=np.inf, shape=(2,), dtype=np.float32),
               }
-   
+
        def get_observation(self, env_state):
            # 'waypoints' should be returned by the environment
            num_waypoints = len(env_state['waypoints'])
@@ -126,23 +126,23 @@ For example, if you want to include the speed and the number of remaining waypoi
                'num_waypoints': np.array([num_waypoints], dtype=np.uint16),
                 'speed': np.array(speed, dtype=np.float32),
            }
-        
+
        def destroy(self):
            pass
-   
+
        def reset(self, ego):
            self.ego = ego
 
 Add a new enum in ``car_dreamer/toolkit/observer/utils.py``:
 
 .. code-block:: python
-   
+
    from .handlers.custom_handler import CustomHandler
 
    class HandlerType(Enum):
        ...
        CUSTOM = 'custom'
-    
+
    HANDLER_DICT = {
        ...
        HandlerType.CUSTOM: CustomHandler,
@@ -180,4 +180,3 @@ Additionally, you can call the following methods to get, add, or pop waypoints s
 
 .. autoclass:: BasePlanner
    :members: get_all_waypoints, add_waypoint, pop_waypoint, clear_waypoints, get_waypoint_num, from_carla_waypoint
-

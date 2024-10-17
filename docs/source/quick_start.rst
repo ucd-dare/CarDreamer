@@ -44,7 +44,7 @@ Then, call the python function :py:func:`car_dreamer.create_task` with the name 
 
    import car_dreamer
    task, _ = car_dreamer.create_task('carla_four_lane', argv)
-   
+
 .. seealso::
 
    Function :py:func:`car_dreamer.create_task`
@@ -57,7 +57,7 @@ Visualization
 After creating the task, the visualization is automatically started if ``env.display.enable`` is set to ``True`` in ``car_dreamer/configs/common.yaml``. The visualization server runs on port 9000 by default  (See :ref:`port configuration <config-port>`). You can run the following demo and access to ``http://localhost:9000`` for visualization.
 
 .. code-block:: python
-   
+
    import car_dreamer
    import time
 

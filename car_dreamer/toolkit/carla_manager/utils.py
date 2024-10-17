@@ -1,17 +1,26 @@
-from typing import List, Tuple, Dict
-import numpy as np
 from enum import Enum
+from typing import Dict, List, Tuple
+
 import carla
+import numpy as np
 
 
 class Command(Enum):
     """Enumeration for high-level commands."""
+
     LaneFollow = "LaneFollow"
     LaneChangeLeft = "ChangeLaneLeft"
     LaneChangeRight = "ChangeLaneRight"
     Straight = "Straight"
     Left = "Left"
     Right = "Right"
+
+
+class FollowDirections(Enum):
+    STRAIGHT = 0
+    RIGHT_TURN = 1
+    LEFT_TURN = 2
+    RANDOM = -1
 
 
 Index2Command = {index: command for index, command in enumerate(Command, start=0)}

@@ -1,18 +1,19 @@
-from typing import Dict, Tuple, Callable
+from typing import Callable, Dict, Tuple
 
 import carla
 from gym import spaces
 
-from .utils import HANDLER_DICT, HandlerType
-from .handlers import BaseHandler, SimpleHandler
 from ..carla_manager import WorldManager
+from .handlers import BaseHandler, SimpleHandler
+from .utils import HANDLER_DICT, HandlerType
 
-SIMPLE_HANDLER_NAME = 'simple'
+SIMPLE_HANDLER_NAME = "simple"
+
 
 class Observer:
     """
     An observer is a collection of data handlers, each providing some observation data.
-    
+
     The output of the Observer can be configured through ``env.observation.enabled``, which is passed to the constructor in ``obs_config``.
 
     In addtion, :py:meth:`register_simple_handler` provides a flexible way to supplement the observation data with a callback.
@@ -23,12 +24,7 @@ class Observer:
         self._obs_config = obs_config
         self._data_handlers = self._init_data_handlers()
 
-    def register_simple_handler(
-        self,
-        key: str,
-        observation_fn: Callable[[], Dict],
-        observation_space: spaces.Space
-    ) -> None:
+    def register_simple_handler(self, key: str, observation_fn: Callable[[], Dict], observation_space: spaces.Space) -> None:
         """
         Register a simple observation function that may optionally use environment state.
 

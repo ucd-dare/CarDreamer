@@ -13,6 +13,7 @@ import carla
 
 from .basic_agent import BasicAgent
 
+
 class ConstantVelocityAgent(BasicAgent):
     """
     ConstantVelocityAgent implements an agent that navigates the scene at a fixed velocity.
@@ -40,12 +41,12 @@ class ConstantVelocityAgent(BasicAgent):
         self._constant_velocity_stop_time = None
         self._collision_sensor = None
 
-        self._restart_time = float('inf')  # Time after collision before the constant velocity behavior starts again
+        self._restart_time = float("inf")  # Time after collision before the constant velocity behavior starts again
 
-        if 'restart_time' in opt_dict:
-            self._restart_time = opt_dict['restart_time']
-        if 'use_basic_behavior' in opt_dict:
-            self._use_basic_behavior = opt_dict['use_basic_behavior']
+        if "restart_time" in opt_dict:
+            self._restart_time = opt_dict["restart_time"]
+        if "use_basic_behavior" in opt_dict:
+            self._use_basic_behavior = opt_dict["use_basic_behavior"]
 
         self.is_constant_velocity_active = True
         self._set_collision_sensor()
@@ -119,7 +120,7 @@ class ConstantVelocityAgent(BasicAgent):
         return control
 
     def _set_collision_sensor(self):
-        blueprint = self._world.get_blueprint_library().find('sensor.other.collision')
+        blueprint = self._world.get_blueprint_library().find("sensor.other.collision")
         self._collision_sensor = self._world.spawn_actor(blueprint, carla.Transform(), attach_to=self._vehicle)
         self._collision_sensor.listen(lambda event: self.stop_constant_velocity())
 

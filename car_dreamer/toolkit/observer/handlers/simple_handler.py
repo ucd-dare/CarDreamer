@@ -3,8 +3,8 @@ from typing import Callable, Dict, Tuple
 import carla
 from gym import spaces
 
-from .base_handler import BaseHandler
 from ...carla_manager import WorldManager
+from .base_handler import BaseHandler
 
 
 class SimpleHandler(BaseHandler):

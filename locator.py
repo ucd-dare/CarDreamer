@@ -54,10 +54,11 @@ import os
 import sys
 
 try:
-    sys.path.append(glob.glob('../carla/dist/carla-*%d.%d-%s.egg' % (
-        sys.version_info.major,
-        sys.version_info.minor,
-        'win-amd64' if os.name == 'nt' else 'linux-x86_64'))[0])
+    sys.path.append(
+        glob.glob(
+            "../carla/dist/carla-*%d.%d-%s.egg" % (sys.version_info.major, sys.version_info.minor, "win-amd64" if os.name == "nt" else "linux-x86_64")
+        )[0]
+    )
 except IndexError:
     pass
 
@@ -66,10 +67,6 @@ except IndexError:
 # ==============================================================================
 
 
-import carla
-
-from carla import ColorConverter as cc
-
 import argparse
 import datetime
 import math
@@ -77,51 +74,56 @@ import random
 import re
 import weakref
 
+import carla
+from carla import ColorConverter as cc
+
 try:
     import pygame
-    from pygame.locals import KMOD_CTRL
-    from pygame.locals import KMOD_SHIFT
-    from pygame.locals import K_0
-    from pygame.locals import K_9
-    from pygame.locals import K_BACKQUOTE
-    from pygame.locals import K_BACKSPACE
-    from pygame.locals import K_COMMA
-    from pygame.locals import K_DOWN
-    from pygame.locals import K_ESCAPE
-    from pygame.locals import K_F1
-    from pygame.locals import K_LEFT
-    from pygame.locals import K_RIGHT
-    from pygame.locals import K_SLASH
-    from pygame.locals import K_SPACE
-    from pygame.locals import K_TAB
-    from pygame.locals import K_UP
-    from pygame.locals import K_a
-    from pygame.locals import K_b
-    from pygame.locals import K_c
-    from pygame.locals import K_d
-    from pygame.locals import K_e
-    from pygame.locals import K_g
-    from pygame.locals import K_h
-    from pygame.locals import K_n
-    from pygame.locals import K_o
-    from pygame.locals import K_p
-    from pygame.locals import K_q
-    from pygame.locals import K_r
-    from pygame.locals import K_s
-    from pygame.locals import K_t
-    from pygame.locals import K_v
-    from pygame.locals import K_w
-    from pygame.locals import K_MINUS
-    from pygame.locals import K_EQUALS
-    from pygame.locals import MOUSEBUTTONUP
-    from pygame.locals import MOUSEBUTTONDOWN
+    from pygame.locals import (
+        K_0,
+        K_9,
+        K_BACKQUOTE,
+        K_BACKSPACE,
+        K_COMMA,
+        K_DOWN,
+        K_EQUALS,
+        K_ESCAPE,
+        K_F1,
+        K_LEFT,
+        K_MINUS,
+        K_RIGHT,
+        K_SLASH,
+        K_SPACE,
+        K_TAB,
+        K_UP,
+        KMOD_CTRL,
+        KMOD_SHIFT,
+        MOUSEBUTTONDOWN,
+        MOUSEBUTTONUP,
+        K_a,
+        K_b,
+        K_c,
+        K_d,
+        K_e,
+        K_g,
+        K_h,
+        K_n,
+        K_o,
+        K_p,
+        K_q,
+        K_r,
+        K_s,
+        K_t,
+        K_v,
+        K_w,
+    )
 except ImportError:
-    raise RuntimeError('cannot import pygame, make sure pygame package is installed')
+    raise RuntimeError("cannot import pygame, make sure pygame package is installed")
 
 try:
     import numpy as np
 except ImportError:
-    raise RuntimeError('cannot import numpy, make sure numpy package is installed')
+    raise RuntimeError("cannot import numpy, make sure numpy package is installed")
 
 
 # ==============================================================================
@@ -130,15 +132,15 @@ except ImportError:
 
 
 def find_weather_presets():
-    rgx = re.compile('.+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)')
-    name = lambda x: ' '.join(m.group(0) for m in rgx.finditer(x))
-    presets = [x for x in dir(carla.WeatherParameters) if re.match('[A-Z].+', x)]
+    rgx = re.compile(".+?(?:(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|$)")
+    name = lambda x: " ".join(m.group(0) for m in rgx.finditer(x))
+    presets = [x for x in dir(carla.WeatherParameters) if re.match("[A-Z].+", x)]
     return [(getattr(carla.WeatherParameters, x), name(x)) for x in presets]
 
 
 def get_actor_display_name(actor, truncate=250):
-    name = ' '.join(actor.type_id.replace('_', '.').title().split('.')[1:])
-    return (name[:truncate - 1] + u'\u2026') if len(name) > truncate else name
+    name = " ".join(actor.type_id.replace("_", ".").title().split(".")[1:])
+    return (name[: truncate - 1] + "\u2026") if len(name) > truncate else name
 
 
 def get_actor_blueprints(world, filter, generation):
@@ -156,7 +158,7 @@ def get_actor_blueprints(world, filter, generation):
         int_generation = int(generation)
         # Check if generation is in available generations
         if int_generation in [1, 2]:
-            bps = [x for x in bps if int(x.get_attribute('generation')) == int_generation]
+            bps = [x for x in bps if int(x.get_attribute("generation")) == int_generation]
             return bps
         else:
             print("   Warning! Actor Generation is not valid. No actor will be spawned.")
@@ -178,9 +180,9 @@ class World(object):
         try:
             self.map = self.world.get_map()
         except RuntimeError as error:
-            print('RuntimeError: {}'.format(error))
-            print('  The server could not send the OpenDRIVE (.xodr) file:')
-            print('  Make sure it exists, has the same name of your map_name, and is correct.')
+            print("RuntimeError: {}".format(error))
+            print("  The server could not send the OpenDRIVE (.xodr) file:")
+            print("  Make sure it exists, has the same name of your map_name, and is correct.")
             sys.exit(1)
         self.hud = hud
         self.player = None
@@ -207,7 +209,7 @@ class World(object):
             carla.MapLayer.Props,
             carla.MapLayer.StreetLights,
             carla.MapLayer.Walls,
-            carla.MapLayer.All
+            carla.MapLayer.All,
         ]
 
     def restart(self):
@@ -215,8 +217,7 @@ class World(object):
         self.player_max_speed_fast = 3.713
 
         self.player = self.world.get_spectator()
-        self.player.set_transform(
-            carla.Transform(carla.Location(x=0, y=0, z=250), carla.Rotation(pitch=-90, yaw=0.0, roll=0.0)))
+        self.player.set_transform(carla.Transform(carla.Location(x=0, y=0, z=250), carla.Rotation(pitch=-90, yaw=0.0, roll=0.0)))
         self.camera_manager = CameraManager(self.player, self.hud, self._gamma)
         self.camera_manager.set_sensor()
         actor_type = get_actor_display_name(self.player)
@@ -240,10 +241,10 @@ class World(object):
     def load_map_layer(self, unload=False):
         selected = self.map_layer_names[self.current_map_layer]
         if unload:
-            self.hud.notification('Unloading map layer: %s' % selected)
+            self.hud.notification("Unloading map layer: %s" % selected)
             self.world.unload_map_layer(selected)
         else:
-            self.hud.notification('Loading map layer: %s' % selected)
+            self.hud.notification("Loading map layer: %s" % selected)
             self.world.load_map_layer(selected)
 
     def tick(self, clock):
@@ -334,7 +335,7 @@ class KeyboardControl(object):
                 elif event.key == K_r and not (pygame.key.get_mods() & KMOD_CTRL):
                     world.camera_manager.toggle_recording()
                 elif event.key == K_r and (pygame.key.get_mods() & KMOD_CTRL):
-                    if (world.recording_enabled):
+                    if world.recording_enabled:
                         client.stop_recorder()
                         world.recording_enabled = False
                         world.hud.notification("Recorder is OFF")
@@ -385,7 +386,6 @@ class KeyboardControl(object):
         elif keys[K_q]:
             self.world.zoom_in()
 
-
         # if keys[K_UP] or keys[K_w]:
         #     self._control.throttle = min(self._control.throttle + 0.01, 1.00)
         # else:
@@ -418,10 +418,10 @@ class KeyboardControl(object):
         if keys[K_DOWN] or keys[K_s]:
             self._control.speed = 0.0
         if keys[K_LEFT] or keys[K_a]:
-            self._control.speed = .01
+            self._control.speed = 0.01
             self._rotation.yaw -= 0.08 * milliseconds
         if keys[K_RIGHT] or keys[K_d]:
-            self._control.speed = .01
+            self._control.speed = 0.01
             self._rotation.yaw += 0.08 * milliseconds
         if keys[K_UP] or keys[K_w]:
             self._control.speed = world.player_max_speed_fast if pygame.key.get_mods() & KMOD_SHIFT else world.player_max_speed
@@ -443,9 +443,9 @@ class HUD(object):
     def __init__(self, width, height):
         self.dim = (2500, 1100)
         font = pygame.font.Font(pygame.font.get_default_font(), 50)
-        font_name = 'courier' if os.name == 'nt' else 'mono'
+        font_name = "courier" if os.name == "nt" else "mono"
         fonts = [x for x in pygame.font.get_fonts() if font_name in x]
-        default_font = 'ubuntumono'
+        default_font = "ubuntumono"
         mono = default_font if default_font in fonts else fonts[0]
         mono = pygame.font.match_font(mono)
         self._font_mono = pygame.font.Font(mono, 50)
@@ -474,19 +474,19 @@ class HUD(object):
         # t = np.copy(pygame.mouse.get_pos())
         # t[0] = (t[0] - 1920) / 1920 * height + world.player.get_transform().location.x
         # t[1] = (t[1] - 1080) / 1080 * height + world.player.get_transform().location.y
-        world.world.debug.draw_point(carla.Location(x=x_spec * 1.0, y=y_spec * 1.0, z=0.5), size=0.1,
-                                     color=carla.Color(255, 0, 0), life_time=0.05)
+        world.world.debug.draw_point(carla.Location(x=x_spec * 1.0, y=y_spec * 1.0, z=0.5), size=0.1, color=carla.Color(255, 0, 0), life_time=0.05)
         self._info_text = [
-            'Server:  % 16.0f FPS' % self.server_fps,
-            'Client:  % 16.0f FPS' % clock.get_fps(),
-            '',
-            'Map:     % 20s' % world.map.name.split('/')[-1],
-            'Simulation time: % 12s' % datetime.timedelta(seconds=int(self.simulation_time)),
-            '',
+            "Server:  % 16.0f FPS" % self.server_fps,
+            "Client:  % 16.0f FPS" % clock.get_fps(),
+            "",
+            "Map:     % 20s" % world.map.name.split("/")[-1],
+            "Simulation time: % 12s" % datetime.timedelta(seconds=int(self.simulation_time)),
+            "",
             # 'Location:% 20s' % ('(% 5.1f, % 5.1f)' % (t.location.x, t.location.y)),
-            'Location:% 20s' % ('(% 5.1f, % 5.1f)' % (x_spec, y_spec)),
-            'Height:  % 18.0f m' % h_spec,
-            '']
+            "Location:% 20s" % ("(% 5.1f, % 5.1f)" % (x_spec, y_spec)),
+            "Height:  % 18.0f m" % h_spec,
+            "",
+        ]
 
     def toggle_info(self):
         self._show_info = not self._show_info
@@ -495,7 +495,7 @@ class HUD(object):
         self._notifications.set_text(text, seconds=seconds)
 
     def error(self, text):
-        self._notifications.set_text('Error: %s' % text, (255, 0, 0))
+        self._notifications.set_text("Error: %s" % text, (255, 0, 0))
 
     def render(self, display):
         if self._show_info:
@@ -579,12 +579,12 @@ class CameraManager(object):
         self.recording = False
         self.world = self._parent.get_world()
         bp_library = self.world.get_blueprint_library()
-        bp = bp_library.find('sensor.camera.rgb')
-        bp.set_attribute('image_size_x', str(hud.dim[0]))
-        bp.set_attribute('image_size_y', str(hud.dim[1]))
+        bp = bp_library.find("sensor.camera.rgb")
+        bp.set_attribute("image_size_x", str(hud.dim[0]))
+        bp.set_attribute("image_size_y", str(hud.dim[1]))
         print("GAMMA", gamma_correction)
-        if bp.has_attribute('gamma'):
-            bp.set_attribute('gamma', str(gamma_correction))
+        if bp.has_attribute("gamma"):
+            bp.set_attribute("gamma", str(gamma_correction))
 
         self.bp = bp
 
@@ -593,14 +593,11 @@ class CameraManager(object):
             self.sensor.destroy()
             self.surface = None
         camera_init_trans = carla.Transform(carla.Location(z=1.5))
-        self.sensor = self._parent.get_world().spawn_actor(
-            self.bp,
-            camera_init_trans,
-            attach_to=self._parent)
+        self.sensor = self._parent.get_world().spawn_actor(self.bp, camera_init_trans, attach_to=self._parent)
         weak_self = weakref.ref(self)
         self.sensor.listen(lambda image: CameraManager._parse_image(weak_self, image))
         if notify:
-            self.hud.notification('Camera RGB')
+            self.hud.notification("Camera RGB")
 
     def render(self, display):
         if self.surface is not None:
@@ -645,9 +642,7 @@ def game_loop(args):
                 settings.fixed_delta_seconds = 0.05
             sim_world.apply_settings(settings)
 
-        display = pygame.display.set_mode(
-            (2500,1100),
-            pygame.HWSURFACE | pygame.DOUBLEBUF)
+        display = pygame.display.set_mode((2500, 1100), pygame.HWSURFACE | pygame.DOUBLEBUF)
         display.fill((0, 0, 0))
         pygame.display.flip()
 
@@ -676,7 +671,7 @@ def game_loop(args):
         if original_settings:
             sim_world.apply_settings(original_settings)
 
-        if (world and world.recording_enabled):
+        if world and world.recording_enabled:
             client.stop_recorder()
 
         if world is not None:
@@ -691,40 +686,16 @@ def game_loop(args):
 
 
 def main():
-    argparser = argparse.ArgumentParser(
-        description='CARLA Map Locator')
-    argparser.add_argument(
-        '--host',
-        metavar='H',
-        default='127.0.0.1',
-        help='IP of the host server (default: 127.0.0.1)')
-    argparser.add_argument(
-        '-p', '--port',
-        metavar='P',
-        default=2000,
-        type=int,
-        help='TCP port to listen to (default: 2000)')
-    argparser.add_argument(
-        '--map',
-        default='town06',
-        help='Town map name')
-    argparser.add_argument(
-        '--res',
-        metavar='WIDTHxHEIGHT',
-        default='3840x2160',
-        help='window resolution (default: 3840x2160)')
-    argparser.add_argument(
-        '--gamma',
-        default=2.2,
-        type=float,
-        help='Gamma correction of the camera (default: 2.2)')
-    argparser.add_argument(
-        '--sync',
-        action='store_true',
-        help='Activate synchronous mode execution')
+    argparser = argparse.ArgumentParser(description="CARLA Map Locator")
+    argparser.add_argument("--host", metavar="H", default="127.0.0.1", help="IP of the host server (default: 127.0.0.1)")
+    argparser.add_argument("-p", "--port", metavar="P", default=2000, type=int, help="TCP port to listen to (default: 2000)")
+    argparser.add_argument("--map", default="town06", help="Town map name")
+    argparser.add_argument("--res", metavar="WIDTHxHEIGHT", default="3840x2160", help="window resolution (default: 3840x2160)")
+    argparser.add_argument("--gamma", default=2.2, type=float, help="Gamma correction of the camera (default: 2.2)")
+    argparser.add_argument("--sync", action="store_true", help="Activate synchronous mode execution")
     args = argparser.parse_args()
 
-    args.width, args.height = [int(x) for x in args.res.split('x')]
+    args.width, args.height = [int(x) for x in args.res.split("x")]
 
     print(__doc__)
 
@@ -733,8 +704,8 @@ def main():
         game_loop(args)
 
     except KeyboardInterrupt:
-        print('\nCancelled by user. Bye!')
+        print("\nCancelled by user. Bye!")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

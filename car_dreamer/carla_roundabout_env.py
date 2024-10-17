@@ -1,6 +1,7 @@
 from .carla_wpt_fixed_env import CarlaWptFixedEnv
 from .toolkit import get_vehicle_pos
 
+
 class CarlaRoundaboutEnv(CarlaWptFixedEnv):
     """
     Vehicle passes the roundabout and avoid collision.

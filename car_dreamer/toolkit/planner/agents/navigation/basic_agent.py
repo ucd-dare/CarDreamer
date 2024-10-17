@@ -12,11 +12,9 @@ It can also make use of the global route planner to follow a specifed route
 import carla
 from shapely.geometry import Polygon
 
-from .local_planner import LocalPlanner, RoadOption
+from ..tools.misc import compute_distance, get_speed, get_trafficlight_trigger_location, is_within_distance
 from .global_route_planner import GlobalRoutePlanner
-from ..tools.misc import (get_speed, is_within_distance,
-                               get_trafficlight_trigger_location,
-                               compute_distance)
+from .local_planner import LocalPlanner, RoadOption
 
 
 class BasicAgent(object):
@@ -65,27 +63,27 @@ class BasicAgent(object):
         self._offset = 0
 
         # Change parameters according to the dictionary
-        opt_dict['target_speed'] = target_speed
-        if 'ignore_traffic_lights' in opt_dict:
-            self._ignore_traffic_lights = opt_dict['ignore_traffic_lights']
-        if 'ignore_stop_signs' in opt_dict:
-            self._ignore_stop_signs = opt_dict['ignore_stop_signs']
-        if 'ignore_vehicles' in opt_dict:
-            self._ignore_vehicles = opt_dict['ignore_vehicles']
-        if 'use_bbs_detection' in opt_dict:
-            self._use_bbs_detection = opt_dict['use_bbs_detection']
-        if 'sampling_resolution' in opt_dict:
-            self._sampling_resolution = opt_dict['sampling_resolution']
-        if 'base_tlight_threshold' in opt_dict:
-            self._base_tlight_threshold = opt_dict['base_tlight_threshold']
-        if 'base_vehicle_threshold' in opt_dict:
-            self._base_vehicle_threshold = opt_dict['base_vehicle_threshold']
-        if 'detection_speed_ratio' in opt_dict:
-            self._speed_ratio = opt_dict['detection_speed_ratio']
-        if 'max_brake' in opt_dict:
-            self._max_brake = opt_dict['max_brake']
-        if 'offset' in opt_dict:
-            self._offset = opt_dict['offset']
+        opt_dict["target_speed"] = target_speed
+        if "ignore_traffic_lights" in opt_dict:
+            self._ignore_traffic_lights = opt_dict["ignore_traffic_lights"]
+        if "ignore_stop_signs" in opt_dict:
+            self._ignore_stop_signs = opt_dict["ignore_stop_signs"]
+        if "ignore_vehicles" in opt_dict:
+            self._ignore_vehicles = opt_dict["ignore_vehicles"]
+        if "use_bbs_detection" in opt_dict:
+            self._use_bbs_detection = opt_dict["use_bbs_detection"]
+        if "sampling_resolution" in opt_dict:
+            self._sampling_resolution = opt_dict["sampling_resolution"]
+        if "base_tlight_threshold" in opt_dict:
+            self._base_tlight_threshold = opt_dict["base_tlight_threshold"]
+        if "base_vehicle_threshold" in opt_dict:
+            self._base_vehicle_threshold = opt_dict["base_vehicle_threshold"]
+        if "detection_speed_ratio" in opt_dict:
+            self._speed_ratio = opt_dict["detection_speed_ratio"]
+        if "max_brake" in opt_dict:
+            self._max_brake = opt_dict["max_brake"]
+        if "offset" in opt_dict:
+            self._offset = opt_dict["offset"]
 
         # Initialize the planners
         self._local_planner = LocalPlanner(self._vehicle, opt_dict=opt_dict, map_inst=self._map)
@@ -169,11 +167,7 @@ class BasicAgent(object):
             :param stop_waypoint_creation: stops the automatic random creation of waypoints
             :param clean_queue: resets the current agent's plan
         """
-        self._local_planner.set_global_plan(
-            plan,
-            stop_waypoint_creation=stop_waypoint_creation,
-            clean_queue=clean_queue
-        )
+        self._local_planner.set_global_plan(plan, stop_waypoint_creation=stop_waypoint_creation, clean_queue=clean_queue)
 
     def trace_route(self, start_waypoint, end_waypoint):
         """
@@ -248,7 +242,7 @@ class BasicAgent(object):
             lane_change_time * speed,
             False,
             1,
-            self._sampling_resolution
+            self._sampling_resolution,
         )
         if not path:
             print("WARNING: Ignoring the lane change as no path was found")
@@ -321,6 +315,7 @@ class BasicAgent(object):
             :param max_distance: max freespace to check for obstacles.
                 If None, the base threshold value is used
         """
+
         def get_route_polygon():
             route_bb = []
             extent_y = self._vehicle.bounding_box.extent.y
@@ -365,8 +360,7 @@ class BasicAgent(object):
 
         # Get the transform of the front of the ego
         ego_front_transform = ego_transform
-        ego_front_transform.location += carla.Location(
-            self._vehicle.bounding_box.extent.x * ego_transform.get_forward_vector())
+        ego_front_transform.location += carla.Location(self._vehicle.bounding_box.extent.x * ego_transform.get_forward_vector())
 
         opposite_invasion = abs(self._offset) + self._vehicle.bounding_box.extent.y > ego_wpt.lane_width / 2
         use_bbs = self._use_bbs_detection or opposite_invasion or ego_wpt.is_junction
@@ -398,11 +392,11 @@ class BasicAgent(object):
             # Simplified approach, using only the plan waypoints (similar to TM)
             else:
 
-                if target_wpt.road_id != ego_wpt.road_id or target_wpt.lane_id != ego_wpt.lane_id  + lane_offset:
+                if target_wpt.road_id != ego_wpt.road_id or target_wpt.lane_id != ego_wpt.lane_id + lane_offset:
                     next_wpt = self._local_planner.get_incoming_waypoint_and_direction(steps=3)[0]
                     if not next_wpt:
                         continue
-                    if target_wpt.road_id != next_wpt.road_id or target_wpt.lane_id != next_wpt.lane_id  + lane_offset:
+                    if target_wpt.road_id != next_wpt.road_id or target_wpt.lane_id != next_wpt.lane_id + lane_offset:
                         continue
 
                 target_forward_vector = target_transform.get_forward_vector()
@@ -418,9 +412,17 @@ class BasicAgent(object):
 
         return (False, None, -1)
 
-    def _generate_lane_change_path(self, waypoint, direction='left', distance_same_lane=10,
-                                distance_other_lane=25, lane_change_distance=25,
-                                check=True, lane_changes=1, step_distance=2):
+    def _generate_lane_change_path(
+        self,
+        waypoint,
+        direction="left",
+        distance_same_lane=10,
+        distance_other_lane=25,
+        lane_change_distance=25,
+        check=True,
+        lane_changes=1,
+        step_distance=2,
+    ):
         """
         This methods generates a path that results in a lane change.
         Use the different distances to fine-tune the maneuver.
@@ -445,9 +447,9 @@ class BasicAgent(object):
             distance += next_wp.transform.location.distance(plan[-1][0].transform.location)
             plan.append((next_wp, RoadOption.LANEFOLLOW))
 
-        if direction == 'left':
+        if direction == "left":
             option = RoadOption.CHANGELANELEFT
-        elif direction == 'right':
+        elif direction == "right":
             option = RoadOption.CHANGELANERIGHT
         else:
             # ERROR, input value for change must be 'left' or 'right'
@@ -466,12 +468,12 @@ class BasicAgent(object):
             next_wp = next_wps[0]
 
             # Get the side lane
-            if direction == 'left':
-                if check and str(next_wp.lane_change) not in ['Left', 'Both']:
+            if direction == "left":
+                if check and str(next_wp.lane_change) not in ["Left", "Both"]:
                     return []
                 side_wp = next_wp.get_left_lane()
             else:
-                if check and str(next_wp.lane_change) not in ['Right', 'Both']:
+                if check and str(next_wp.lane_change) not in ["Right", "Both"]:
                     return []
                 side_wp = next_wp.get_right_lane()
 

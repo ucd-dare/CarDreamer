@@ -1,14 +1,15 @@
-from typing import Tuple, Dict
-from gym import spaces
-import numpy as np
-import cv2
-import carla
+from typing import Dict, Tuple
 
-from .renderer.constants import BirdeyeEntity, Color
-from .renderer.birdeye_renderer import BirdeyeRenderer
-from .base_handler import BaseHandler
+import carla
+import cv2
+import numpy as np
+from gym import spaces
+
 from ...carla_manager import WorldManager
-from .utils import get_visibility, get_neighbors, Observability, WaypointObservability
+from .base_handler import BaseHandler
+from .renderer.birdeye_renderer import BirdeyeRenderer
+from .renderer.constants import BirdeyeEntity, Color
+from .utils import Observability, WaypointObservability, get_neighbors, get_visibility
 
 
 class BirdeyeHandler(BaseHandler):
@@ -19,19 +20,11 @@ class BirdeyeHandler(BaseHandler):
         pixels_per_meter = self._display_size / config.obs_range
         pixels_ahead_vehicle = (config.obs_range / 2 - config.ego_offset) * pixels_per_meter
 
-        self._birdeye_render = BirdeyeRenderer(
-            world,
-            pixels_per_meter,
-            self._display_size,
-            pixels_ahead_vehicle,
-            config.camera_fov
-        )
+        self._birdeye_render = BirdeyeRenderer(world, pixels_per_meter, self._display_size, pixels_ahead_vehicle, config.camera_fov)
         self.surface = np.zeros((self._display_size, self._display_size, 3), dtype=np.uint8)
 
     def get_observation_space(self) -> Dict:
-        return {
-            self._config.key: spaces.Box(low=0, high=255, shape=self._config.shape, dtype=np.uint8)
-        }
+        return {self._config.key: spaces.Box(low=0, high=255, shape=self._config.shape, dtype=np.uint8)}
 
     def get_observation(self, env_state: Dict) -> Tuple[Dict, Dict]:
         # Append actors polygon list
@@ -56,10 +49,10 @@ class BirdeyeHandler(BaseHandler):
 
         env_state = {
             **env_state,
-            'background_vehicles_color': background_vehicles_color,
-            'background_waypoints_color': background_waypoints_color,
-            'messages_color': messages_color,
-            'extend_waypoints': self._config.extend_wpt
+            "background_vehicles_color": background_vehicles_color,
+            "background_waypoints_color": background_waypoints_color,
+            "messages_color": messages_color,
+            "extend_waypoints": self._config.extend_wpt,
         }
         self._birdeye_render.render(self.surface, entities, env_state)
         birdeye = self.surface
@@ -101,11 +94,9 @@ class BirdeyeHandler(BaseHandler):
         if waypoint_obs == WaypointObservability.ALL:
             background_waypoints_color = {id: Color.ORANGE_0 for id in actor_ids}
         elif waypoint_obs == WaypointObservability.VISIBLE:
-            background_waypoints_color = {
-                id: Color.ORANGE_0 if visible[id] else None for id in actor_ids}
+            background_waypoints_color = {id: Color.ORANGE_0 if visible[id] else None for id in actor_ids}
         else:
-            background_waypoints_color = {
-                id: Color.ORANGE_0 if id in neighbors else None for id in actor_ids}
+            background_waypoints_color = {id: Color.ORANGE_0 if id in neighbors else None for id in actor_ids}
         return background_waypoints_color
 
     def _get_messages_color(self, actor_ids, neighbors):

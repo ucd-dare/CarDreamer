@@ -1,7 +1,7 @@
 env:
   eval: False
   require_carry: False
-  
+
   world:
     carla_port: 2000
     town: "Town04" # which town to simulate
@@ -47,7 +47,7 @@ env:
       blueprint: sensor.other.collision
       key: collision
       shape: [1]
-    
+
     spectator:
       handler: spectator
       key: spectator

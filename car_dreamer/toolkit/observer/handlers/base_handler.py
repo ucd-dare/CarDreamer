@@ -5,6 +5,7 @@ import carla
 
 from ...carla_manager import WorldManager
 
+
 class BaseHandler(ABC):
     """
     Base class for data endpoint handlers.
@@ -16,7 +17,7 @@ class BaseHandler(ABC):
 
     @abstractmethod
     def get_observation_space(self) -> Dict:
-        """ Get the observation space for this data endpoint. """
+        """Get the observation space for this data endpoint."""
         pass
 
     @abstractmethod
@@ -30,10 +31,10 @@ class BaseHandler(ABC):
 
     @abstractmethod
     def destroy(self) -> None:
-        """ Clean up resources """
+        """Clean up resources"""
         pass
 
     @abstractmethod
     def reset(self, ego: carla.Actor) -> None:
-        """ Reset the handler """
+        """Reset the handler"""
         pass

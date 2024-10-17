@@ -8,4 +8,3 @@ If you want to directly use our tasks without creating customized environments, 
 .. autofunction:: create_task
 
 .. autofunction:: load_task_configs
-

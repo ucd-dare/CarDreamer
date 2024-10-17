@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class ColorBGR:
     BUTTER_0 = (79, 233, 252)
     BUTTER_1 = (0, 212, 237)
@@ -35,6 +36,7 @@ class ColorBGR:
     RED = (0, 0, 255)
     BLUE = (255, 0, 0)
 
+
 class Color:
     BUTTER_0 = (252, 233, 79)
     BUTTER_1 = (237, 212, 0)
@@ -69,6 +71,7 @@ class Color:
     GREEN = (0, 255, 0)
     RED = (255, 0, 0)
     BLUE = (0, 0, 255)
+
 
 class BirdeyeEntity(Enum):
     ROADMAP = "roadmap"
