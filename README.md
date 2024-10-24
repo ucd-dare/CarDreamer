@@ -103,11 +103,9 @@ The following table shows the overall performance metrics over different CarDrea
 | :-----------------------: |
 | ![Task Performance](https://ucd-dare.github.io/cardreamer.github.io/static/images/tables/task_performance.png) |
 
-
 ### Observability
 
 CarDreamer enables the customization of different levels of observability. The table below highlights performance metrics under different observability settings, including full observability, field-of-view (FOV), and recursive field-of-view (SFOV). These settings allow agents to operate with varying degrees of environmental awareness, impacting their ability to plan and execute maneuvers effectively.
-
 
 | Observability Performance Metrics |
 | :-------------------------------: |
@@ -263,6 +261,7 @@ We stream observations, rewards, terminal conditions, and custom metrics to a we
 </table>
 
 ## :hammer: System
+
 ...
 
 To easily customize your own driving tasks, and observation spaces, etc., please refer to our [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
@@ -279,8 +278,8 @@ If you find this repository useful, please cite this paper:
 ```
 @ARTICLE{10714437,
   author={Gao, Dechen and Cai, Shuangyu and Zhou, Hanchu and Wang, Hang and Soltani, Iman and Zhang, Junshan},
-  journal={IEEE Internet of Things Journal}, 
-  title={CarDreamer: Open-Source Learning Platform for World Model Based Autonomous Driving}, 
+  journal={IEEE Internet of Things Journal},
+  title={CarDreamer: Open-Source Learning Platform for World Model Based Autonomous Driving},
   year={2024},
   volume={},
   number={},
@@ -319,6 +318,7 @@ If you find this repository useful, please cite this paper:
 Special thanks to the community for your valuable contributions and support in making CarDreamer better for everyone!
 
 <!-- readme: contributors -start -->
+
 <table>
 	<tbody>
 		<tr>

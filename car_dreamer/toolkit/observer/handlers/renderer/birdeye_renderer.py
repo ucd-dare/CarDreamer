@@ -172,16 +172,17 @@ class BirdeyeRenderer:
                 last = path[-1]
                 path.append((last[0], last[1] - 10.0))
             self._render_path(self._surface, vehicle_polygon, path, waypoint_color)
-    
+
     def _render_error_background_waypoints(self, **env_state):
         """Render the waypoints with error for background actors on the surface."""
-        color = env_state.get('background_waypoints_color')
-        extend_waypoints = env_state.get('extend_waypoints', False)
-        error_rate = env_state.get('error_rate')
+        color = env_state.get("background_waypoints_color")
+        extend_waypoints = env_state.get("extend_waypoints", False)
+        error_rate = env_state.get("error_rate")
         background_waypoints = self._world_manager.actor_actions
         background_waypoints = {
             id: [(action[1].transform.location.x, action[1].transform.location.y) for action in actions]
-            for id, actions in background_waypoints.items() if actions
+            for id, actions in background_waypoints.items()
+            if actions
         }
         vehicle_polygons = self._world_manager.actor_polygons
 

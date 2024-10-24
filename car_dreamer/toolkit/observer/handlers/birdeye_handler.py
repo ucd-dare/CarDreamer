@@ -60,8 +60,8 @@ class BirdeyeHandler(BaseHandler):
             "messages_color": messages_color,
             "extend_waypoints": self._config.extend_wpt,
         }
-        if hasattr(self._config, 'error_rate'):
-            env_state['error_rate'] = self._config.error_rate
+        if hasattr(self._config, "error_rate"):
+            env_state["error_rate"] = self._config.error_rate
         self._birdeye_render.render(self.surface, entities, env_state)
         birdeye = self.surface
 
