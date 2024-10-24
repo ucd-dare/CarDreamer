@@ -48,6 +48,9 @@ start_training() {
   # Start the training script and capture its PID
   CUDA_VISIBLE_DEVICES=$GPU_DEVICE $TRAINING_COMMAND >> $LOG_FILE 2>&1 &
   TRAINING_PID=$!
+  # Log the information about the log file
+  log_with_timestamp "Training session started successfully. Logs are being written to: $LOG_FILE"
+  echo -e "\033[1;32mTraining session started successfully. Logs are being written to: $LOG_FILE\033[0m"
 }
 
 # Function to clean up processes on exit

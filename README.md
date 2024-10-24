@@ -154,7 +154,7 @@ The model backbones are decoupled from CarDreamer tasks or the development sutie
 
 ### :mechanical_arm: Training
 
-Find `README.md` in the corresponding directory of the algorithm you want to use and follow the instructions. For example, to train DreamerV3 agents, use
+Find `README.md` in the corresponding directory of the algorithm you want to use and follow the instructions to install dependencies for that model and start training. We suggest starting with DreamerV3 as it is showing better performance across our experiments. To train DreamerV3 agents, use
 
 ```bash
 bash train_dm3.sh 2000 0 --task carla_four_lane --dreamerv3.logdir ./logdir/carla_four_lane

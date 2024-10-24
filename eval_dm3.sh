@@ -49,6 +49,9 @@ start_eval() {
     # Start the eval script
     $EVAL_COMMAND >> $LOG_FILE 2>&1 &
     EVAL_PID=$!
+    # Log the information about the log file
+    log_with_timestamp "Eval session started successfully. Logs are being written to: $LOG_FILE"
+    echo -e "\033[1;32mEval session started successfully. Logs are being written to: $LOG_FILE\033[0m"
 }
 
 # Function to clean up processes on exit
