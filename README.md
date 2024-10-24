@@ -20,7 +20,6 @@
         <img src="https://img.icons8.com/?size=32&id=X-WB1cntO5xU&format=png&color=000000" alt="Project Page" />
         Project Page
     </a>
-
 </div>
 
 ______________________________________________________________________
@@ -42,59 +41,85 @@ Integrating the high-fidelity CARLA simulator with world models, we are able to 
 
 Simply put, in CarDreamer the agent can learn to drive in a "dream world" from scratch, mastering maneuvers like overtaking and right turns, and avoiding collisions in heavy traffic—all within an imagined world!
 
+CarDreamer offers **customizable observability**, **multi-modal observation spaces**, and **intention-sharing** capabilities. Our paper presents a systematic analysis of the impact of different inputs on agent performance.
+
 Dive into our demos to see the agent skillfully navigating challenges and ensuring safe and efficient travel.
 
 ## 📚 Open-Source World Model-Based Autonomous Driving Platform
 
 **Explore** world model based autonomous driving with CarDreamer, an open-source platform designed for the **development** and **evaluation** of **world model** based autonomous driving.
 
-- 🏙️ **Built-in Urban Driving Tasks**: flexible and customizable observation modality and observability; optimized rewards
+- 🏙️ **Built-in Urban Driving Tasks**: flexible and customizable observation modality, observability, intention sharing; optimized rewards
 - 🔧 **Task Development Suite**: create your own urban driving tasks with ease
 - 🌍 **Model Backbones**: integrated state-of-the-art world models
 
 **Documentation:** [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
-**Looking for more techincal details? Check our report here! [Paper link](https://arxiv.org/abs/2405.09111)**
+**Looking for more technical details? Check our report here! [Paper link](https://arxiv.org/abs/2405.09111)**
 
 ## :sun_with_face: Built-in Task Demos
 
 > \[!TIP\]
-> A world model is learnt to model traffic dynamics; then a driving agent is trained on world model's imagination! The driving agent masters diverse driving skills including lane merge, left turn, and right turn, to random roadming purely **from scratch**.
+> A world model is learnt to model traffic dynamics; then a driving agent is trained on world model's imagination! The driving agent masters diverse driving skills including lane merge, left turn, and right turn, to random roaming purely **from scratch**.
 
 We train DreamerV3 agents on our built-in tasks with a single 4090. Depending on the observation spaces, the memory overhead ranges from 10GB-20GB alongwith 3GB reserved for CARLA.
 
 | Right turn hard | Roundabout | Left turn hard | Lane merge | Overtake |
 | :-------------: | :--------: | :------------: | :--------: | :------: |
-| ![Right turn hard](./.assets/right_turn_hard.gif) | ![Roundabout](./.assets/roundabout.gif) | ![Left turn hard](./.assets/left_turn_hard.gif) | ![Lane merge](./.assets/lane_merge.gif) | ![Overtake](./.assets/overtake.gif) |
+| ![Right turn hard](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/right_turn_hard.gif) | ![Roundabout](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/roundabout.gif) | ![Left turn hard](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/left_turn_hard.gif) | ![Lane merge](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/lane_merge.gif) | ![Overtake](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/overtake.gif) |
 
 | Right turn hard | Roundabout | Left turn hard | Lane merge | Overtake |
 | :-------------: | :--------: | :------------: | :--------: | :---------------: |
-| ![Right turn hard](./.assets/right_turn_hard_camera.gif) | ![Roundabout](./.assets/roundabout_camera.gif) | ![Left turn hard](./.assets/left_turn_hard_camera.gif) | ![Lane merge](./.assets/lane_merge_camera.gif) | ![Right turn simple](./.assets/overtake_camera.gif) |
+| ![Right turn hard](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/camera/right_turn_hard.gif) | ![Roundabout](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/camera/roundabout.gif) | ![Left turn hard](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/camera/left_turn_hard.gif) | ![Lane merge](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/camera/lane_merge.gif) | ![Right turn simple](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/camera/overtake.gif) |
 
 | Traffic Light | Stop Sign |
 | :-----------: | :-------: |
-| ![Traffic Light](https://raw.githubusercontent.com/ucd-dare/cardreamer.github.io/main/static/gifs/bev/tl_right.gif) | ![Stop Sign](https://raw.githubusercontent.com/ucd-dare/cardreamer.github.io/main/static/gifs/bev/stop%20sign.gif) |
+| ![Traffic Light](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/tl_right.gif) | ![Stop Sign](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/stop%20sign.gif) |
 
 ## :blossom: The Power of Intention Sharing
 
 > \[!TIP\]
 > **Human drivers use turn signals to inform their intentions** of turning left or right. **Autonomous vehicles can do the same!**
 
-Let's see how CarDreamer agents communicate and leverage intentions. Our experiment have demonstrated that through sharing intention, the policy learning is much easier! Specifically, a policy without knowing other agents' intentions can be conservative in our crossroad tasks; while intention sharing allows the agents to find the proper timing to cut in the traffic flow.
-
-<!-- Table 1: Sharing waypoints vs. Without sharing waypoints -->
+Let's see how CarDreamer agents communicate and leverage intentions. Our experiment has demonstrated that through sharing intention, the policy learning is much easier! Specifically, a policy without knowing other agents' intentions can be conservative in our crossroad tasks; while intention sharing allows the agents to find the proper timing to cut in the traffic flow.
 
 | Sharing waypoints vs. Without sharing waypoints | Sharing waypoints vs. Without sharing waypoints |
 | :---------------------------------------------: | :---------------------------------------------: |
 | **Right turn hard**                                  | **Left turn hard**                                  |
-| ![Right turn hard](./.assets/right_turn_hard.gif)     ![Right turn hard no waypoint](./.assets/right_turn_raw_fail.gif) | ![Left turn hard](./.assets/left_turn_hard.gif)    <img src="./.assets/left turn raw.gif" style="width: 100%"> |
-
-<!-- Table 2: Full observability vs. Partial observability -->
+| ![Right turn hard](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/right_turn_hard.gif)     ![Right turn hard no waypoint](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/right_turn_raw_fail.gif) | ![Left turn hard](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/left_turn_hard.gif)    <img src="https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/left_turn_raw.gif" style="width: 100%"> |
 
 | Full observability vs. Partial observability |
 | :------------------------------------------: |
 | **Right turn hard**                               |
-| ![Right turn hard](./.assets/right_turn_hard.gif)     ![Right turn hard FOV](./.assets/right_turn_hard_fov.gif) |
+| ![Right turn hard](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/right_turn_hard.gif)     ![Right turn hard FOV](https://ucd-dare.github.io/cardreamer.github.io/static/gifs/bev/right_turn_fov.gif) |
+
+## 📋 Experiments
+
+### Task Performance
+
+The following table shows the overall performance metrics over different CarDreamer built-in tasks.
+
+| Task Performance Metrics |
+| :-----------------------: |
+| ![Task Performance](https://ucd-dare.github.io/cardreamer.github.io/static/images/tables/task_performance.png) |
+
+
+### Observability
+
+CarDreamer enables the customization of different levels of observability. The table below highlights performance metrics under different observability settings, including full observability, field-of-view (FOV), and recursive field-of-view (SFOV). These settings allow agents to operate with varying degrees of environmental awareness, impacting their ability to plan and execute maneuvers effectively.
+
+
+| Observability Performance Metrics |
+| :-------------------------------: |
+| ![Observability Performance](https://ucd-dare.github.io/cardreamer.github.io/static/images/tables/observability_performance.png) |
+
+### Intention Sharing
+
+CarDreamer enhances autonomous vehicle planning by allowing vehicles to share their driving intentions, akin to how human drivers use turn signals. This feature facilitates smoother interactions between agents. Additionally, CarDreamer offers the ability to introduce and customize transmission errors in intention sharing, allowing for a more realistic simulation of communication imperfections. The table below presents performance results under various intention sharing and transmission error configurations.
+
+| Intention Sharing and Transmission Errors |
+| :--------------------------------------: |
+| ![Transmission Error Intention](https://ucd-dare.github.io/cardreamer.github.io/static/images/tables/transmission_error_intention.png) |
 
 ## 📋 Prerequisites
 
@@ -233,15 +258,16 @@ We stream observations, rewards, terminal conditions, and custom metrics to a we
     <td class="center-text">Visualization Server</td>
   </tr>
   <tr>
-    <td><img src="./.assets/visualization.png" style="width: 100%"></td>
+    <td><img src="https://ucd-dare.github.io/cardreamer.github.io/static/images/visualization.png" style="width: 100%"></td>
   </tr>
 </table>
 
 ## :hammer: System
+...
 
 To easily customize your own driving tasks, and observation spaces, etc., please refer to our [CarDreamer API Documents](https://car-dreamer.readthedocs.io/en/latest/).
 
-![CarDreamer](.assets/cardreamer_architecture.png)
+![CarDreamer](https://ucd-dare.github.io/cardreamer.github.io/static/images/CarDreamerSystem.png)
 
 # :star2: Citation
 
@@ -278,15 +304,15 @@ If you find this repository useful, please cite this paper:
 <p align="center">
   Birdeye view imagination
 </p>
-<img src="./.assets/right_turn_hard_pre_bev.gif">
+<img src="https://ucd-dare.github.io/cardreamer.github.io/static/gifs/right_turn_hard_pre_bev.gif">
 <p align="center">
   Camera view imagination
 </p>
-<img src="./.assets/right_turn_hard_pre_camera.gif">
+<img src="https://ucd-dare.github.io/cardreamer.github.io/static/gifs/right_turn_hard_pre_camera.gif">
 <p align="center">
   LiDAR view imagination
 </p>
-<img src="./.assets/right_turn_hard_pre_lidar.gif">
+<img src="https://ucd-dare.github.io/cardreamer.github.io/static/gifs/right_turn_hard_pre_lidar.gif">
 
 # 👥 Contributors
 
