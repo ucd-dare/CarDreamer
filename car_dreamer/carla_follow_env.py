@@ -3,7 +3,7 @@ import random
 
 import carla
 import numpy as np
-from utils import FollowDirections
+from .toolkit.carla_manager.utils import FollowDirections
 
 from .carla_wpt_env import CarlaWptEnv
 from .toolkit import FixedEndingPlanner, get_location_distance, get_vehicle_orientation, get_vehicle_pos, get_vehicle_velocity
@@ -18,6 +18,7 @@ class CarlaFollowEnv(CarlaWptEnv):
     def on_reset(self) -> None:
         # checks which path the vehicle will take this time
         max_num_of_directions = len(self._config.lane_start_points)
+        self.random_num = 0
 
         if self._config.direction == FollowDirections.RANDOM.value:
             self.random_num = random.randint(0, max_num_of_directions - 1)  # random path

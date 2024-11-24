@@ -409,20 +409,24 @@ carla_follow:
       out_lane_thres: 5 # threshold for out of lane
       terminal_dist: 30
 
-    direction: 4    #determining which direction we are testing
+    direction: 2    # determining which direction we are testing
+                    # 0: straight
+                    # 1: right turn
+                    # 2: left turn
+                    # -1: random
 
     nonego_spawn_points:
-      - [-53.6, -135.8, 0.1, 0.0, 0.0, 0.0] #straight
-      - [-32.4, -135.3, 0.1, 0.0, 0.0, 0.0] #right turn
-      - [-27.3, -135.2, 0.1, 0.0, 0.0, 0.0] #left turn
+      - [-53.6, -135.8, 0.1, 0.0, 0.0, 0.0] # straight
+      - [-32.4, -135.3, 0.1, 0.0, 0.0, 0.0] # right turn
+      - [-27.3, -135.2, 0.1, 0.0, 0.0, 0.0] # left turn
     lane_start_points:
-      - [-63.6, -135.8, 0.1] #straight
-      - [-42.4, -135.3, 0.1] #right turn
-      - [-37.3, -135.2, 0.1] #left turn
+      - [-63.6, -135.8, 0.1] # straight
+      - [-42.4, -135.3, 0.1] # right turn
+      - [-37.3, -135.2, 0.1] # left turn
     lane_end_points:
-      - [-14.4, -134.5, 0.1] #straight
-      - [-5.1, -91.1, 0.1] #right turn
-      - [7.2, -178.2, 0.1] #left turn
+      - [-14.4, -134.5, 0.1] # straight
+      - [-5.1, -91.1, 0.1] # right turn
+      - [7.2, -178.2, 0.1] # left turn
 
   dreamerv3:
     encoder.cnn_keys: "birdeye_wpt"
