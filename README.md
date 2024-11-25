@@ -329,17 +329,17 @@ Special thanks to the community for your valuable contributions and support in m
                 </a>
             </td>
             <td align="center">
-                <a href="https://github.com/tonycaisy">
-                    <img src="https://avatars.githubusercontent.com/u/92793139?v=4" width="100;" alt="tonycaisy"/>
-                    <br />
-                    <sub><b>Shuangyu Cai</b></sub>
-                </a>
-            </td>
-            <td align="center">
                 <a href="https://github.com/gaodechen">
                     <img src="https://avatars.githubusercontent.com/u/2103562?v=4" width="100;" alt="gaodechen"/>
                     <br />
                     <sub><b>GaoDechen</b></sub>
+                </a>
+            </td>
+            <td align="center">
+                <a href="https://github.com/tonycaisy">
+                    <img src="https://avatars.githubusercontent.com/u/92793139?v=4" width="100;" alt="tonycaisy"/>
+                    <br />
+                    <sub><b>Shuangyu Cai</b></sub>
                 </a>
             </td>
             <td align="center">
@@ -373,6 +373,13 @@ Special thanks to the community for your valuable contributions and support in m
                 </a>
             </td>
             <td align="center">
+                <a href="https://github.com/MICH3LL3D">
+                    <img src="https://avatars.githubusercontent.com/u/99102209?v=4" width="100;" alt="MICH3LL3D"/>
+                    <br />
+                    <sub><b>MICH3LL3D</b></sub>
+                </a>
+            </td>
+            <td align="center">
                 <a href="https://github.com/andrewcwlee">
                     <img src="https://avatars.githubusercontent.com/u/31760595?v=4" width="100;" alt="andrewcwlee"/>
                     <br />
@@ -400,6 +407,8 @@ Special thanks to the community for your valuable contributions and support in m
                     <sub><b>TracyYXChen</b></sub>
                 </a>
             </td>
+		</tr>
+		<tr>
             <td align="center">
                 <a href="https://github.com/swsamleo">
                     <img src="https://avatars.githubusercontent.com/u/12550596?v=4" width="100;" alt="swsamleo"/>
