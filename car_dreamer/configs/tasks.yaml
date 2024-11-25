@@ -379,3 +379,62 @@ carla_stop_sign:
     decoder.cnn_keys: "birdeye_with_traffic_lights"
     decoder.cnn_kernels: [5, 5, 5, 6, 6]
     train.log_keys_video: [camera, birdeye_with_traffic_lights]
+carla_follow:
+  env:
+    world:
+      town: Town03
+    name: CarlaFollowEnv-v0
+    action:
+      discrete_steer: [-0.9, -0.3, 0.0, 0.3, 0.9]
+    observation.enabled: [camera, collision, birdeye_wpt]
+    <<: *carla_wpt
+    pid_coeffs: [0.03, 0.0, 0.0]
+    reward:
+      desired_speed: 4
+      scales: {
+        waypoint: 0.0,
+        speed: 0.0,
+        collision: 350.0,
+        out_of_lane: 75.0,
+        time: 0.0,
+        destination_reached: 1.0,
+        velocity: 0.15,
+        waypoints: 4.0,
+        distance: 2.0
+      }
+
+
+    terminal:
+      time_limit: 500 # maximum timesteps per episode
+      out_lane_thres: 5 # threshold for out of lane
+      terminal_dist: 30
+
+    direction: 2    # determining which direction we are testing
+                    # 0: straight
+                    # 1: right turn
+                    # 2: left turn
+                    # -1: random
+
+    nonego_spawn_points:
+      - [-53.6, -135.8, 0.1, 0.0, 0.0, 0.0] # straight
+      - [-32.4, -135.3, 0.1, 0.0, 0.0, 0.0] # right turn
+      - [-27.3, -135.2, 0.1, 0.0, 0.0, 0.0] # left turn
+    lane_start_points:
+      - [-63.6, -135.8, 0.1] # straight
+      - [-42.4, -135.3, 0.1] # right turn
+      - [-37.3, -135.2, 0.1] # left turn
+    lane_end_points:
+      - [-14.4, -134.5, 0.1] # straight
+      - [-5.1, -91.1, 0.1] # right turn
+      - [7.2, -178.2, 0.1] # left turn
+
+  dreamerv3:
+    encoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_keys: "birdeye_wpt"
+    run.log_keys_video: [birdeye_wpt]
+
+  dreamerv2:
+    encoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_kernels: [5, 5, 5, 6, 6]
+    train.log_keys_video: [birdeye_wpt]
