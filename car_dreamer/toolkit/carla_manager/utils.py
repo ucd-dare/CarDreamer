@@ -15,8 +15,10 @@ class Command(Enum):
     Left = "Left"
     Right = "Right"
 
+
 class FollowDirections(Enum):
     """Enumeration for the follow task directions"""
+
     STRAIGHT = 0
     RIGHT_TURN = 1
     LEFT_TURN = 2

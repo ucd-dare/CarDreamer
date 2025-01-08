@@ -12,16 +12,6 @@ class BatchEnv(base.Env):
         self._keys = list(self.obs_space.keys())
 
     @property
-    def require_carry(self):
-        if hasattr(self._envs[0], "_require_carry"):
-            return self._envs[0]._require_carry
-        return False
-
-    def set_carry(self, carry):
-        for env in self._envs:
-            env.set_carry(carry)
-
-    @property
     def obs_space(self):
         return self._envs[0].obs_space
 

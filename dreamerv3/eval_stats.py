@@ -24,7 +24,7 @@ def compute_metrics_destination_based(episode_stats, distance_threshold=None):
     batch_size = num_episodes // 3
 
     def compute_mean_and_sem(data):
-        batch_means = [np.mean(data[i * batch_size: (i + 1) * batch_size]) for i in range(3)]
+        batch_means = [np.mean(data[i * batch_size : (i + 1) * batch_size]) for i in range(3)]
         mean = np.mean(batch_means)
         sem = np.std(batch_means, ddof=1) / np.sqrt(3)
         return mean, sem

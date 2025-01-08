@@ -31,21 +31,6 @@ class InfoWrapper(base.Wrapper):
         return obs, info_filtered
 
 
-class CarryWrapper(base.Wrapper):
-    def __init__(self, env):
-        super().__init__(env)
-        self._require_carry = True
-
-    def set_carry(self, carry):
-        self._carry = carry
-
-    def step(self, action):
-        if hasattr(self._env.unwrapped, "set_carry") and self._carry is not None:
-            state = tf.nest.map_structure(lambda x: x.numpy(), self._carry)
-            self._env.unwrapped.set_carry(state)
-        return self.env.step(action)
-
-
 class TimeLimit(base.Wrapper):
     def __init__(self, env, duration, reset=True):
         super().__init__(env)

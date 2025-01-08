@@ -35,7 +35,7 @@ Unleash the power of **imagination** and **generalization** of world models for 
 > - **July 2024:** Uploaded all the task checkpoints to [HuggingFace](https://huggingface.co/ucd-dare/CarDreamer/tree/main)
 > - **May 2024** Released [arXiv preprint](https://arxiv.org/abs/2405.09111).
 
-## **Can world model based self-supervised reinforcement learning train autonomous driving agents via imagination of traffic dynamics? The answer is YES!**
+## **Can world model based reinforcement learning train autonomous driving agents via imagination of traffic dynamics? The answer is YES!**
 
 Integrating the high-fidelity CARLA simulator with world models, we are able to train a world model that not only learns complex environment dynamics but also have an agent interact with the neural network "simulator" to learn to drive.
 

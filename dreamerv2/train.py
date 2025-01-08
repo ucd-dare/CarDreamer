@@ -54,7 +54,6 @@ def main(argv=None):
         logdir=config.dreamerv2.logdir,
         task_behavior=config.dreamerv2.task_behavior,
         skill_shape=config.dreamerv2.skill_shape,
-        require_carry=config.env.require_carry,
         **config.dreamerv2.train,
     )
     args = args.update(expl_until=args.expl_until // config.dreamerv2.env.repeat)
@@ -64,27 +63,15 @@ def main(argv=None):
     step = dm2.Counter()
     cleanup = []
 
-    if config.dreamerv2.run == "acting":
-        actordir = logdir / f"actor{parsed.actor_id}"
-        logger = dm2.Logger(
-            step,
-            [
-                dm2.logger.TerminalOutput(config.dreamerv2.filter),
-                dm2.logger.JSONLOutput(actordir, "metrics.jsonl"),
-                dm2.logger.TensorBoardOutput(actordir),
-            ],
-            multiplier=config.dreamerv2.env.repeat * parsed.actors,
-        )
-    else:
-        logger = dm2.Logger(
-            step,
-            [
-                dm2.logger.TerminalOutput(config.dreamerv2.filter),
-                dm2.logger.JSONLOutput(logdir, "metrics.jsonl"),
-                dm2.logger.TensorBoardOutput(logdir),
-            ],
-            multiplier=config.dreamerv2.env.repeat,
-        )
+    logger = dm2.Logger(
+        step,
+        [
+            dm2.logger.TerminalOutput(config.dreamerv2.filter),
+            dm2.logger.JSONLOutput(logdir, "metrics.jsonl"),
+            dm2.logger.TensorBoardOutput(logdir),
+        ],
+        multiplier=config.dreamerv2.env.repeat,
+    )
 
     chunk = config.dreamerv2.replay_chunk
     if config.dreamerv2.replay == "fixed":
@@ -119,15 +106,42 @@ def main(argv=None):
         env = dm2.envs.load_env(config.env.name, mode="train", logdir=logdir, config=config.env)
         agent = agnt.Agent(env.obs_space, env.act_space, step, config.dreamerv2)
         save_configs(config, args.logdir)
-        if config.dreamerv2.run == "train_with_viz":
-            if config.dreamerv2.eval_dir:
-                assert not config.dreamerv2.train.eval_fill
-                eval_replay = make_replay(config.dreamerv2.eval_dir, config.dreamerv2.replay_size // 10)
-            else:
-                assert config.dreamerv2.train.eval_fill
-                eval_replay = make_replay("eval_episodes", config.dreamerv2.replay_size // 10)
-            replay = make_replay("episodes", config.dreamerv2.replay_size)
-            dm2.run.train_with_viz(agent, env, replay, eval_replay, logger, args)
+
+        # Initialize replay buffers
+        if config.dreamerv2.eval_dir:
+            assert not config.dreamerv2.train.eval_fill
+            eval_replay = make_replay(config.dreamerv2.eval_dir, config.dreamerv2.replay_size // 10)
+        else:
+            assert config.dreamerv2.train.eval_fill
+            eval_replay = make_replay("eval_episodes", config.dreamerv2.replay_size // 10)
+        replay = make_replay("episodes", config.dreamerv2.replay_size)
+
+        if config.dreamerv2.run == "train":
+            dm2.run.train(agent, env, replay, eval_replay, logger, args)
+        elif config.dreamerv2.run == "eval":
+            eval_updates = {
+                "train.log_keys_sum": "(travel_distance|destination_reached|out_of_lane|time_exceeded|is_collision|timesteps)",
+                "train.log_keys_mean": "(travel_distance|ttc|speed_norm|wpt_dis)",
+                "train.log_keys_max": "(travel_distance|ttc|speed_norm|wpt_dis)",
+                "train.steps": 3e4,
+                "train.eval_fill": 1e3,
+                "train.log_every": 1e3,
+            }
+            config = config.update({"dreamerv2": eval_updates})
+            args = args.update(
+                **{
+                    "steps": int(config.dreamerv2.train.steps),
+                    "log_every": int(config.dreamerv2.train.log_every),
+                    "eval_fill": int(config.dreamerv2.train.eval_fill),
+                    "log_keys_video": list(config.dreamerv2.train.log_keys_video),
+                    "log_keys_sum": str(config.dreamerv2.train.log_keys_sum),
+                    "log_keys_mean": str(config.dreamerv2.train.log_keys_mean),
+                    "log_keys_max": str(config.dreamerv2.train.log_keys_max),
+                    "log_zeros": bool(config.dreamerv2.train.log_zeros),
+                    "from_checkpoint": str(config.dreamerv2.train.from_checkpoint),
+                }
+            )
+            dm2.run.eval_only(agent, env, replay, eval_replay, logger, args)
         else:
             raise NotImplementedError(config.dreamerv2.run)
     finally:

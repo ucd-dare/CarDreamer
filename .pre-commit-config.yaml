@@ -46,8 +46,3 @@ repos:
     hooks:
       - id: yapf
         args: ["--style", "{column_limit: 150, align_closing_bracket_with_visual_indent: true, dedent_closing_brackets: true}"]
-
-  - repo: https://github.com/executablebooks/mdformat
-    rev: 0.7.17
-    hooks:
-      - id: mdformat

@@ -23,22 +23,17 @@ def load_single_env(task, config, **kwargs):
 
     from . import gym
 
-    env = gym.Gym(task, obs_key="camera", config=config)
-
-    if config.require_carry:
-        env = dm2.wrappers.CarryWrapper(env)
+    env = gym.FromGym(task, obs_key="camera", config=config)
 
     for name, space in env.act_space.items():
         if name == "reset":
             continue
         if space.discrete:
-            if task == "CarlaMessageEnv-v0" or task == "CarlaMessageExtrEnv-v0":
-                env = dm2.wrappers.TwoHotAction(env, name)
-            else:
-                env = dm2.wrappers.OneHotAction(env, name)
+            env = dm2.wrappers.OneHotAction(env, name)
         else:
             env = dm2.wrappers.NormalizeAction(env, name)
     env = dm2.wrappers.ExpandScalars(env)
+    env = dm2.wrappers.InfoWrapper(env)
     return env
 
 

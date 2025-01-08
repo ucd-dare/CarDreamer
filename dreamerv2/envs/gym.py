@@ -6,7 +6,8 @@ import numpy as np
 import dreamerv2 as dm2
 
 
-class Gym(dm2.Env):
+class FromGym(dm2.Env):
+
     def __init__(self, env, obs_key="image", act_key="action", **kwargs):
         if isinstance(env, str):
             self._env = gym.make(env, **kwargs)
@@ -54,30 +55,23 @@ class Gym(dm2.Env):
         if action["reset"] or self._done:
             self._done = False
             obs = self._env.reset()
-            return self._obs(obs, 0.0, is_first=True)
+            return self._obs(obs, 0.0, is_first=True), {}
         if self._act_dict:
             action = self._unflatten(action)
         else:
             action = action[self._act_key]
         obs, reward, self._done, self._info = self._env.step(action)
-        return self._obs(
-            obs,
-            reward,
-            is_last=bool(self._done),
-            is_terminal=bool(self._info.get("is_terminal", self._done)),
-        )
+        is_last = bool(self._done)
+        is_terminal = bool(self._info.get("is_terminal", self._done))
+        self._info = self._flatten(self._info)
+        return self._obs(obs, reward, is_last=is_last, is_terminal=is_terminal), self._info
 
     def _obs(self, obs, reward, is_first=False, is_last=False, is_terminal=False):
         if not self._obs_dict:
             obs = {self._obs_key: obs}
         obs = self._flatten(obs)
         obs = {k: np.asarray(v) for k, v in obs.items()}
-        obs.update(
-            reward=np.float32(reward),
-            is_first=is_first,
-            is_last=is_last,
-            is_terminal=is_terminal,
-        )
+        obs.update(reward=np.float32(reward), is_first=is_first, is_last=is_last, is_terminal=is_terminal)
         return obs
 
     def render(self):
@@ -94,7 +88,7 @@ class Gym(dm2.Env):
     def _flatten(self, nest, prefix=None):
         result = {}
         for key, value in nest.items():
-            key = prefix + "/" + key if prefix else key
+            key = str(prefix) + "/" + key if prefix else key
             if isinstance(value, gym.spaces.Dict):
                 value = value.spaces
             if isinstance(value, dict):

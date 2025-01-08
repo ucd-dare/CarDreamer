@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CarDreamer Visualization</title>
     <style>
         body {
@@ -16,7 +18,7 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
-            height: 100vh;
+            min-height: 100vh;
             box-sizing: border-box;
         }
 
@@ -43,11 +45,49 @@
             justify-content: space-between;
         }
 
+
+        .sortable-ghost {
+            opacity: 0.5;
+            background-color: #f0f0f0;
+            border: 2px dashed #666;
+        }
+
+        .sortable-drag {
+            opacity: 0.9;
+            transform: scale(1.05);
+            transition: transform 0.15s ease;
+        }
+
         .render-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             grid-gap: 20px;
             width: 60%;
+        }
+
+        .error-message {
+            color: #ff4444;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ff4444;
+            border-radius: 4px;
+            background-color: #fff8f8;
+        }
+
+        .loading {
+            position: relative;
+            opacity: 0.7;
+        }
+
+        .loading::after {
+            content: "Loading...";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px;
+            border-radius: 4px;
         }
 
         .render-item {
@@ -177,64 +217,51 @@
         <div class="section">
             <div class="section-title">Observations</div>
             <div class="image-reward-row">
-                <div class="render-grid"></div>
-                <div class="reward-plot-container">
-                    <canvas></canvas>
+                <div class="render-grid" role="grid"></div>
+                <div class="reward-plot-container" role="complementary">
+                    <canvas aria-label="Reward Plot"></canvas>
                 </div>
             </div>
         </div>
         <div class="section">
             <div class="section-title">Info</div>
-            <div class="info-grid"></div>
+            <div class="info-grid" role="grid"></div>
         </div>
         <div class="section">
             <div class="section-title">Plots</div>
-            <div class="plot-grid"></div>
+            <div class="plot-grid" role="grid"></div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
     <script>
-        const renderGrid = document.querySelector('.render-grid');
-        const rewardPlotContainer = document.querySelector('.reward-plot-container');
-        const plotGrid = document.querySelector('.plot-grid');
-        const infoGrid = document.querySelector('.info-grid');
-
-        const valueHistory = {};
-
-        const eventSource = new EventSource('/stream');
-        eventSource.onmessage = function (event) {
-            const data = JSON.parse(event.data);
-            updateRenderGrid(data.images);
-            updateRewardPlot(data.info);
-            updatePlotGrid(data.info);
-            updateInfoGrid(data.info);
+        const CONFIG = {
+            GRID_SIZES: {
+                RENDER: 200,
+                PLOT: 400,
+                INFO: 200
+            },
+            MAX_HISTORY: 100,
+            CHART_DEFAULTS: {
+                tension: 0.4,
+                borderWidth: 1.5,
+                pointRadius: 0
+            }
         };
 
-        function updateRenderGrid(images) {
-            renderGrid.innerHTML = '';
-            images.forEach(item => {
-                const renderItem = document.createElement('div');
-                renderItem.className = 'render-item';
-                const img = document.createElement('img');
-                img.src = `data:image/webp;base64,${item.image}`;
-                img.className = 'render-image';
-                const key = document.createElement('div');
-                key.className = 'render-key';
-                key.textContent = item.key;
-                const saveButton = document.createElement('button');
-                saveButton.className = 'save-button';
-                saveButton.textContent = 'Save';
-                saveButton.addEventListener('click', () => {
-                    saveImage(item.key, item.image);
-                });
-                renderItem.appendChild(img);
-                renderItem.appendChild(key);
-                renderItem.appendChild(saveButton);
-                renderGrid.appendChild(renderItem);
-            });
-        }
+        const state = {
+            valueHistory: new Map(),
+            charts: new Map(),
+            isConnected: false
+        };
+
+        const elements = {
+            renderGrid: document.querySelector('.render-grid'),
+            rewardPlotContainer: document.querySelector('.reward-plot-container'),
+            plotGrid: document.querySelector('.plot-grid'),
+            infoGrid: document.querySelector('.info-grid')
+        };
 
         function saveImage(key, base64Image) {
             const link = document.createElement('a');
@@ -243,208 +270,124 @@
             link.click();
         }
 
-        function updateRewardPlot(info) {
-            const rewardData = {};
-            Object.entries(info).forEach(([key, value]) => {
-                if (key.startsWith('r_')) {
-                    rewardData[key] = value;
-                }
-            });
-
-            const colorPalette = generateColorPalette(Object.keys(rewardData).length);
-
-            if (!rewardPlotContainer.chart) {
-                const ctx = rewardPlotContainer.querySelector('canvas').getContext('2d');
-                rewardPlotContainer.chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: [],
-                        datasets: Object.keys(rewardData).map((key, index) => ({
-                            label: key,
-                            data: [],
-                            borderColor: colorPalette[index],
-                            backgroundColor: colorPalette[index] + '80',
-                            pointRadius: 0,
-                            lineTension: 0.4,
-                            borderWidth: 1.5
-                        }))
-                    },
-                    options: {
-                        scales: {
-                            x: { display: false },
-                            y: {
-                                display: true,
-                                ticks: {
-                                    callback: function (value) {
-                                        return value.toFixed(2);
-                                    }
+        function initializeRewardPlot(rewardData, colorPalette) {
+            const ctx = elements.rewardPlotContainer.querySelector('canvas').getContext('2d');
+            elements.rewardPlotContainer.chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: Object.keys(rewardData).map((key, index) => ({
+                        label: key,
+                        data: [],
+                        borderColor: colorPalette[index],
+                        backgroundColor: colorPalette[index] + '80',
+                        pointRadius: 0,
+                        lineTension: 0.4,
+                        borderWidth: 1.5
+                    }))
+                },
+                options: {
+                    scales: {
+                        x: { display: false },
+                        y: {
+                            display: true,
+                            ticks: {
+                                callback: function (value) {
+                                    return value.toFixed(2);
                                 }
                             }
-                        },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'bottom',
-                                labels: {
-                                    boxWidth: 12,
-                                    boxHeight: 12,
-                                    font: {
-                                        size: 12
-                                    },
-                                    padding: 20,
-                                    usePointStyle: true,
-                                    generateLabels: function (chart) {
-                                        const datasets = chart.data.datasets;
-                                        return datasets.map((dataset, i) => ({
-                                            text: dataset.label,
-                                            fillStyle: dataset.backgroundColor,
-                                            strokeStyle: dataset.borderColor,
-                                            lineWidth: dataset.borderWidth,
-                                            hidden: !chart.isDatasetVisible(i),
-                                            index: i
-                                        }));
-                                    }
-                                },
-                                onClick: function (e, legendItem, legend) {
-                                    const index = legendItem.index;
-                                    const ci = legend.chart;
-                                    if (ci.isDatasetVisible(index)) {
-                                        ci.hide(index);
-                                        legendItem.hidden = true;
-                                    } else {
-                                        ci.show(index);
-                                        legendItem.hidden = false;
-                                    }
-                                    ci.update();
-                                }
-                            },
-                        },
-                        aspectRatio: 3,
-                        animation: false,
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
-                });
-            } else {
-                rewardPlotContainer.chart.data.labels.push(rewardPlotContainer.chart.data.labels.length);
-                Object.entries(rewardData).forEach(([key, value], index) => {
-                    rewardPlotContainer.chart.data.datasets[index].data.push(value);
-                });
-                if (rewardPlotContainer.chart.data.labels.length > 100) {
-                    rewardPlotContainer.chart.data.labels.shift();
-                    rewardPlotContainer.chart.data.datasets.forEach(dataset => {
-                        dataset.data.shift();
-                    });
-                }
-                rewardPlotContainer.chart.update();
-            }
-        }
-
-        function updatePlotGrid(info) {
-            Object.entries(info).forEach(([key, value]) => {
-                if (typeof value === 'number') {
-                    let plotItem = plotGrid.querySelector(`[data-key="${key}"]`);
-                    if (!plotItem) {
-                        plotItem = document.createElement('div');
-                        plotItem.className = 'plot-item';
-                        plotItem.setAttribute('data-key', key);
-                        plotItem.innerHTML = `
-                            <div class="plot-title">${key}</div>
-                            <div class="plot-container">
-                                <canvas></canvas>
-                            </div>
-                        `;
-                        plotGrid.appendChild(plotItem);
-                    }
-                    updatePlot(key, value, plotItem.querySelector('.plot-container canvas').getContext('2d'));
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                boxHeight: 12,
+                                font: { size: 12 },
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    },
+                    aspectRatio: 3,
+                    animation: false,
+                    responsive: true,
+                    maintainAspectRatio: false
                 }
             });
+        }
+
+        const createChartConfig = (key, data, options = {}) => ({
+            type: 'line',
+            data: {
+                labels: data.map((_, i) => i),
+                datasets: [{
+                    label: key,
+                    data: data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    ...CONFIG.CHART_DEFAULTS
+                }]
+            },
+            options: {
+                scales: {
+                    x: { display: false },
+                    y: {
+                        display: true,
+                        ticks: { callback: value => value.toFixed(2) }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                },
+                animation: false,
+                responsive: true,
+                maintainAspectRatio: false,
+                ...options
+            }
+        });
+
+        function updateExistingRewardPlot(rewardData) {
+            const chart = elements.rewardPlotContainer.chart;
+            chart.data.labels.push(chart.data.labels.length);
+            Object.entries(rewardData).forEach(([key, value], index) => {
+                chart.data.datasets[index].data.push(value);
+            });
+            if (chart.data.labels.length > CONFIG.MAX_HISTORY) {
+                chart.data.labels.shift();
+                chart.data.datasets.forEach(dataset => {
+                    dataset.data.shift();
+                });
+            }
+            chart.update();
         }
 
         function updatePlot(key, value, ctx) {
-            if (!valueHistory[key]) {
-                valueHistory[key] = [];
+            if (!state.valueHistory.has(key)) {
+                state.valueHistory.set(key, []);
             }
-            valueHistory[key].push(value);
-            if (valueHistory[key].length > 100) {
-                valueHistory[key].shift();
+            const history = state.valueHistory.get(key);
+            history.push(value);
+            if (history.length > CONFIG.MAX_HISTORY) {
+                history.shift();
             }
 
             if (!ctx.chart) {
-                ctx.chart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: valueHistory[key].map((_, i) => i),
-                        datasets: [{
-                            label: key,
-                            data: valueHistory[key],
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            pointRadius: 0,
-                            lineTension: 0.4,
-                            borderWidth: 1.5
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            x: { display: false },
-                            y: {
-                                display: true,
-                                ticks: {
-                                    callback: function (value) {
-                                        return value.toFixed(2);
-                                    }
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: { enabled: false }
-                        },
-                        aspectRatio: 2,
-                        animation: false,
-                        responsive: true,
-                        maintainAspectRatio: false
-                    }
-                });
+                ctx.chart = new Chart(ctx, createChartConfig(key, history));
             } else {
                 ctx.chart.data.labels.push(ctx.chart.data.labels.length);
-                ctx.chart.data.datasets[0].data.push(value);
-                if (ctx.chart.data.labels.length > 100) {
-                    ctx.chart.data.labels.shift();
-                    ctx.chart.data.datasets[0].data.shift();
-                }
+                ctx.chart.data.datasets[0].data = history;
                 ctx.chart.update();
             }
         }
 
-        function updateInfoGrid(info) {
-            Object.entries(info).forEach(([key, value]) => {
-                if (typeof value !== 'number') {
-                    let infoItem = infoGrid.querySelector(`[data-key="${key}"]`);
-                    if (!infoItem) {
-                        infoItem = document.createElement('div');
-                        infoItem.className = 'info-item';
-                        infoItem.setAttribute('data-key', key);
-                        infoItem.innerHTML = `
-                            <div class="info-key">${key}</div>
-                            <div class="info-value"></div>
-                            <button class="hide-button" data-key="${key}">&times;</button>
-                        `;
-                        infoGrid.appendChild(infoItem);
-                        infoItem.querySelector('.hide-button').addEventListener('click', () => {
-                            infoItem.style.display = infoItem.style.display === 'none' ? 'flex' : 'none';
-                        });
-                    }
-                    infoItem.querySelector('.info-value').textContent = value;
-                }
-            });
-        }
-
         function updatePlotGrid(info) {
             Object.entries(info).forEach(([key, value]) => {
                 if (typeof value === 'number') {
-                    let plotItem = plotGrid.querySelector(`[data-key="${key}"]`);
+                    let plotItem = elements.plotGrid.querySelector(`[data-key="${key}"]`);
                     if (!plotItem) {
                         plotItem = document.createElement('div');
                         plotItem.className = 'plot-item';
@@ -456,7 +399,7 @@
                             </div>
                             <button class="hide-button" data-key="${key}">&times;</button>
                         `;
-                        plotGrid.appendChild(plotItem);
+                        elements.plotGrid.appendChild(plotItem);
                         plotItem.querySelector('.hide-button').addEventListener('click', () => {
                             plotItem.style.display = plotItem.style.display === 'none' ? 'block' : 'none';
                         });
@@ -466,37 +409,42 @@
             });
         }
 
-        Sortable.create(plotGrid, {
-            animation: 150,
-            ghostClass: 'plot-item-ghost',
-            group: 'grid',
-            onEnd: function () {
-                adjustGridColumns();
-            }
-        });
-
-        Sortable.create(infoGrid, {
-            animation: 150,
-            ghostClass: 'info-item-ghost',
-            group: 'grid',
-            onEnd: function () {
-                adjustGridColumns();
-            }
-        });
-
-        function adjustGridColumns() {
-            const renderItems = renderGrid.querySelectorAll('.render-item');
-            const numRenderColumns = Math.min(Math.max(Math.floor(renderGrid.clientWidth / 200), 1), 2);
-            renderGrid.style.gridTemplateColumns = `repeat(${numRenderColumns}, 1fr)`;
-
-            const plotItems = plotGrid.querySelectorAll('.plot-item');
-            const numPlotColumns = Math.min(Math.max(Math.floor(plotGrid.clientWidth / 400), 1), plotItems.length);
-            plotGrid.style.gridTemplateColumns = `repeat(${numPlotColumns}, 1fr)`;
-
-            const infoItems = infoGrid.querySelectorAll('.info-item');
-            const numInfoColumns = Math.min(Math.max(Math.floor(infoGrid.clientWidth / 200), 1), infoItems.length);
-            infoGrid.style.gridTemplateColumns = `repeat(${numInfoColumns}, 1fr)`;
+        function updateInfoGrid(info) {
+            Object.entries(info).forEach(([key, value]) => {
+                if (typeof value !== 'number') {
+                    let infoItem = elements.infoGrid.querySelector(`[data-key="${key}"]`);
+                    if (!infoItem) {
+                        infoItem = document.createElement('div');
+                        infoItem.className = 'info-item';
+                        infoItem.setAttribute('data-key', key);
+                        infoItem.innerHTML = `
+                            <div class="info-key">${key}</div>
+                            <div class="info-value"></div>
+                            <button class="hide-button" data-key="${key}">&times;</button>
+                        `;
+                        elements.infoGrid.appendChild(infoItem);
+                        infoItem.querySelector('.hide-button').addEventListener('click', () => {
+                            infoItem.style.display = infoItem.style.display === 'none' ? 'flex' : 'none';
+                        });
+                    }
+                    infoItem.querySelector('.info-value').textContent = value;
+                }
+            });
         }
+
+        const updateRewardPlot = (info) => {
+            const rewardData = Object.entries(info)
+                .filter(([key]) => key.startsWith('r_'))
+                .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+            const colorPalette = generateColorPalette(Object.keys(rewardData).length);
+
+            if (!elements.rewardPlotContainer.chart) {
+                initializeRewardPlot(rewardData, colorPalette);
+            } else {
+                updateExistingRewardPlot(rewardData);
+            }
+        };
 
         function generateColorPalette(numColors) {
             const colors = [];
@@ -508,7 +456,173 @@
             return colors;
         }
 
-        window.addEventListener('resize', adjustGridColumns);
+        const debounce = (fn, delay) => {
+            let timeoutId;
+            return (...args) => {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => fn.apply(null, args), delay);
+            };
+        };
+
+        const updateAllDisplays = (data) => {
+            if (data.images) updateRenderGrid(data.images);
+            if (data.info) {
+                updateRewardPlot(data.info);
+                updatePlotGrid(data.info);
+                updateInfoGrid(data.info);
+            }
+        };
+
+        const handleError = (error, context) => {
+            console.error(`Error in ${context}:`, error);
+            const container = document.querySelector('.container');
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = `Error: ${error.message}. Please refresh the page.`;
+            container.prepend(errorDiv);
+            setTimeout(() => errorDiv.remove(), 5000);
+        };
+
+        const setupEventSource = () => {
+            const eventSource = new EventSource('/stream');
+
+            eventSource.onopen = () => {
+                state.isConnected = true;
+                console.log('Connected to event stream');
+            };
+
+            eventSource.onmessage = event => {
+                try {
+                    const data = JSON.parse(event.data);
+                    updateAllDisplays(data);
+                } catch (error) {
+                    handleError(error, 'Processing event data');
+                }
+            };
+
+            eventSource.onerror = error => {
+                state.isConnected = false;
+                handleError(error, 'EventSource connection');
+                setTimeout(() => {
+                    if (!state.isConnected) {
+                        setupEventSource();
+                    }
+                }, 5000);
+            };
+
+            return eventSource;
+        };
+
+        function updateRenderGrid(images) {
+            if (!Array.isArray(images)) return;
+
+            const existingKeys = new Set(
+                Array.from(elements.renderGrid.children).map(
+                    item => item.querySelector('.render-key').textContent
+                )
+            );
+
+            images.forEach(item => {
+                if (!item.image || !item.key) return;
+
+                // Check if we already have this image
+                let renderItem = elements.renderGrid.querySelector(
+                    `.render-item[data-key="${item.key}"]`
+                );
+
+                if (!renderItem) {
+                    // Create new if doesn't exist
+                    renderItem = document.createElement('div');
+                    renderItem.className = 'render-item';
+                    renderItem.setAttribute('data-key', item.key);
+                    renderItem.innerHTML = `
+                    <img class="render-image" alt="${item.key}" loading="lazy">
+                    <div class="render-key">${item.key}</div>
+                    <button class="save-button" aria-label="Save ${item.key}">Save</button>
+                `;
+
+                    renderItem.querySelector('.save-button').addEventListener('click', () => {
+                        saveImage(item.key, item.image);
+                    });
+
+                    elements.renderGrid.appendChild(renderItem);
+                }
+
+                // Update the image source if it changed
+                const img = renderItem.querySelector('.render-image');
+                const newSrc = `data:image/webp;base64,${item.image}`;
+                if (img.src !== newSrc) {
+                    img.src = newSrc;
+                }
+
+                existingKeys.delete(item.key);
+            });
+
+            // Remove items that are no longer in the data
+            existingKeys.forEach(key => {
+                const obsoleteItem = elements.renderGrid.querySelector(
+                    `.render-item[data-key="${key}"]`
+                );
+                if (obsoleteItem) {
+                    obsoleteItem.remove();
+                }
+            });
+        }
+
+        const initializeSortable = () => {
+            Sortable.create(elements.plotGrid, {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                dragClass: 'sortable-drag',
+                group: 'plots',
+                onEnd: () => adjustGridColumns()
+            });
+
+            Sortable.create(elements.infoGrid, {
+                animation: 150,
+                ghostClass: 'sortable-ghost',
+                dragClass: 'sortable-drag',
+                group: 'info',
+                onEnd: () => adjustGridColumns()
+            });
+        };
+
+        const adjustGridColumns = debounce(() => {
+            const calculateColumns = (element, minWidth, maxColumns = Infinity) => {
+                const containerWidth = element.clientWidth;
+                return Math.min(
+                    Math.max(Math.floor(containerWidth / minWidth), 1),
+                    maxColumns
+                );
+            };
+
+            const grids = {
+                render: { element: elements.renderGrid, size: CONFIG.GRID_SIZES.RENDER, maxColumns: 2 },
+                plot: { element: elements.plotGrid, size: CONFIG.GRID_SIZES.PLOT },
+                info: { element: elements.infoGrid, size: CONFIG.GRID_SIZES.INFO }
+            };
+
+            Object.entries(grids).forEach(([_, { element, size, maxColumns }]) => {
+                if (element) {
+                    const columns = calculateColumns(element, size, maxColumns);
+                    element.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+                }
+            });
+        }, 100);
+
+        // Initialize application
+        const init = () => {
+            setupEventSource();
+            initializeSortable();
+            window.addEventListener('resize', adjustGridColumns);
+            adjustGridColumns();
+        };
+
+        init();
+
+        window.addEventListener('beforeunload', () => {
+            state.charts.forEach(chart => chart.destroy());
+        });
     </script>
 </body>
 

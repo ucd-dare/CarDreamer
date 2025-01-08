@@ -7,7 +7,7 @@ import numpy as np
 import dreamerv2 as dm2
 
 
-def train_with_viz(agent, env, train_replay, eval_replay, logger, args):
+def train(agent, env, train_replay, eval_replay, logger, args):
     logdir = dm2.Path(args.logdir)
     logdir.mkdirs()
     print("Logdir", logdir)
@@ -59,9 +59,6 @@ def train_with_viz(agent, env, train_replay, eval_replay, logger, args):
         logger.write()
 
     def create_agent():
-        # if args.require_carry:
-        #  random_agent = embodied.RandomCarryAgent(env.act_space, args.skill_shape)
-        # else:
         random_agent = dm2.RandomAgent(env.act_space)
         return random_agent
 
@@ -69,15 +66,15 @@ def train_with_viz(agent, env, train_replay, eval_replay, logger, args):
     if fill:
         print(f"Fill eval dataset ({fill} steps).")
         eval_driver = dm2.Driver(env)
-        eval_driver.on_step(eval_replay.add)
+        eval_driver.on_step(lambda ep, info, worker: eval_replay.add(ep, worker))
         random_agent = create_agent()
         eval_driver(random_agent.policy, steps=fill, episodes=1)
         del eval_driver
 
     driver = dm2.Driver(env)
-    driver.on_episode(lambda ep, worker: per_episode(ep))
-    driver.on_step(lambda tran, _: step.increment())
-    driver.on_step(train_replay.add)
+    driver.on_episode(lambda ep, info, worker: per_episode(ep))
+    driver.on_step(lambda ep, info, worker: step.increment())
+    driver.on_step(lambda ep, info, worker: train_replay.add(ep, worker))
     fill = max(0, args.train_fill - len(train_replay))
     if fill:
         print(f"Fill train dataset ({fill} steps).")
@@ -94,7 +91,7 @@ def train_with_viz(agent, env, train_replay, eval_replay, logger, args):
     metrics = collections.defaultdict(list)
     batch = [None]
 
-    def train_step(tran, worker):
+    def train_step(tran, info, worker):
         if should_train(step):
             for _ in range(args.train_steps):
                 batch[0] = next(dataset_train)
@@ -125,13 +122,6 @@ def train_with_viz(agent, env, train_replay, eval_replay, logger, args):
     print("Start training loop.")
     policy = lambda *args: agent.policy(*args, mode="explore" if should_expl(step) else "train")
     while step < args.steps:
-        # scalars = collections.defaultdict(list)
-        # for _ in range(args.eval_samples):
-        #   for key, value in agent.report(next(dataset_eval)).items():
-        #     if value.shape == ():
-        #       scalars[key].append(value)
-        # for name, values in scalars.items():
-        #   logger.scalar(f'eval/{name}', np.array(values, np.float64).mean())
         logger.write()
         driver(policy, steps=args.eval_every)
         checkpoint.save()

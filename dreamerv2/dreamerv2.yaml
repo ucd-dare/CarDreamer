@@ -1,6 +1,6 @@
 defaults:
   logdir: /dev/null
-  run: train_with_viz
+  run: train
   seed: 0
   task: dummy_discrete
   env:

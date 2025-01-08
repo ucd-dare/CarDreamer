@@ -3,7 +3,7 @@ Welcome to use ``car_dreamer``!
 
 ``car_dreamer`` aims at facilitating the training and evaluation of reinforcement learning and world model algorithms in the highly realistic simulator `CARLA <http://carla.org/>`_.
 
-.. image:: https://github.com/Alexwangziyu/CarDreamer/blob/master/.assets/cardreamer_architecture.png
+.. image:: https://raw.githubusercontent.com/ucd-dare/cardreamer.github.io/refs/heads/main/static/images/CarDreamerSystem.png
    :alt: CarDreamer Architecture
    :align: center
    :width: 600px

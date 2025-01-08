@@ -48,8 +48,6 @@ class Driver:
             acts["reset"] = self._obs["is_last"]
         acts = {k: convert(v) for k, v in acts.items()}
         assert all(len(x) == len(self._env) for x in acts.values()), acts
-        if self._env.require_carry:
-            self._env.set_carry(self._state)
         self._obs, info = self._env.step(acts)
         assert all(len(x) == len(self._env) for x in self._obs.values()), self._obs
         self._obs = {k: convert(v) for k, v in self._obs.items()}

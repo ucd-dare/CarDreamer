@@ -1,6 +1,5 @@
 env:
   eval: False
-  require_carry: False
 
   world:
     carla_port: 2000
