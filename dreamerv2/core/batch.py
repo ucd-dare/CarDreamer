@@ -38,12 +38,18 @@ class BatchEnv(base.Env):
             {k: v.shape for k, v in action.items()},
         )
         obs = []
+        info = []
         for i, env in enumerate(self._envs):
             act = {k: v[i] for k, v in action.items()}
-            obs.append(env.step(act))
+            obs_env, info_env = env.step(act)
+            obs.append(obs_env)
+            info.append(info_env)
         if self._parallel:
             obs = [ob() for ob in obs]
-        return {k: np.array([ob[k] for ob in obs]) for k in obs[0]}
+            info = [inf() for inf in info]
+        obs_dict = {k: np.array([ob[k] for ob in obs]) for k in obs[0]}
+        info_dict = {k: np.array([inf[k] for inf in info]) for k in info[0]}
+        return obs_dict, info_dict
 
     def render(self):
         return np.stack([env.render() for env in self._envs])

@@ -24,7 +24,7 @@ def compute_metrics_destination_based(episode_stats, distance_threshold=None):
     batch_size = num_episodes // 3
 
     def compute_mean_and_sem(data):
-        batch_means = [np.mean(data[i * batch_size : (i + 1) * batch_size]) for i in range(3)]
+        batch_means = [np.mean(data[i * batch_size: (i + 1) * batch_size]) for i in range(3)]
         mean = np.mean(batch_means)
         sem = np.std(batch_means, ddof=1) / np.sqrt(3)
         return mean, sem
@@ -170,6 +170,8 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--logdir", type=str, required=True, help="Directory containing metrics.jsonl")
+    # CarDreamer built-in tasks are evaluated based on `destination_reached` metric
+    # whereas user custom tasks may require a distance threshold to be considered successful
     parser.add_argument("--distance", type=float, help="Distance threshold for calculating success rate")
     args = parser.parse_args()
 

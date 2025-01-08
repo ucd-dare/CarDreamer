@@ -6,31 +6,6 @@ import numpy as np
 from jax import tree_map
 
 
-def average_ensemble(checkpoint, filenames, save_filename):
-    num_checkpoints = len(filenames)
-    all_varibs = []
-    if num_checkpoints == 0:
-        raise ValueError("No filenames provided to ensemble.")
-
-    for filename in filenames:
-        checkpoint.load(filename, keys=["agent"])
-        agent = checkpoint.get("agent")
-        all_varibs.append(agent.save())
-
-    # weights = np.array([0.5, 0.3, 0.2])  # Example weights, replace with actual weights
-    # ensemble_varibs = tree_map(lambda *xs: np.average(xs, axis=0, weights=weights), *all_varibs)
-
-    ensemble_varibs = tree_map(lambda *xs: np.mean(xs, axis=0), *all_varibs)
-
-    # Load average values into a new agent
-    agent.load(ensemble_varibs)
-    checkpoint.agent = agent
-
-    # Save the new agent
-    checkpoint.save(save_filename)
-    return checkpoint
-
-
 def eval_only(agent, env, logger, args):
     logdir = embodied.Path(args.logdir)
     logdir.mkdirs()
@@ -77,9 +52,6 @@ def eval_only(agent, env, logger, args):
     checkpoint.agent = agent
     if args.from_checkpoint:
         checkpoint.load(args.from_checkpoint, keys=["agent"])
-    elif args.ensemble.from_checkpoints is not None and len(args.ensemble.from_checkpoints) > 0:
-        ensemble_model_path = os.path.join(args.logdir, "ensemble_model.ckpt")
-        checkpoint = average_ensemble(checkpoint, args.ensemble.from_checkpoints, ensemble_model_path)
     else:
         raise ValueError("No checkpoint specified.")
 

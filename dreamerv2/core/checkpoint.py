@@ -45,15 +45,16 @@ class Checkpoint:
         with self._filename.open("wb") as f:
             self._pickle.dump(data, f)
 
-    def load(self):
+    def load(self, keys=None):
         self._log and print(f"Loading checkpoint: {self._filename}")
         with self._filename.open("rb") as f:
             data = self._pickle.load(f)
-        for key, value in data.items():
+        keys = tuple(data.keys() if keys is None else keys)
+        for key in keys:
             if key.startswith("_"):
                 continue
             try:
-                self._values[key].load(value)
+                self._values[key].load(data[key])
             except Exception:
                 print(f"Error loading {key} from checkpoint.")
                 raise

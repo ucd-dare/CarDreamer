@@ -33,7 +33,6 @@ from car_dreamer import load_task_configs
 
 def main(argv=None):
     from dreamerv2.embodied import agent as agnt
-    from dreamerv2.embodied import train_with_viz
 
     dreamer_dir = dm2.Path(__file__).parent
     model_configs = yaml.YAML(typ="safe").load((dreamer_dir / "dreamerv2.yaml").read())
@@ -120,10 +119,7 @@ def main(argv=None):
         env = dm2.envs.load_env(config.env.name, mode="train", logdir=logdir, config=config.env)
         agent = agnt.Agent(env.obs_space, env.act_space, step, config.dreamerv2)
         save_configs(config, args.logdir)
-        if config.dreamerv2.run == "train":
-            replay = make_replay("episodes", config.dreamerv2.replay_size)
-            dm2.run.train(agent, env, replay, logger, args)
-        elif config.dreamerv2.run == "train_with_viz":
+        if config.dreamerv2.run == "train_with_viz":
             if config.dreamerv2.eval_dir:
                 assert not config.dreamerv2.train.eval_fill
                 eval_replay = make_replay(config.dreamerv2.eval_dir, config.dreamerv2.replay_size // 10)
@@ -131,16 +127,7 @@ def main(argv=None):
                 assert config.dreamerv2.train.eval_fill
                 eval_replay = make_replay("eval_episodes", config.dreamerv2.replay_size // 10)
             replay = make_replay("episodes", config.dreamerv2.replay_size)
-            train_with_viz.train_with_viz(agent, env, replay, eval_replay, logger, args)
-        elif config.dreamerv2.run == "learning":
-            assert config.dreamerv2.replay.sync
-            env.close()
-            replay = make_replay("episodes", config.dreamerv2.replay_size)
-            eval_replay = make_replay(config.dreamerv2.eval_dir, config.dreamerv2.replay_size // 10) if config.dreamerv2.eval_dir else replay
-            dm2.run.learning(agent, replay, eval_replay, logger, args)
-        elif config.dreamerv2.run == "acting":
-            replay = make_replay("episodes", args.train_fill)
-            dm2.run.acting(agent, env, replay, logger, actordir, args)
+            dm2.run.train_with_viz(agent, env, replay, eval_replay, logger, args)
         else:
             raise NotImplementedError(config.dreamerv2.run)
     finally:

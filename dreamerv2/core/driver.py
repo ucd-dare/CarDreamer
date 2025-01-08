@@ -6,6 +6,7 @@ from .convert import convert
 
 
 class Driver:
+
     _CONVERSION = {
         np.floating: np.float32,
         np.signedinteger: np.int32,
@@ -25,6 +26,7 @@ class Driver:
         self._obs = {k: convert(np.zeros((len(self._env),) + v.shape, v.dtype)) for k, v in self._env.obs_space.items()}
         self._obs["is_last"] = np.ones(len(self._env), bool)
         self._eps = [collections.defaultdict(list) for _ in range(len(self._env))]
+        self._eps_info = [collections.defaultdict(list) for _ in range(len(self._env))]
         self._state = None
 
     def on_step(self, callback):
@@ -48,26 +50,31 @@ class Driver:
         assert all(len(x) == len(self._env) for x in acts.values()), acts
         if self._env.require_carry:
             self._env.set_carry(self._state)
-        self._obs = self._env.step(acts)
+        self._obs, info = self._env.step(acts)
         assert all(len(x) == len(self._env) for x in self._obs.values()), self._obs
         self._obs = {k: convert(v) for k, v in self._obs.items()}
+        info = {k: convert(v) for k, v in info.items()}
         trns = {**self._obs, **acts}
         if self._obs["is_first"].any():
             for i, first in enumerate(self._obs["is_first"]):
                 if not first:
                     continue
                 self._eps[i].clear()
+                self._eps_info[i].clear()
         for i in range(len(self._env)):
             trn = {k: v[i] for k, v in trns.items()}
+            inf = {k: v[i] for k, v in info.items()}
             [self._eps[i][k].append(v) for k, v in trn.items()]
-            [fn(trn, i, **self._kwargs) for fn in self._on_steps]
-            step += 1
+            [self._eps_info[i][k].append(v) for k, v in inf.items()]
+            [fn(trn, inf, i, **self._kwargs) for fn in self._on_steps]
+        step += 1
         if self._obs["is_last"].any():
             for i, done in enumerate(self._obs["is_last"]):
                 if not done:
                     continue
                 ep = {k: convert(v) for k, v in self._eps[i].items()}
-                [fn(ep.copy(), i, **self._kwargs) for fn in self._on_episodes]
+                ep_info = {k: convert(v) for k, v in self._eps_info[i].items()}
+                [fn(ep.copy(), ep_info.copy(), i, **self._kwargs) for fn in self._on_episodes]
                 episode += 1
         return step, episode
 

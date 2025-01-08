@@ -63,15 +63,15 @@ class TimeLimit(base.Wrapper):
                 return self.env.step(action)
             else:
                 action.update(reset=False)
-                obs = self.env.step(action)
+                obs, info = self.env.step(action)
                 obs["is_first"] = True
                 return obs
         self._step += 1
-        obs = self.env.step(action)
+        obs, info = self.env.step(action)
         if self._duration and self._step >= self._duration:
             obs["is_last"] = True
         self._done = obs["is_last"]
-        return obs
+        return obs, info
 
 
 class ActionRepeat(base.Wrapper):
@@ -85,13 +85,13 @@ class ActionRepeat(base.Wrapper):
             return self.env.step(action)
         reward = 0.0
         for _ in range(self._repeat):
-            obs = self.env.step(action)
+            obs, info = self.env.step(action)
             reward += obs["reward"]
             if obs["is_last"] or obs["is_terminal"]:
                 break
         obs["reward"] = reward
         self._done = obs["is_last"]
-        return obs
+        return obs, info
 
 
 class NormalizeAction(base.Wrapper):
@@ -172,9 +172,9 @@ class ExpandScalars(base.Wrapper):
 
     def step(self, action):
         action = {key: np.squeeze(value, 0) if key in self._act_expanded else value for key, value in action.items()}
-        obs = self.env.step(action)
+        obs, info = self.env.step(action)
         obs = {key: np.expand_dims(value, 0) if key in self._obs_expanded else value for key, value in obs.items()}
-        return obs
+        return obs, info
 
 
 class FlattenTwoDimObs(base.Wrapper):
@@ -192,7 +192,7 @@ class FlattenTwoDimObs(base.Wrapper):
         return self._obs_space
 
     def step(self, action):
-        obs = self.env.step(action).copy()
+        obs, info = self.env.step(action).copy()
         for key in self._keys:
             obs[key] = obs[key].flatten()
         return obs
@@ -212,7 +212,7 @@ class CheckSpaces(base.Wrapper):
                 np.max(value),
                 space,
             )
-        obs = self.env.step(action)
+        obs, info = self.env.step(action)
         for key, value in obs.items():
             space = self.env.obs_space[key]
             assert value in space, (
@@ -223,7 +223,7 @@ class CheckSpaces(base.Wrapper):
                 np.max(value),
                 space,
             )
-        return obs
+        return obs, info
 
 
 class DiscretizeAction(base.Wrapper):
@@ -278,10 +278,10 @@ class ResizeImage(base.Wrapper):
         return spaces
 
     def step(self, action):
-        obs = self.env.step(action)
+        obs, info = self.env.step(action)
         for key in self._keys:
             obs[key] = self._resize(obs[key])
-        return obs
+        return obs, info
 
     def _resize(self, image):
         image = self._Image.fromarray(image)
@@ -303,9 +303,9 @@ class RenderImage(base.Wrapper):
         return spaces
 
     def step(self, action):
-        obs = self.env.step(action)
+        obs, info = self.env.step(action)
         obs[self._key] = self.env.render()
-        return obs
+        return obs, info
 
 
 class RestartOnException(base.Wrapper):
