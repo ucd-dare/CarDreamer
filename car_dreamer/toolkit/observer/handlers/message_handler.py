@@ -38,7 +38,8 @@ class MessageHandler(BaseHandler):
             self._ego,
             self._world.actor_transforms,
             self._world.actor_polygons,
-            self._config.camera_fov,
+            self._config.sight_fov,
+            self._config.sight_range,
         )
         neighbors = get_neighbors(self._ego, self._world.actor_transforms, is_fov_visible)
         actor_actions = self._world.actor_actions

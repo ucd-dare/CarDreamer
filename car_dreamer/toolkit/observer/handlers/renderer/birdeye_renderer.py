@@ -1,5 +1,5 @@
 import math
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 import carla
 import cv2
@@ -8,7 +8,7 @@ import numpy as np
 
 
 from ....carla_manager import ActorPolygon, Command, WorldManager
-from ..utils import should_filter
+from ..utils import should_filter, get_sight_fov_and_range
 from .constants import BirdeyeEntity, Color
 from .map_renderer import MapRenderer
 
@@ -20,12 +20,14 @@ class BirdeyeRenderer:
         pixels_per_meter: float,
         screen_size: int,
         pixels_ahead_vehicle: int,
-        fov: float,
+        sight_fov: Union[float, List[float], Tuple[float]],
+        sight_range: Union[float, List[float], Tuple[float]],
     ):
         self._pixels_per_meter = pixels_per_meter
         self._screen_size = screen_size
         self._pixels_ahead_vehicle = pixels_ahead_vehicle
-        self._fov = fov
+        self._sight_fov = sight_fov
+        self._sight_range = sight_range
         self._world_manager = world_manager
 
         self._map_renderer = MapRenderer(world_manager.carla_world, world_manager.carla_map, pixels_per_meter)
@@ -85,32 +87,57 @@ class BirdeyeRenderer:
         self._render_polygon(self._surface, ego_polygon, color)
 
     def _render_fov_lines(self, **env_state):
-        """Render the field of view lines on the surface."""
+        """Render the field of view using lines and arcs on the surface."""
         ego_transform = self._ego.get_transform()
-        fov = self._fov
         surface = self._surface
-        line_length = 100
+
+        sight_fov, sight_range = get_sight_fov_and_range(self._sight_fov, self._sight_range)
+        forward_fov, backward_fov = sight_fov
+        forward_range, backward_range = sight_range
 
         ego_yaw = ego_transform.rotation.yaw
-        left_fov_yaw = ego_yaw - fov / 2
-        right_fov_yaw = ego_yaw + fov / 2
-
         ego_location = ego_transform.location
-        left_fov_endpoint = (
-            ego_location.x + line_length * math.cos(math.radians(left_fov_yaw)),
-            ego_location.y + line_length * math.sin(math.radians(left_fov_yaw)),
-        )
-        right_fov_endpoint = (
-            ego_location.x + line_length * math.cos(math.radians(right_fov_yaw)),
-            ego_location.y + line_length * math.sin(math.radians(right_fov_yaw)),
-        )
+        ego_pixel = self._world_to_pixel(ego_location)
 
-        ego_location_pixel = self._world_to_pixel(ego_location)
-        left_fov_endpoint_pixel = self._world_to_pixel(carla.Location(*left_fov_endpoint))
-        right_fov_endpoint_pixel = self._world_to_pixel(carla.Location(*right_fov_endpoint))
+        # Draw FOV cone (lines + arc)
+        def draw_fov_cone(center_yaw, fov_angle, sight_distance, color):
+            if fov_angle <= 0 or sight_distance <= 0:
+                return
 
-        cv2.line(surface, ego_location_pixel, left_fov_endpoint_pixel, Color.ORANGE_1, 3)
-        cv2.line(surface, ego_location_pixel, right_fov_endpoint_pixel, Color.ORANGE_1, 3)
+            left_fov_yaw = center_yaw - fov_angle / 2
+            right_fov_yaw = center_yaw + fov_angle / 2
+            left_rad = math.radians(left_fov_yaw)
+            right_rad = math.radians(right_fov_yaw)
+
+            left_endpoint = (ego_location.x + sight_distance * math.cos(left_rad), ego_location.y + sight_distance * math.sin(left_rad))
+            right_endpoint = (ego_location.x + sight_distance * math.cos(right_rad), ego_location.y + sight_distance * math.sin(right_rad))
+
+            left_pixel = self._world_to_pixel(carla.Location(*left_endpoint))
+            right_pixel = self._world_to_pixel(carla.Location(*right_endpoint))
+
+            cv2.line(surface, ego_pixel, left_pixel, color, 2)
+            cv2.line(surface, ego_pixel, right_pixel, color, 2)
+            radius_pixels = int(sight_distance * self._pixels_per_meter)
+
+            start_angle = min(left_fov_yaw, right_fov_yaw)
+            end_angle = max(left_fov_yaw, right_fov_yaw)
+
+            # Draw arc with multiple small lines
+            num_segments = max(20, int(fov_angle / 5))
+            for i in range(num_segments):
+                angle1 = math.radians(start_angle + (end_angle - start_angle) * i / num_segments)
+                angle2 = math.radians(start_angle + (end_angle - start_angle) * (i + 1) / num_segments)
+
+                pt1 = (ego_pixel[0] + int(radius_pixels * math.cos(angle1)), ego_pixel[1] + int(radius_pixels * math.sin(angle1)))
+                pt2 = (ego_pixel[0] + int(radius_pixels * math.cos(angle2)), ego_pixel[1] + int(radius_pixels * math.sin(angle2)))
+
+                cv2.line(surface, pt1, pt2, color, 1)
+
+        draw_fov_cone(ego_yaw, forward_fov, forward_range, Color.ORANGE_1)
+
+        if backward_fov > 0:
+            back_center_yaw = (ego_yaw + 180) % 360
+            draw_fov_cone(back_center_yaw, backward_fov, backward_range, Color.BUTTER_1)
 
     def _render_waypoints(self, **env_state):
         """

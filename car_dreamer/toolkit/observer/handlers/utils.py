@@ -1,6 +1,6 @@
 import math
 from enum import Enum
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 import carla
 import numpy as np
@@ -20,22 +20,68 @@ class WaypointObservability(Enum):
     NEIGHBOR = "neighbor"  # Only neighbors
 
 
-def is_point_in_fov(obs_location, obs_yaw, point, fov):
+def get_sight_fov_and_range(sight_fov, sight_range):
+    """
+    Get the sight field of view and range based on the provided parameters.
+
+    Args:
+        sight_fov: Sight field of view, can be a single number (forward only) or a tuple/list [forward, backward]
+        sight_range: Sight range, can be a single number (forward only) or a tuple/list [forward, backward]
+    Returns:
+        Tuple: A tuple containing the forward and backward field of view and sight range
+    """
+    if isinstance(sight_fov, (int, float)):
+        sight_fov = (float(sight_fov), 0)
+    if isinstance(sight_range, (int, float)):
+        sight_range = (float(sight_range), float(sight_range))
+
+    sight_fov = (sight_fov[0], 0) if len(sight_fov) == 1 else sight_fov
+    sight_range = (sight_range[0], sight_range[0]) if len(sight_range) == 1 else sight_range
+
+    return sight_fov, sight_range
+
+
+def is_point_in_fov(obs_location, obs_yaw, point, fov, sight_range):
+    """
+    Check if a point is within the field of view.
+
+    Args:
+        obs_location: Observer location (x, y)
+        obs_yaw: Observer yaw in degrees
+        point: Point to check (x, y)
+        fov: Field of view angle. Can be a single number (forward only) or a tuple/list [forward, backward]
+        sight_distance: Maximum visibility distance. Can be a single number (forward only) or a tuple/list [forward, backward]
+
+    Returns:
+        bool: True if point is within FOV, False otherwise
+    """
     # Calculate the distance between the observer and the point
     distance = math.sqrt((point[0] - obs_location[0]) ** 2 + (point[1] - obs_location[1]) ** 2)
-    # If the point is beyond the maximum distance, return False
-    if distance > 30:
-        return False
-    # Calculate angle between ego vehicle front direction and point
+
+    fov, sight_range = get_sight_fov_and_range(fov, sight_range)
+    forward_fov, backward_fov = fov
+    forward_sight_distance, backward_sight_distance = sight_range
+
     direction_vector = np.array([math.cos(math.radians(obs_yaw)), math.sin(math.radians(obs_yaw))])
     point_vector = np.array([point[0] - obs_location[0], point[1] - obs_location[1]])
-    point_vector = point_vector / np.linalg.norm(point_vector)
+
+    if np.linalg.norm(point_vector) > 0:
+        point_vector = point_vector / np.linalg.norm(point_vector)
+    else:
+        return False
 
     dot_product = np.dot(direction_vector, point_vector)
-    angle = math.degrees(math.acos(dot_product))
+    angle = math.degrees(math.acos(max(min(dot_product, 1.0), -1.0)))
 
-    # Check if point is within the FOV
-    return abs(angle) <= fov / 2
+    if abs(angle) <= forward_fov / 2 and distance <= forward_sight_distance:
+        return True
+
+    if backward_fov > 0:
+        rear_angle = 180 - angle
+        if abs(rear_angle) <= backward_fov / 2 and distance <= backward_sight_distance:
+            return True
+
+    return False
 
 
 def segments_intersect(a1, a2, b1, b2):
@@ -57,12 +103,14 @@ def is_line_of_sight_clear(point1, point2, polygons, id_filter):
     return True
 
 
-def is_fov_visible(obs_location, obs_yaw, obs_id, id, poly, actor_polygons, fov):
+def is_fov_visible(obs_location, obs_yaw, obs_id, id, poly, actor_polygons, fov, sight_range):
     visible = False
     if id == obs_id:
         return visible
     for p in poly:
-        if is_point_in_fov(obs_location, obs_yaw, p, fov) and is_line_of_sight_clear(obs_location, p, actor_polygons, id_filter=[obs_id, id]):
+        if is_point_in_fov(obs_location, obs_yaw, p, fov, sight_range) and is_line_of_sight_clear(
+            obs_location, p, actor_polygons, id_filter=[obs_id, id]
+        ):
             visible = True
             break
     return visible
@@ -72,15 +120,22 @@ def get_visibility(
     ego: carla.Actor,
     actor_transforms: ActorTransformDict,
     actor_polys: ActorPolygonDict,
-    fov: float,
+    fov: Union[float, List[float], Tuple[float]] = 150,
+    sight_range: Union[float, List[float], Tuple[float]] = 32,
 ) -> Tuple[Dict[int, bool], Dict[int, bool]]:
     """
     Get the visibility of the actors with respect to the ego
+
+    Args:
+        ego: Ego vehicle
+        actor_transforms: Dictionary of actor transforms
+        actor_polys: Dictionary of actor polygons
+        fov: Field of view angle. Can be a single number (forward only) or a tuple/list [forward, backward]
+        sight_distance: Maximum visibility distance. Can be a single number (forward only) or a tuple/list [forward, backward]
     Return:
         fov_visible: The first dictionary indicates if the actor is fov visible
         recursive_visible: The second dictionary indicates if the actor is recursive_fov visible
     """
-
     fov_visible, recursive_visible = {}, {}
     for id in actor_polys.keys():
         fov_visible[id] = False
@@ -103,6 +158,7 @@ def get_visibility(
             poly,
             actor_polys,
             fov,
+            sight_range,
         )
 
     # For recursive_fov, iterate over vehicles and check if their surroundings are visible to themselves
@@ -123,6 +179,7 @@ def get_visibility(
                 poly,
                 actor_polys,
                 fov,
+                sight_range,
             ):
                 recursive_visible[id] = True
 

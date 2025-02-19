@@ -25,7 +25,8 @@ class BirdeyeHandler(BaseHandler):
             pixels_per_meter,
             self._display_size,
             pixels_ahead_vehicle,
-            config.camera_fov,
+            config.sight_fov,
+            config.sight_range,
         )
         self.surface = np.zeros((self._display_size, self._display_size, 3), dtype=np.uint8)
 
@@ -39,7 +40,9 @@ class BirdeyeHandler(BaseHandler):
         # Birdeye view
         actor_transforms = self._world.actor_transforms
         actor_polygons = self._world.actor_polygons
-        is_fov_visible, is_recursive_visible = get_visibility(self._ego, actor_transforms, actor_polygons, self._config.camera_fov)
+        is_fov_visible, is_recursive_visible = get_visibility(
+            self._ego, actor_transforms, actor_polygons, self._config.sight_fov, self._config.sight_range
+        )
         neighbors = get_neighbors(self._ego, actor_transforms, is_fov_visible)
         observability = Observability(self._config.observability)
         if observability == Observability.FOV:
