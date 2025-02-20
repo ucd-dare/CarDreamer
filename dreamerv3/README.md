@@ -8,7 +8,7 @@ First, install the required dependencies for DreamerV3:
 cd dreamerv3
 conda install -c "nvidia/label/cuda-11.8.0" cuda-toolkit
 pip install -r requirements.txt
-pip install --upgrade "jax[cuda12_pip]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+pip install "jax[cuda12_pip]==0.4.34" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 ```
 
 Set up CARLA and environment variables:
