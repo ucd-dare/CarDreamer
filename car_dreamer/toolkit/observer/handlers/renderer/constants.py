@@ -74,13 +74,13 @@ class Color:
 
 
 class BirdeyeEntity(Enum):
-    ROADMAP = "roadmap"
+    ROADMAP = "roadmap"  # Roadmap obtained from CARLA map topology
     EGO_VEHICLE = "ego_vehicle"
     BACKGROUND_VEHICLES = "background_vehicles"
-    FOV_LINES = "fov_lines"
-    WAYPOINTS = "waypoints"
-    BACKGROUND_WAYPOINTS = "background_waypoints"
+    FOV_LINES = "fov_lines"  # Field of view lines that indicate the visibility of the ego vehicle
+    WAYPOINTS = "waypoints"  # Waypoints that indicate the path of the ego vehicle
+    BACKGROUND_WAYPOINTS = "background_waypoints"  # Waypoints (intentions) of the background vehicles
     TRAFFIC_LIGHTS = "traffic_lights"
     STOP_SIGNS = "stop_signs"
     MESSAGES = "messages"
-    ERROR_BACKGROUND_WAYPOINTS = "error_background_waypoints"
+    ERROR_BACKGROUND_WAYPOINTS = "error_background_waypoints"  # Waypoints that may have transmission errors

@@ -3,7 +3,7 @@ env:
 
   world:
     carla_port: 2000
-    town: "Town04" # which town to simulate
+    town: "Town04" # which town map to use
     actor_active_distance: 100
     fixed_delta_seconds: 0.1
     auto_lane_change: True
@@ -161,7 +161,10 @@ env:
     image_size: 512
 
   action:
-    discrete: True # whether to use discrete control space
+    discrete: False
+    # Discrete control space. Use continuos_acc and continuous_steer if discrete is False
     discrete_acc: [-2.0, 0.0, 2.0] # discrete value of accelerations
     discrete_steer: [-0.6, -0.2, 0.0, 0.2, 0.6] # discrete value of steering angles
-    n_commands: 3 # number of text commands
+    continuous_acc: [-3.0, 3.0] # continuous value of accelerations
+    continuous_steer: [-1.0, 1.0] # continuous value of steering angles
+    n_commands: 3 # number of text commands for message handler

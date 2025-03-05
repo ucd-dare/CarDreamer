@@ -107,6 +107,8 @@ The following table shows the overall performance metrics over different CarDrea
 
 CarDreamer enables the customization of different levels of observability. The table below highlights performance metrics under different observability settings, including full observability, field-of-view (FOV), and recursive field-of-view (SFOV). These settings allow agents to operate with varying degrees of environmental awareness, impacting their ability to plan and execute maneuvers effectively.
 
+Check out [common.yaml](https://github.com/ucd-dare/CarDreamer/blob/master/car_dreamer/configs/common.yaml) for different birdeye observability and entity settings. The entity settings allow users to determine whether to render, for example, background vehicle intentions (planned trajectories), ego vechile intentions (planned trajectories), and transmission errors for intention sharing.
+
 | Observability Performance Metrics |
 | :-------------------------------: |
 | ![Observability Performance](https://ucd-dare.github.io/cardreamer.github.io/static/images/tables/observability_performance.png) |

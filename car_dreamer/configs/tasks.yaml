@@ -379,6 +379,7 @@ carla_stop_sign:
     decoder.cnn_keys: "birdeye_with_traffic_lights"
     decoder.cnn_kernels: [5, 5, 5, 6, 6]
     train.log_keys_video: [camera, birdeye_with_traffic_lights]
+
 carla_follow:
   env:
     world:
@@ -402,7 +403,6 @@ carla_follow:
         waypoints: 4.0,
         distance: 2.0
       }
-
 
     terminal:
       time_limit: 500 # maximum timesteps per episode
