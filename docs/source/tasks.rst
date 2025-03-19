@@ -101,6 +101,8 @@ Here is the descriptions of some common configurations in ``car_dreamer/configs/
       If ``True``, ``len(discrete_acc) * len(discrete_steer)`` is the size of the action space.
     * ``discrete_acc`` (default: ``[-2.0, 0.0, 2.0]``): the discrete values for acceleration.
     * ``discrete_steer`` (default: ``[-0.6, -0.2, 0.0, 0.2, 0.6]``): the discrete values for steering.
+    * ``continuous_acc`` (default: ``[-3.0, 3.0]``): the continuous value range for acceleration.
+    * ``continuous_steer`` (default: ``[-1.0, 1.0]``): the continuous value range for steering.
 
 Tasks and Environments
 --------------------------

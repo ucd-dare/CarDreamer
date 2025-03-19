@@ -123,7 +123,7 @@ def main(args):
         ],
         [
             "Avg. Destination Reached",
-            f"{final_metrics['avg_destination_reached']:.2f} ± {final_metrics['avg_destination_reached_sem']:.2f}",
+            f"{final_metrics['avg_destination_reached']:.2%} ± {final_metrics['avg_destination_reached_sem']:.2%}",
         ],
         [
             "Avg. Time Exceeded",
