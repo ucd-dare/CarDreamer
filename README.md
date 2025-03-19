@@ -157,14 +157,19 @@ The model backbones are decoupled from CarDreamer tasks or the development sutie
 Find `README.md` in the corresponding directory of the algorithm you want to use and follow the instructions to install dependencies for that model and start training. We suggest starting with DreamerV3 as it is showing better performance across our experiments. To train DreamerV3 agents, use
 
 ```bash
+# Example 1: Use default settings to train an agent
 bash train_dm3.sh 2000 0 --task carla_four_lane --dreamerv3.logdir ./logdir/carla_four_lane
+# Example 2: Override task and model parameters
+bash train_dm3.sh 2000 0 --task carla_right_turn_simple \
+    --dreamerv3.logdir ./logdir/carla_right_turn_simple \
+    --dreamerv3.run.steps=5e6
 ```
 
 The command will launch CARLA at 2000 port, load task a built-in task named `carla_four_lane`, and start the visualization tool at port 9000 (2000+7000) which can be accessed through `http://localhost:9000/`. You can append flags to the command to overwrite yaml configurations.
 
 ### Creating Tasks
 
-The section explains how to create CarDreamer tasks in a standalone mode without loading our integrated models. This can be helpful if you want to train and evaluate your own models other than our integrated DreamerV2 and DreamerV3 on CarDreamer tasks.
+The section explains how to create CarDreamer tasks in a standalone mode without loading our integrated models. This can be helpful **if you want to train and evaluate your own models** other than our integrated DreamerV2 and DreamerV3 on CarDreamer tasks.
 
 CarDreamer offers a range of built-in task classes, which you can explore in the [CarDreamer Docs: Tasks and Configurations](https://car-dreamer.readthedocs.io/en/latest/tasks.html#tasks-and-environments).
 

@@ -75,7 +75,7 @@ Here is the descriptions of some common configurations in ``car_dreamer/configs/
         * ``shape`` (default: ``[128, 128, 3]``): the shape of the birdeye, should follow the form of ``[n, n, 3]``.
         * ``obs_range`` (default: ``32``): the range of the birdeye in meter (in unit of CARLA).
         * ``ego_offset`` (default: ``12``): the offset of the ego vehicle to the bottom of the birdeye in meter (in unit of CARLA).
-        * ``sight_fov`` (default: ``150``): the field of view of the camera.
+        * ``sight_fov`` (default: ``150``): the field of view of the camera. Use single value for the same front and rear FOV. Use 2-tuple to configure two angles, respectively. For example, ``[150, 90]`` can be common settings for human drivers.
         * ``sight_range`` (default: ``32``): the maximum visible distance
         * ``observability`` (default: ``full``): can be ``full, recursive_fov, fov``. ``full`` means all background vehicles are visible. ``fov`` means only vehicles in the field of view are visible. ``recursive_fov`` means vehicles in the fov of vehicles in ego's fov are also visible.
         * ``color_by_obs``: whether to color the vehicles by observability.
@@ -117,6 +117,9 @@ Here is a list of available environments and their supported tasks and configura
 .. autoclass:: car_dreamer.CarlaWptEnv
    :show-inheritance:
 
+.. autoclass:: car_dreamer.CarlaWptFixedEnv
+   :show-inheritance:
+
 .. autoclass:: car_dreamer.CarlaFourLaneEnv
    :show-inheritance:
 
@@ -124,9 +127,6 @@ Here is a list of available environments and their supported tasks and configura
    :show-inheritance:
 
 .. autoclass:: car_dreamer.CarlaOvertakeEnv
-   :show-inheritance:
-
-.. autoclass:: car_dreamer.CarlaWptFixedEnv
    :show-inheritance:
 
 .. autoclass:: car_dreamer.CarlaLaneMergeEnv
@@ -145,6 +145,9 @@ Here is a list of available environments and their supported tasks and configura
    :show-inheritance:
 
 .. autoclass:: car_dreamer.CarlaTrafficLightsEnv
+   :show-inheritance:
+
+.. autoclass:: car_dreamer.CarlaFollowEnv
    :show-inheritance:
 
 .. note::

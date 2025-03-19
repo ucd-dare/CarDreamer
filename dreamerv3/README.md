@@ -25,7 +25,12 @@ Execute the training script with desired configurations:
 
 ```bash
 cd ..
+# Example 1: Use default settings to train an agent
 bash train_dm3.sh 2000 0 --task carla_four_lane --dreamerv3.logdir ./logdir/carla_four_lane
+# Example 2: Override task and model parameters
+bash train_dm3.sh 2000 0 --task carla_right_turn_simple \
+    --dreamerv3.logdir ./logdir/carla_right_turn_simple \
+    --dreamerv3.run.steps=5e6
 ```
 
 `2000` is the port number of the CARLA server. The script will automatically start the server so you don't need to start it manually.

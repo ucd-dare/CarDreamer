@@ -78,6 +78,8 @@ env:
       shape: [128, 128, 3]
       obs_range: 32
       ego_offset: 12
+      # sight_fov = 150 equivalent to [150, 150] for [front, rear] FOV
+      # Use [150, 90] to mimic human driver views
       sight_fov: 150
       sight_range: 32
       observability: full

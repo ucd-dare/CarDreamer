@@ -6,13 +6,12 @@ __pycache__/
 MUJOCO_LOG.TXT
 ;
 wandb/
-logdir/
 *.ipynb
 *h5
 traffic_scenarios/
 *.log
 .nfs*
-logdir/
+*logdir/
 .vscode/
 .idea/
 
