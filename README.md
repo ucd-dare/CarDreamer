@@ -303,7 +303,7 @@ If you find this repository useful, please cite this paper:
 }
 ```
 
-# Suppliment Material
+# Supplementary Material
 
 ## World model imagination
 
