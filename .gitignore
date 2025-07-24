@@ -119,3 +119,12 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# SLURM batch files
+*.sbatch
+
+# Shell scripts (if generated/temporary)
+*.sh
+
+# Claude documentation file
+CLAUDE.md

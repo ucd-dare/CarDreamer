@@ -1,3 +1,11 @@
+# 🔬 Research Extension: World Model Based RL + Human Feedback
+
+> [!TIP]
+> **This fork extends the original CarDreamer with Human Feedback Integration**
+>
+> This repository builds upon the original CarDreamer framework to explore the integration of **Reinforcement Learning from Human Feedback (RLHF)** within world model-based RL in autonomous driving.
+---
+
 # 🌍 Learn to Drive in "Dreams": CarDreamer 🚗
 
 <div align="center">
