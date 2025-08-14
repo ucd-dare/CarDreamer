@@ -31,6 +31,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Contribute List
-        uses: akhilmhdh/contributors-readme-action@v2.3.10
+        uses: akhilmhdh/contributors-readme-action@v2.3.11
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
