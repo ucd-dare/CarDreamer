@@ -86,8 +86,8 @@ class CarlaWptEnv(CarlaBaseEnv):
             # compute the speed reward
             desired_speed = self._config.reward.desired_speed
             speed_parallel = np.dot(ego_velocity, waypoint_direction)
-            speed_perpendicular = np.dot(ego_velocity, perp_direction)
-            r_speed = (desired_speed - np.abs(speed_parallel - desired_speed) - 2 * max(speed_perpendicular, -0.5)) * reward_scales["speed"]
+            speed_perpendicular = np.abs(np.dot(ego_velocity, perp_direction))
+            r_speed = (desired_speed - np.abs(speed_parallel - desired_speed) - 2 * min(speed_perpendicular, 0.5)) * reward_scales["speed"]
 
         # Reward for collision
         r_collision = 0.0
