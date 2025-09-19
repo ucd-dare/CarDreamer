@@ -438,3 +438,44 @@ carla_follow:
     decoder.cnn_keys: "birdeye_wpt"
     decoder.cnn_kernels: [5, 5, 5, 6, 6]
     train.log_keys_video: [birdeye_wpt]
+
+# My custom environment for adaptive driving
+carla_four_lane_adaptive:
+  env:
+    name: CarlaFourLaneAdaptiveEnv-v0
+    observation.enabled: [camera, collision, birdeye_wpt]
+    num_vehicles: 50
+    <<: *carla_wpt
+
+    # ──────────────────────────────────────────────────────────
+    # terminal.time_limit: 500 -> 1000
+    terminal:
+      time_limit: 1000    # Maximum timesteps per episode
+      out_lane_thres: 3
+    # ──────────────────────────────────────────────────────────
+
+    lane_start_points:
+      - [5.8, 100, 0.1]
+      - [9.0, 100, 0.1]
+      - [12.2, 100, 0.1]
+      - [15.6, 100, 0.1]
+    lane_end_points:
+      - [5.8, -58, 0.1]
+      - [9.0, -58, 0.1]
+      - [12.2, -58, 0.1]
+      - [15.6, -58, 0.1]
+
+    # ──────────────────────────────────────────────────────────
+    stuck_speed_threshold: 0.6       # 5/12: 0.1 -> 0.3 -> 0.6
+    stuck_timeout: 15                 # 5/12: 50 -> 30 -> 15
+    max_steps: 1000                   # 5/12: 1000 -> 1000 -> 1000
+    adaptive_step_window: 25         # 5/12: 100 -> 50 -> 25
+    # add low reward early stopping
+    low_reward_threshold: 0.3         # 5/12: 0.1 -> 0.2 -> 0.3
+
+  dreamerv3:
+    encoder.cnn_keys: "birdeye_wpt"
+    decoder.cnn_keys: "birdeye_wpt"
+    run.log_keys_video: [camera, birdeye_wpt]
+    # run.log_keys_max: "collision" -> add more keys to ignore
+    run.log_keys_max: "^(collision|metrics/stuck_timeout_count|metrics/low_reward_early_stop_count)$"

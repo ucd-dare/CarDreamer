@@ -161,7 +161,7 @@ env:
     image_size: 512
 
   action:
-    discrete: False
+    discrete: True
     # Discrete control space. Use continuos_acc and continuous_steer if discrete is False
     discrete_acc: [-2.0, 0.0, 2.0] # discrete value of accelerations
     discrete_steer: [-0.6, -0.2, 0.0, 0.2, 0.6] # discrete value of steering angles
